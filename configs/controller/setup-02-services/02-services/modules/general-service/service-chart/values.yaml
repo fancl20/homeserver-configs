@@ -1,0 +1,32 @@
+deployment:
+  replicaCount: 1
+  podAnnotations: {}
+  image:
+    repository: ""
+    pullPolicy: IfNotPresent
+    tag: ""
+  command: []
+  args: []
+  env: []
+  resources: {}
+  volumeMounts: []
+  volumes: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+services: []
+
+ingress:
+  enabled: false
+  annotations: {}
+  backend:
+    service: ""
+    port: 80
+
+domainSuffix: ""
