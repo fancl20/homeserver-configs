@@ -3,10 +3,10 @@ variable "local_domain_suffix" {
 }
 
 resource "helm_release" "vault" {
-  name = "vault"
-  namespace = "vault"
+  name       = "vault"
+  namespace  = "vault"
   repository = "https://helm.releases.hashicorp.com"
-  chart = "vault"
+  chart      = "vault"
   values = [
     yamlencode({
       server = {
@@ -30,29 +30,29 @@ resource "helm_release" "vault" {
           EOT
         ]
         volumeMounts = [{
-          name = "vault-kms"
+          name      = "vault-kms"
           mountPath = "/etc/secrets/vault-kms"
-          readOnly = true
-        }, {
-          name = "vault-config-updater"
+          readOnly  = true
+          }, {
+          name      = "vault-config-updater"
           mountPath = "/etc/secrets/vault-config-updater"
-          readOnly = true
+          readOnly  = true
         }]
         volumes = [{
           name = "vault-kms"
           secret = {
             secretName = "${kubernetes_secret.vault_kms_key.metadata[0].name}"
           }
-        }, {
+          }, {
           name = "vault-config-updater"
           secret = {
             secretName = "vault-config-updater"
-            optional = true
+            optional   = true
           }
         }]
         standalone = {
           enabled = true
-          config = <<-EOT
+          config  = <<-EOT
             ui = true
             listener "tcp" {
               tls_disable = 1
@@ -81,10 +81,10 @@ resource "helm_release" "vault" {
           }]
         }
         dataStorage = {
-          enabled = true
-          size = "${kubernetes_persistent_volume.vault_storage.spec[0].capacity.storage}"
+          enabled      = true
+          size         = "${kubernetes_persistent_volume.vault_storage.spec[0].capacity.storage}"
           storageClass = "${kubernetes_persistent_volume.vault_storage.spec[0].storage_class_name}"
-          accessMode = "ReadWriteOnce"
+          accessMode   = "ReadWriteOnce"
         }
       }
       injector = {

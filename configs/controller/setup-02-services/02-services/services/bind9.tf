@@ -3,7 +3,7 @@ resource "kubernetes_config_map" "bind9" {
     name = "bind9"
   }
   data = {
-    "named.conf" = <<-EOT
+    "named.conf"         = <<-EOT
       options {
         directory "/var/cache/bind";
         query-source address * port *; # Exchange port between DNS servers
@@ -61,14 +61,14 @@ locals {
 
 module "bind9" {
   source = "../modules/general-service"
-  name = "bind9"
+  name   = "bind9"
   deployment = {
     image = {
       repository = "internetsystemsconsortium/bind9"
-      tag = "9.16"
+      tag        = "9.16"
     }
-    command = [ "/bin/sh" ]
-    args = [ "-e", "-c", <<-EOT
+    command = ["/bin/sh"]
+    args = ["-e", "-c", <<-EOT
         mkdir -p /etc/bind/pri
         cp /etc/config/named.conf /etc/bind/
         cp /etc/config/local.d20.fan.zone /etc/bind/pri/
@@ -81,7 +81,7 @@ module "bind9" {
     ]
     resources = {
       requests = { memory = "128Mi", cpu = "100m" }
-      limits = { memory = "128Mi", cpu = "200m" }
+      limits   = { memory = "128Mi", cpu = "200m" }
     }
     volumeMounts = [
       { name = "config", mountPath = "/etc/config" },
@@ -100,7 +100,7 @@ module "bind9" {
         { name = "dns-udp", protocol = "UDP", port = 53, targetPort = 5353 },
         { name = "dns-tcp", protocol = "TCP", port = 53, targetPort = 5353 },
       ]
-      type = "LoadBalancer"
+      type           = "LoadBalancer"
       loadBalancerIP = var.dns_static_ip
     }
   }
@@ -108,7 +108,7 @@ module "bind9" {
     role = "homeserver"
     secrets = {
       bind9_externaldns_key = {
-        path = "homeserver/data/bind9"
+        path     = "homeserver/data/bind9"
         template = <<-EOT
           {{ with secret "homeserver/data/bind9" -}}
           key externaldns-key {

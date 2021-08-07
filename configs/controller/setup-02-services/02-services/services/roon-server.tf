@@ -1,6 +1,6 @@
 module "roon_server" {
   source = "../modules/general-service"
-  name = "roon-server"
+  name   = "roon-server"
   deployment = {
     image = {
       repository = "ghcr.io/fancl20/roon-server"

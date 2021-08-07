@@ -9,7 +9,7 @@ output "annotations" {
   value = merge(
     length(var.secrets) == 0 ? {} : {
       "vault.hashicorp.com/agent-inject" = "true"
-      "vault.hashicorp.com/agent-pre-populate-only": "true"
+      "vault.hashicorp.com/agent-pre-populate-only" : "true"
       "vault.hashicorp.com/role" = var.role
     },
     {

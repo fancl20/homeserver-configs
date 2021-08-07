@@ -20,11 +20,11 @@ resource "kubernetes_deployment" "default_http_backend" {
           image = "k8s.gcr.io/defaultbackend-amd64:1.5"
           resources {
             limits = {
-              cpu = "10m"
+              cpu    = "10m"
               memory = "20Mi"
             }
             requests = {
-              cpu = "10m"
+              cpu    = "10m"
               memory = "20Mi"
             }
           }
@@ -60,8 +60,8 @@ resource "kubernetes_ingress" "default_http_backend" {
         path {
           path = "/"
           backend {
-              service_name = "default-http-backend"
-              service_port = 80
+            service_name = "default-http-backend"
+            service_port = 80
           }
         }
       }

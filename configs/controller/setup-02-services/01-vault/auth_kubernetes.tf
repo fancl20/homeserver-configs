@@ -3,7 +3,7 @@ resource "vault_auth_backend" "kubernetes" {
 }
 
 resource "vault_policy" "auth_kubernetes_config_writer" {
-  name = "auth_kubernetes_config_writer"
+  name   = "auth_kubernetes_config_writer"
   policy = <<-EOT
     path "auth/${vault_auth_backend.kubernetes.path}/config" {
       capabilities = ["update"]
@@ -16,13 +16,13 @@ resource "vault_token" "config_updater" {
     vault_policy.auth_kubernetes_config_writer.name,
   ]
   renewable = true
-  period = "24h"
+  period    = "24h"
   no_parent = true
 }
 
 resource "kubernetes_secret" "vault_config_updater" {
   metadata {
-    name = "vault-config-updater"
+    name      = "vault-config-updater"
     namespace = "vault"
   }
   data = {
@@ -32,12 +32,12 @@ resource "kubernetes_secret" "vault_config_updater" {
 
 resource "kubernetes_cron_job" "vault_config_token_renewer" {
   metadata {
-    name = "vault-config-token-renewer"
+    name      = "vault-config-token-renewer"
     namespace = "vault"
   }
   spec {
-    concurrency_policy            = "Replace"
-    schedule                      = "0 */12 * * *"
+    concurrency_policy = "Replace"
+    schedule           = "0 */12 * * *"
     job_template {
       metadata {}
       spec {
@@ -45,8 +45,8 @@ resource "kubernetes_cron_job" "vault_config_token_renewer" {
           metadata {}
           spec {
             container {
-              name    = "vault-config-token-renewer"
-              image   = "curlimages/curl"
+              name  = "vault-config-token-renewer"
+              image = "curlimages/curl"
               command = [
                 "/bin/sh",
                 "-e",
@@ -60,9 +60,9 @@ resource "kubernetes_cron_job" "vault_config_token_renewer" {
                 EOT
               ]
               volume_mount {
-                name = "vault-config-updater"
+                name       = "vault-config-updater"
                 mount_path = "/etc/secrets/vault-config-updater"
-                read_only = true
+                read_only  = true
               }
             }
             volume {

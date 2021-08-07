@@ -1,6 +1,6 @@
 module "jellyfin" {
   source = "../modules/general-service"
-  name = "jellyfin"
+  name   = "jellyfin"
   deployment = {
     image = {
       repository = "ghcr.io/linuxserver/jellyfin"

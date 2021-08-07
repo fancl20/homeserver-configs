@@ -28,13 +28,13 @@ locals {
 
 module "workspace-common" {
   source = "../modules/general-service"
-  name = "workspace-common"
+  name   = "workspace-common"
   deployment = {
     image = {
       repository = "ghcr.io/fancl20/workspace"
-      tag = "general-common"
+      tag        = "general-common"
     }
-    args = [ "/bin/sh",  "-e", "-c", <<-EOT
+    args = ["/bin/sh", "-e", "-c", <<-EOT
       cp /vault/secrets/authorized_keys /root/.ssh/
       cp /vault/secrets/id_rsa /root/.ssh/
       chmod 700 /root/.ssh && chmod 600 /root/.ssh/*
@@ -60,7 +60,7 @@ module "workspace-common" {
       ports = [
         { name = "ssh", protocol = "TCP", port = 22, targetPort = 2222 },
       ]
-      type = "LoadBalancer"
+      type        = "LoadBalancer"
       externalDNS = true
     }
   }
@@ -68,7 +68,7 @@ module "workspace-common" {
     role = "homeserver"
     secrets = {
       authorized_keys = {
-        path = "homeserver/data/ssh"
+        path     = "homeserver/data/ssh"
         template = <<-EOT
           {{ with secret "homeserver/data/ssh" -}}
           {{ .Data.data.public_key }}
@@ -76,7 +76,7 @@ module "workspace-common" {
         EOT
       }
       id_rsa = {
-        path = "homeserver/data/ssh"
+        path     = "homeserver/data/ssh"
         template = <<-EOT
           {{ with secret "homeserver/data/ssh" -}}
           {{ .Data.data.private_key }}

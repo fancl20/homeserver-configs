@@ -1,11 +1,11 @@
 resource "google_service_account" "vault_kms" {
-  account_id = "vault-kms"
+  account_id   = "vault-kms"
   display_name = "vault-kms"
-  description = "Vault Google Cloud Auto Unseal"
+  description  = "Vault Google Cloud Auto Unseal"
 }
 
 resource "google_project_iam_member" "vault_kms" {
-  role = each.key
+  role   = each.key
   member = "serviceAccount:${google_service_account.vault_kms.email}"
   for_each = toset([
     "roles/cloudkms.cryptoKeyEncrypterDecrypter",
@@ -14,12 +14,12 @@ resource "google_project_iam_member" "vault_kms" {
 
 resource "google_service_account_key" "vault_kms" {
   service_account_id = google_service_account.vault_kms.name
-  public_key_type = "TYPE_X509_PEM_FILE"
+  public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
 resource "kubernetes_secret" "vault_kms_key" {
   metadata {
-    name = "vault-kms-key"
+    name      = "vault-kms-key"
     namespace = "vault"
   }
   data = {

@@ -1,5 +1,5 @@
 variable "local_domain_suffix" {
-  type = string
+  type    = string
   default = "local.d20.fan"
 }
 
@@ -11,5 +11,5 @@ provider "vault" {}
 
 provider "google" {
   project = "home-servers-275405"
-  region = "australia-southeast1"
+  region  = "australia-southeast1"
 }

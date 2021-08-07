@@ -3,7 +3,7 @@ resource "kubernetes_storage_class" "mass_storage" {
     name = "mass-storage"
   }
   storage_provisioner = "kubernetes.io/no-provisioner"
-  reclaim_policy = "Retain"
+  reclaim_policy      = "Retain"
   volume_binding_mode = "WaitForFirstConsumer"
 }
 
@@ -15,8 +15,8 @@ resource "kubernetes_persistent_volume" "mass_storage" {
     capacity = {
       storage = "6Ti"
     }
-    access_modes = [ "ReadWriteOnce" ]
-    volume_mode = "Filesystem"
+    access_modes       = ["ReadWriteOnce"]
+    volume_mode        = "Filesystem"
     storage_class_name = kubernetes_storage_class.mass_storage.metadata[0].name
     persistent_volume_source {
       local {
@@ -27,9 +27,9 @@ resource "kubernetes_persistent_volume" "mass_storage" {
       required {
         node_selector_term {
           match_expressions {
-            key = "kubernetes.io/hostname"
+            key      = "kubernetes.io/hostname"
             operator = "In"
-            values = [ "homeserver-controller" ]
+            values   = ["homeserver-controller"]
           }
         }
       }
@@ -38,13 +38,13 @@ resource "kubernetes_persistent_volume" "mass_storage" {
 }
 
 resource "kubernetes_persistent_volume_claim" "mass_storage" {
-   metadata {
+  metadata {
     name = "mass-storage"
   }
   spec {
-    access_modes = [ "ReadWriteOnce" ]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = kubernetes_storage_class.mass_storage.metadata[0].name
-    volume_name = kubernetes_persistent_volume.mass_storage.metadata[0].name
+    volume_name        = kubernetes_persistent_volume.mass_storage.metadata[0].name
     resources {
       requests = {
         storage = "6Ti"
@@ -79,8 +79,8 @@ resource "kubernetes_persistent_volume" "vault_storage_backup" {
     capacity = {
       storage = "10Gi"
     }
-    access_modes = [ "ReadWriteOnce" ]
-    volume_mode = "Filesystem"
+    access_modes       = ["ReadWriteOnce"]
+    volume_mode        = "Filesystem"
     storage_class_name = data.kubernetes_storage_class.vault_storage.metadata[0].name
     persistent_volume_source {
       local {
@@ -91,9 +91,9 @@ resource "kubernetes_persistent_volume" "vault_storage_backup" {
       required {
         node_selector_term {
           match_expressions {
-            key = "kubernetes.io/hostname"
+            key      = "kubernetes.io/hostname"
             operator = "In"
-            values = [ "homeserver-controller" ]
+            values   = ["homeserver-controller"]
           }
         }
       }
@@ -102,13 +102,13 @@ resource "kubernetes_persistent_volume" "vault_storage_backup" {
 }
 
 resource "kubernetes_persistent_volume_claim" "vault_storage_backup" {
-   metadata {
+  metadata {
     name = "vault-storage-backup"
   }
   spec {
-    access_modes = [ "ReadWriteOnce" ]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = data.kubernetes_storage_class.vault_storage.metadata[0].name
-    volume_name = kubernetes_persistent_volume.vault_storage_backup.metadata[0].name
+    volume_name        = kubernetes_persistent_volume.vault_storage_backup.metadata[0].name
     resources {
       requests = {
         storage = "10Gi"

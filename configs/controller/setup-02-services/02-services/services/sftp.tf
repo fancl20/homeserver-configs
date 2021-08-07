@@ -1,6 +1,6 @@
 module "sftp" {
   source = "../modules/general-service"
-  name = "sftp"
+  name   = "sftp"
   deployment = {
     image = {
       repository = "ghcr.io/linuxserver/openssh-server"
@@ -26,7 +26,7 @@ module "sftp" {
       ports = [
         { name = "ssh", protocol = "TCP", port = 22, targetPort = 2222 },
       ]
-      type = "LoadBalancer"
+      type        = "LoadBalancer"
       externalDNS = true
     }
   }
@@ -34,7 +34,7 @@ module "sftp" {
     role = "homeserver"
     secrets = {
       sftp_public_key = {
-        path = "homeserver/data/sftp"
+        path     = "homeserver/data/sftp"
         template = <<-EOT
           {{ with secret "homeserver/data/sftp" -}}
           {{ .Data.data.public_key }}
@@ -42,7 +42,7 @@ module "sftp" {
         EOT
       }
       sftp_user_password = {
-        path = "homeserver/data/sftp"
+        path     = "homeserver/data/sftp"
         template = <<-EOT
           {{ with secret "homeserver/data/sftp" -}}
           {{ .Data.data.user_password }}

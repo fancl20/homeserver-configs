@@ -1,6 +1,6 @@
 module "qbittorrent" {
   source = "../modules/general-service"
-  name = "qbittorrent"
+  name   = "qbittorrent"
   deployment = {
     image = {
       repository = "ghcr.io/linuxserver/qbittorrent"

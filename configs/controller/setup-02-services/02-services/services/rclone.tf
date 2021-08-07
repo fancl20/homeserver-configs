@@ -1,9 +1,9 @@
 module "rclone_vault_injector" {
   source = "../modules/vault-injector"
-  role = "homeserver"
+  role   = "homeserver"
   secrets = {
     config = {
-      path = "homeserver/data/backblaze"
+      path     = "homeserver/data/backblaze"
       template = <<-EOT
         {{ with secret "homeserver/data/backblaze" -}}
         [remote]
@@ -21,8 +21,8 @@ resource "kubernetes_cron_job" "rclone" {
     name = "rclone"
   }
   spec {
-    concurrency_policy            = "Forbid"
-    schedule                      = "0 04 * * *"
+    concurrency_policy = "Forbid"
+    schedule           = "0 04 * * *"
     job_template {
       metadata {}
       spec {
@@ -32,21 +32,21 @@ resource "kubernetes_cron_job" "rclone" {
           }
           spec {
             container {
-              name    = "rclone-shared"
-              image   = "rclone/rclone"
-              args = [ "sync", "--config=/vault/secrets/config", "/backup", "remote:homeserver", "--fast-list", "--exclude", "/downloads/" ]
+              name  = "rclone-shared"
+              image = "rclone/rclone"
+              args  = ["sync", "--config=/vault/secrets/config", "/backup", "remote:homeserver", "--fast-list", "--exclude", "/downloads/"]
               volume_mount {
-                name = "data"
+                name       = "data"
                 mount_path = "/backup"
-                sub_path = "shared"
+                sub_path   = "shared"
               }
             }
             container {
-              name    = "rclone-vault"
-              image   = "rclone/rclone"
-              args = [ "sync", "--config=/vault/secrets/config", "/backup", "remote:homeserver-vault", "--fast-list" ]
+              name  = "rclone-vault"
+              image = "rclone/rclone"
+              args  = ["sync", "--config=/vault/secrets/config", "/backup", "remote:homeserver-vault", "--fast-list"]
               volume_mount {
-                name = "vault"
+                name       = "vault"
                 mount_path = "/backup"
               }
             }

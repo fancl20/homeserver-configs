@@ -21,7 +21,7 @@ resource "kubernetes_cluster_role_binding" "terraform" {
 }
 
 resource "vault_policy" "vault_sys_admin" {
-  name = "vault_sys_admin"
+  name   = "vault_sys_admin"
   policy = <<-EOT
     path "sys/*" {
       capabilities = ["create", "read", "update", "delete", "list"]
@@ -30,7 +30,7 @@ resource "vault_policy" "vault_sys_admin" {
 }
 
 resource "vault_policy" "vault_auth_admin" {
-  name = "vault_auth_admin"
+  name   = "vault_auth_admin"
   policy = <<-EOT
     path "auth/*" {
       capabilities = ["create", "read", "update", "delete", "list"]
@@ -44,7 +44,7 @@ resource "vault_kubernetes_auth_backend_role" "terraform" {
   bound_service_account_names      = [kubernetes_service_account.terraform.metadata[0].name]
   bound_service_account_namespaces = [kubernetes_service_account.terraform.metadata[0].namespace]
   token_ttl                        = 1200
-  token_policies                   = [
+  token_policies = [
     "default",
     vault_policy.vault_sys_admin.name,
     vault_policy.vault_auth_admin.name,

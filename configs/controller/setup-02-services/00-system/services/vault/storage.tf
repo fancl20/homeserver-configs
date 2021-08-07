@@ -3,7 +3,7 @@ resource "kubernetes_storage_class" "vault_storage" {
     name = "vault-storage"
   }
   storage_provisioner = "kubernetes.io/no-provisioner"
-  reclaim_policy = "Retain"
+  reclaim_policy      = "Retain"
   volume_binding_mode = "WaitForFirstConsumer"
 }
 
@@ -15,8 +15,8 @@ resource "kubernetes_persistent_volume" "vault_storage" {
     capacity = {
       storage = "10Gi"
     }
-    access_modes = ["ReadWriteOnce"]
-    volume_mode = "Filesystem"
+    access_modes       = ["ReadWriteOnce"]
+    volume_mode        = "Filesystem"
     storage_class_name = kubernetes_storage_class.vault_storage.metadata[0].name
     persistent_volume_source {
       local {
@@ -27,9 +27,9 @@ resource "kubernetes_persistent_volume" "vault_storage" {
       required {
         node_selector_term {
           match_expressions {
-            key = "kubernetes.io/hostname"
+            key      = "kubernetes.io/hostname"
             operator = "In"
-            values = [ "homeserver-controller" ]
+            values   = ["homeserver-controller"]
           }
         }
       }

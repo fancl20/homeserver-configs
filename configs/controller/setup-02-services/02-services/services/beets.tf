@@ -1,10 +1,10 @@
 module "beets" {
   source = "../modules/general-service"
-  name = "beets"
+  name   = "beets"
   deployment = {
     image = {
       repository = "ghcr.io/linuxserver/beets"
-      tag = "1.4.9-ls94"
+      tag        = "1.4.9-ls94"
     }
     env = [
       { name = "TZ", value = "Australia/Sydney" },
