@@ -47,11 +47,7 @@ resource "kubernetes_cron_job" "vault_config_token_renewer" {
             container {
               name  = "vault-config-token-renewer"
               image = "curlimages/curl"
-              command = [
-                "/bin/sh",
-                "-e",
-                "-c",
-                <<-EOT
+              command = ["/bin/sh", "-e", "-c", <<-EOT
                 set -o pipefail
                 curl -s --fail-with-body \
                   --header "X-Vault-Token: $(cat /etc/secrets/vault-config-updater/token)" \

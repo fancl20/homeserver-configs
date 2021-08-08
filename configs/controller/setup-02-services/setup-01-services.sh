@@ -11,5 +11,4 @@ terraform_apply() {
 }
 
 terraform_apply 00-system
-terraform_apply 01-vault
-terraform_apply 02-services
+terraform_apply 01-services

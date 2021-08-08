@@ -21,18 +21,17 @@ podman run --rm -it --security-opt label=disable \
            gcloud --project=home-servers-275405 auth application-default login
 ```
 
-## 01-vault
+## 02-services
 
 ### Before applying the config:
 
 - All the requirements and the results of previous step(s)
-- Initialized vault
+- Initialized vault and generate root token
+- Added vault secrets used by services
 
 ### After applying the config:
 
-- Configured kubernetes auth backend for vaultl
-- Configured terraform service account
-
+- Deployed all services
 
 ### Appendix:
 
@@ -46,19 +45,3 @@ kubectl --namespace=vault exec -it vault-0 -- /bin/sh -e -c '/bin/vault operator
 # Restart vault after applying the terraform config
 kubectl --namespace=vault delete pod vault-0
 ```
-
-## 02-services
-
-### Before applying the config:
-
-- All the requirements and the results of previous step(s)
-- Initialized vault
-  - Enable kubernetes and userpassa auth backend
-  - Create user for configuring kubernetes auth backend
-  - Reboot vault to test that everything is working as intended
-- Added vault secrets used by services
-- Generated vault token
-
-### After applying the config:
-
-- Deployed all services
