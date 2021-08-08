@@ -1,4 +1,4 @@
-# Some of the change require vault restarted to take effect
+# Some of the changes require vault restarted to take effect
 locals {
   restart_trigger = {
     vault_config_updater_secret = kubernetes_secret.vault_config_updater.metadata[0].resource_version
