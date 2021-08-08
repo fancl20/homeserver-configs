@@ -9,9 +9,14 @@ module "vault" {
   source = "./policies/vault"
 }
 
+module "vault_restart" {
+  source  = "./modules/vault-restart"
+  trigger = module.vault.restart_trigger
+}
+
 module "services" {
   source        = "./services"
   domain_suffix = var.local_domain_suffix
   dns_static_ip = "192.168.1.3"
-  depends_on    = [module.vault]
+  depends_on    = [module.vault_restart]
 }

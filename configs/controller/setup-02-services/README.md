@@ -40,8 +40,3 @@ podman run --rm -it --security-opt label=disable \
 kubectl --namespace=vault exec -it vault-0 -- /bin/sh -e -c '/bin/vault operator init'
 (read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo tee /root/.vault-token > /dev/null)
 ```
-
-```shell
-# Restart vault after applying the terraform config
-kubectl --namespace=vault delete pod vault-0
-```
