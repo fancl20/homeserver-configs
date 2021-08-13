@@ -67,8 +67,7 @@ module "bind9" {
       repository = "internetsystemsconsortium/bind9"
       tag        = "9.16"
     }
-    command = ["/bin/sh"]
-    args = ["-e", "-c", <<-EOT
+    command = ["/bin/sh", "-e", "-c", <<-EOT
         mkdir -p /etc/bind/pri
         cp /etc/config/named.conf /etc/bind/
         cp /etc/config/local.d20.fan.zone /etc/bind/pri/

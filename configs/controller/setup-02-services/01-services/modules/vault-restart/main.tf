@@ -27,7 +27,7 @@ resource "kubernetes_role_binding" "vault_restart" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = "vault-restart"
+    name      = kubernetes_role.vault_restart.metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"
@@ -65,5 +65,10 @@ resource "kubernetes_job" "vault_restart" {
         service_account_name = "vault-restart"
       }
     }
+    ttl_seconds_after_finished = 600
+  }
+  timeouts {
+    create = "2m"
+    update = "2m"
   }
 }

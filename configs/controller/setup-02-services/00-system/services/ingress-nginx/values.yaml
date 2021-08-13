@@ -1,4 +1,6 @@
 controller:
+  extraArgs:
+    default-ssl-certificate: "default/local-tls"
   config:
     enable-real-ip: "true"
   resources:

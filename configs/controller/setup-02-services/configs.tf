@@ -3,6 +3,11 @@ variable "local_domain_suffix" {
   default = "local.d20.fan"
 }
 
+variable "local_domain_tls_ref" {
+  type    = string
+  default = "local-tls"
+}
+
 provider "kubernetes" {}
 
 provider "helm" {}

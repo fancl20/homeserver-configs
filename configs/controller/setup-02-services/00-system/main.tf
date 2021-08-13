@@ -5,6 +5,18 @@ terraform {
   }
 }
 
+resource "google_project_service" "services" {
+  service = each.key
+  for_each = toset([
+    "iam.googleapis.com",
+    "logging.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "dns.googleapis.com",
+    "cloudkms.googleapis.com",
+    "compute.googleapis.com",
+  ])
+}
+
 module "metallb" {
   source = "./services/metallb"
 }
@@ -23,5 +35,8 @@ module "default_http_backend" {
 module "vault" {
   source              = "./services/vault"
   local_domain_suffix = var.local_domain_suffix
-  depends_on          = [module.default_http_backend]
+  depends_on = [
+    module.default_http_backend,
+    google_project_service.services,
+  ]
 }

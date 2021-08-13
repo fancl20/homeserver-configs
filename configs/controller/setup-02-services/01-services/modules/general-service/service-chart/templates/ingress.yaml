@@ -10,6 +10,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  tls:
+    - hosts:
+      - {{ include "service-chart.hostname" $ }}
   rules:
     - host: {{ include "service-chart.hostname" $ }}
       http:

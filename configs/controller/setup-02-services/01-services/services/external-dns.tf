@@ -50,8 +50,7 @@ module "external_dns" {
       repository = "k8s.gcr.io/external-dns/external-dns"
       tag        = "v0.8.0"
     }
-    command = ["/bin/sh"]
-    args = ["-e", "-c", <<-EOT
+    command = ["/bin/sh", "-e", "-c", <<-EOT
       source /vault/secrets/env && /bin/external-dns \
         --registry=txt \
         --txt-prefix=external-dns- \

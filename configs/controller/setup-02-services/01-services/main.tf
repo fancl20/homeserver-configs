@@ -15,8 +15,9 @@ module "vault_restart" {
 }
 
 module "services" {
-  source        = "./services"
-  domain_suffix = var.local_domain_suffix
-  dns_static_ip = "192.168.1.3"
-  depends_on    = [module.vault_restart]
+  source         = "./services"
+  domain_suffix  = var.local_domain_suffix
+  domain_tls_ref = var.local_domain_tls_ref
+  dns_static_ip  = "192.168.1.3"
+  depends_on     = [module.vault_restart]
 }

@@ -7,6 +7,7 @@ resource "helm_release" "vault" {
   namespace  = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
+  version    = "v0.14.0"
   values = [
     yamlencode({
       server = {
@@ -76,8 +77,16 @@ resource "helm_release" "vault" {
         }
         ingress = {
           enabled = true
+          annotations = {
+            "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
+          }
           hosts = [{
             host = "vault.${var.local_domain_suffix}"
+          }]
+          tls = [{
+            hosts = [
+              "vault.${var.local_domain_suffix}"
+            ]
           }]
         }
         dataStorage = {
@@ -99,4 +108,5 @@ resource "helm_release" "vault" {
     })
   ]
   create_namespace = true
+  recreate_pods    = true
 }
