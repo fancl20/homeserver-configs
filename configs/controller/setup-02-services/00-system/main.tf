@@ -22,7 +22,8 @@ module "metallb" {
 }
 
 module "ingress_nginx" {
-  source = "./services/ingress-nginx"
+  source         = "./services/ingress-nginx"
+  domain_tls_ref = var.local_domain_tls_ref
 }
 
 # Create an ingress for default-http-backend. It will wait until ingress ready,
@@ -33,8 +34,8 @@ module "default_http_backend" {
 }
 
 module "vault" {
-  source              = "./services/vault"
-  local_domain_suffix = var.local_domain_suffix
+  source        = "./services/vault"
+  domain_suffix = var.local_domain_suffix
   depends_on = [
     module.default_http_backend,
     google_project_service.services,

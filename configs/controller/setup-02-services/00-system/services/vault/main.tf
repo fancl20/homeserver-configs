@@ -1,4 +1,4 @@
-variable "local_domain_suffix" {
+variable "domain_suffix" {
   type = string
 }
 
@@ -81,11 +81,11 @@ resource "helm_release" "vault" {
             "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
           }
           hosts = [{
-            host = "vault.${var.local_domain_suffix}"
+            host = "vault.${var.domain_suffix}"
           }]
           tls = [{
             hosts = [
-              "vault.${var.local_domain_suffix}"
+              "vault.${var.domain_suffix}"
             ]
           }]
         }

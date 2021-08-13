@@ -1,9 +1,0 @@
-controller:
-  extraArgs:
-    default-ssl-certificate: "default/local-tls"
-  config:
-    enable-real-ip: "true"
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi

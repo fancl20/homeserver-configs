@@ -71,4 +71,7 @@ resource "kubernetes_job" "vault_restart" {
     create = "2m"
     update = "2m"
   }
+  lifecycle {
+    ignore_changes = all
+  }
 }
