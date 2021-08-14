@@ -5,6 +5,12 @@ module "sftp" {
     image = {
       repository = "ghcr.io/linuxserver/openssh-server"
     }
+    command = ["/bin/sh", "-e", "-c", <<-EOT
+        sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+        sed -i '/^PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+        exec /init
+      EOT
+    ]
     env = [
       { name = "TZ", value = "Australia/Sydney" },
       { name = "PUID", value = "0" },
@@ -15,6 +21,7 @@ module "sftp" {
       { name = "USER_NAME", value = "fancl20" },
     ]
     volumeMounts = [
+      { name = "data", mountPath = "/config", subPath = "sftp/config" },
       { name = "data", mountPath = "/shared", subPath = "shared" },
     ]
     volumes = [
@@ -46,7 +53,7 @@ module "sftp" {
         template = <<-EOT
           {{ with secret "homeserver/data/sftp" -}}
           {{ .Data.data.user_password }}
-          {{- end }}}
+          {{- end }}
         EOT
       }
     }

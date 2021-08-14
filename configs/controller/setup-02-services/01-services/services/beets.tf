@@ -13,7 +13,7 @@ module "beets" {
     volumeMounts = [
       { name = "data", mountPath = "/config", subPath = "beets/config" },
       { name = "data", mountPath = "/music", subPath = "shared/music" },
-      { name = "data", mountPath = "/downloads", subPath = "shared/download" },
+      { name = "data", mountPath = "/downloads", subPath = "shared/downloads" },
     ]
     volumes = [
       local.mass_storage_volume,

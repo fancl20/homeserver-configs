@@ -65,13 +65,9 @@ resource "kubernetes_job" "vault_restart" {
         service_account_name = "vault-restart"
       }
     }
-    ttl_seconds_after_finished = 600
   }
   timeouts {
     create = "2m"
     update = "2m"
-  }
-  lifecycle {
-    ignore_changes = all
   }
 }
