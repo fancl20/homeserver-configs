@@ -49,16 +49,16 @@ resource "kubernetes_job" "vault_restart" {
           name  = "vault-restart"
           image = "curlimages/curl"
           command = ["/bin/sh", "-e", "-c", <<-EOT
-              set -o pipefail
-              # trigger: ${jsonencode(var.trigger)}
-              pod_vault() {
-                curl -s --fail-with-body -X $1 "https://kubernetes.default.svc/api/v1/namespaces/vault/pods/vault-0" \
-                  --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
-                  --cacert "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" | tr '\n' ' ' | cut -c 1-1024
-              }
-              pod_vault DELETE
-              while pod_vault GET | grep -q deletionTimestamp; do sleep 1; done
-              until curl -s --fail "http://vault.vault:8200/v1/sys/health"; do sleep 1; done
+            set -o pipefail
+            # trigger: ${jsonencode(var.trigger)}
+            pod_vault() {
+              curl -s --fail-with-body -X $1 "https://kubernetes.default.svc/api/v1/namespaces/vault/pods/vault-0" \
+                --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" | tr '\n' ' ' | cut -c 1-1024
+            }
+            pod_vault DELETE
+            while pod_vault GET | grep -q deletionTimestamp; do sleep 1; done
+            until curl -s --fail "http://vault.vault:8200/v1/sys/health"; do sleep 1; done
             EOT
           ]
         }

@@ -68,16 +68,16 @@ resource "kubernetes_cron_job" "certbot" {
               name  = "certbot"
               image = "certbot/dns-google"
               command = ["/bin/sh", "-e", "-c", <<-EOT
-                  base64 -d /vault/secrets/gcp > /tmp/key.json
-                  chmod 600 /tmp/key.json
-                  certbot certonly \
-                    --agree-tos \
-                    --no-eff-email \
-                    -m fancl20@gmail.com \
-                    --cert-name local \
-                    --dns-google \
-                    --dns-google-credentials /tmp/key.json \
-                    -d '*.local.d20.fan'
+                base64 -d /vault/secrets/gcp > /tmp/key.json
+                chmod 600 /tmp/key.json
+                certbot certonly \
+                  --agree-tos \
+                  --no-eff-email \
+                  -m fancl20@gmail.com \
+                  --cert-name local \
+                  --dns-google \
+                  --dns-google-credentials /tmp/key.json \
+                  -d '*.local.d20.fan'
                 EOT
               ]
               volume_mount {
@@ -89,12 +89,12 @@ resource "kubernetes_cron_job" "certbot" {
               name  = "update-secret"
               image = "bitnami/kubectl"
               command = ["/bin/sh", "-e", "-c", <<-EOT
-                  set -o pipefail
-                  kubectl create secret tls "${var.domain_tls_ref}" \
-                    --dry-run=client \
-                    --key=/etc/letsencrypt/live/local/privkey.pem \
-                    --cert=/etc/letsencrypt/live/local/cert.pem \
-                    -o yaml | kubectl apply -f -
+                set -o pipefail
+                kubectl create secret tls "${var.domain_tls_ref}" \
+                  --dry-run=client \
+                  --key=/etc/letsencrypt/live/local/privkey.pem \
+                  --cert=/etc/letsencrypt/live/local/cert.pem \
+                  -o yaml | kubectl apply -f -
                 EOT
               ]
               volume_mount {

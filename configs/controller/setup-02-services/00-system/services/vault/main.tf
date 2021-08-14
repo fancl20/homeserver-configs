@@ -12,11 +12,7 @@ resource "helm_release" "vault" {
     yamlencode({
       server = {
         enabled = true
-        postStart = [
-          "/bin/sh",
-          "-e",
-          "-c",
-          <<-EOT
+        postStart = ["/bin/sh", "-e", "-c", <<-EOT
           # Exit normally if token not exist - as it probablly means we haven't
           # finished the initilization.
           if [ ! -f "/etc/secrets/vault-config-updater/token" ]; then exit 0; fi

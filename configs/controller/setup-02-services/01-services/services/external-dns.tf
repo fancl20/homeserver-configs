@@ -51,7 +51,7 @@ module "external_dns" {
       tag        = "v0.8.0"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
-      source /vault/secrets/env && /bin/external-dns \
+      source /vault/secrets/env && exec /bin/external-dns \
         --registry=txt \
         --txt-prefix=external-dns- \
         --txt-owner-id=k8s \

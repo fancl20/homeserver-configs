@@ -68,14 +68,15 @@ module "bind9" {
       tag        = "9.16"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
-        mkdir -p /etc/bind/pri
-        cp /etc/config/named.conf /etc/bind/
-        cp /etc/config/local.d20.fan.zone /etc/bind/pri/
-        chown -R bind:bind /etc/bind/ && chmod -R 755 /etc/bind
-        chown -R bind:bind /var/cache/bind && chmod -R 755 /var/cache/bind
-        chown -R bind:bind /var/lib/bind && chmod -R 755 /var/lib/bind
-        chown -R bind:bind /run/named && chmod -R 755 /run/named
-        /usr/sbin/named -g -c /etc/bind/named.conf -u bind
+      mkdir -p /etc/bind/pri
+      cp /etc/config/named.conf /etc/bind/
+      cp /etc/config/local.d20.fan.zone /etc/bind/pri/
+      rm -f /etc/bind/pri/local.d20.fan.zone.jnl
+      chown -R bind:bind /etc/bind/ && chmod -R 755 /etc/bind
+      chown -R bind:bind /var/cache/bind && chmod -R 755 /var/cache/bind
+      chown -R bind:bind /var/lib/bind && chmod -R 755 /var/lib/bind
+      chown -R bind:bind /run/named && chmod -R 755 /run/named
+      exec /usr/sbin/named -g -c /etc/bind/named.conf -u bind
       EOT
     ]
     resources = {

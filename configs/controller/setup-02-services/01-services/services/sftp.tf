@@ -6,9 +6,9 @@ module "sftp" {
       repository = "ghcr.io/linuxserver/openssh-server"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
-        sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
-        sed -i '/^PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
-        exec /init
+      sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+      sed -i '/^PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+      exec /init
       EOT
     ]
     env = [
