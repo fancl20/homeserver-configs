@@ -6,6 +6,9 @@ metadata:
     {{- include "service-chart.labels" $ | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
   selector:
     matchLabels:
       {{- include "service-chart.selectorLabels" $ | nindent 6 }}
@@ -23,6 +26,10 @@ spec:
         - name: {{ include "service-chart.name" $ }}
           image: "{{ required "Required container repositiry" .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          {{- with .Values.deployment.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.deployment.command }}
           command:
             {{- toYaml . | nindent 12 }}

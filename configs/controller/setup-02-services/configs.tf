@@ -8,7 +8,11 @@ variable "local_domain_tls_ref" {
   default = "local-tls"
 }
 
-provider "kubernetes" {}
+provider "kubernetes" {
+  experiments {
+    manifest_resource = true
+  }
+}
 
 provider "helm" {}
 

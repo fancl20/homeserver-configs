@@ -26,5 +26,5 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "service-chart.hostname" -}}
-{{- printf "%s.%s" (include "service-chart.name" . ) (trimPrefix "." .Values.domainSuffix) | quote }}
+{{- printf "%s.%s" (default (include "service-chart.name" .) .Values.ingress.hostname) (trimPrefix "." .Values.domainSuffix) | quote }}
 {{- end }}

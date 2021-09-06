@@ -14,6 +14,40 @@ module "vault_restart" {
   trigger = module.vault.restart_trigger
 }
 
+resource "kubernetes_manifest" "multus_macvlan" {
+  manifest = {
+    apiVersion = "k8s.cni.cncf.io/v1"
+    kind       = "NetworkAttachmentDefinition"
+    metadata = {
+      "name"      = "macvlan"
+      "namespace" = "default"
+    }
+    spec = {
+      config = jsonencode({
+        cniVersion = "0.4.0"
+        plugins = [
+          {
+            type         = "macvlan"
+            capabilities = { "ips" = true }
+            master       = "enp2s0"
+            mode         = "bridge"
+            ipam = {
+              type = "static"
+              routes = [
+                { dst = "0.0.0.0/0", gw = "192.168.1.1" }
+              ]
+            }
+          },
+          {
+            type         = "tuning"
+            capabilities = { mac = true }
+          }
+        ]
+      })
+    }
+  }
+}
+
 module "services" {
   source         = "./services"
   domain_suffix  = var.local_domain_suffix

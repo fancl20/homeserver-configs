@@ -5,6 +5,16 @@ module "roon_server" {
     image = {
       repository = "ghcr.io/fancl20/roon-server"
     }
+    podAnnotations = {
+      "k8s.v1.cni.cncf.io/networks" = jsonencode([
+        {
+          name    = "macvlan"
+          ips     = ["192.168.1.244/24"]
+          mac     = "26:1e:94:c2:23:39"
+          gateway = ["192.168.1.1"]
+        }
+      ])
+    }
     env = [
       { name = "TZ", value = "Australia/Sydney" },
     ]
@@ -16,14 +26,5 @@ module "roon_server" {
     volumes = [
       local.mass_storage_volume,
     ]
-  }
-  services = {
-    roon-server = {
-      portsRanges = [
-        { prefix = "roon-tcp", protocol = "TCP", start = 9100, end = 9210 },
-        { prefix = "roon-udp", protocol = "UDP", start = 9000, end = 9010 },
-      ]
-      type = "LoadBalancer"
-    }
   }
 }

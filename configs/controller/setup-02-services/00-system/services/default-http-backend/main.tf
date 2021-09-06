@@ -5,13 +5,13 @@ resource "kubernetes_deployment" "default_http_backend" {
   spec {
     selector {
       match_labels = {
-        app = "default-http-backend"
+        "app.kubernetes.io/name" = "default-http-backend"
       }
     }
     template {
       metadata {
         labels = {
-          app = "default-http-backend"
+          "app.kubernetes.io/name" = "default-http-backend"
         }
       }
       spec {
@@ -40,7 +40,7 @@ resource "kubernetes_service" "default_http_backend" {
   }
   spec {
     selector = {
-      app = "default-http-backend"
+      "app.kubernetes.io/name" = "default-http-backend"
     }
     port {
       port        = 80

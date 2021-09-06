@@ -29,6 +29,7 @@ sudo rpm-ostree kargs --append mitigations=off
 sudo systemctl enable --now chronyd
 
 # Mount disk
+mkdir -p /mnt/data
 sudo cp systemd/var-mnt-data.mount /etc/systemd/system/
 sudo cp systemd/var-mnt-data.automount /etc/systemd/system/
 sudo systemctl enable --now var-mnt-data.automount

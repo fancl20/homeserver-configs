@@ -11,6 +11,13 @@ echo 'helm() { sudo helm --kubeconfig /var/lib/k0s/pki/admin.conf "$@"; }; expor
 # Install terraform
 sudo ./install_terraform.py
 
+# Setup containerd
+sudo mkdir /etc/k0s
+sudo cp ./containerd.toml /etc/k0s/
+
+# Create local data volumes
+mkdir -p /mnt/{vault,airflow}
+
 # Initialize k0s
 sudo k0s install controller --enable-worker -c k0s.yaml
 sudo k0s start
@@ -18,6 +25,7 @@ sudo k0s start
 # Allow connections to kube-apiserver and trust Pod networking
 sudo firewall-cmd --permanent --add-service=kube-apiserver
 sudo firewall-cmd --permanent --zone=trusted --add-source=10.244.0.0/24
+sudo firewall-cmd --permanent --zone=trusted --add-source=192.168.1.0/24
 
 # Wait until k0s available
 until sudo k0s status &> /dev/null; do sleep 1; done

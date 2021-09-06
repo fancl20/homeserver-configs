@@ -1,6 +1,10 @@
 variable "name" {
   type = string
 }
+variable "namespace" {
+  type    = string
+  default = "default"
+}
 
 variable "deployment" {}
 variable "serviceAccount" {
@@ -37,8 +41,9 @@ locals {
 }
 
 resource "helm_release" "service" {
-  name  = var.name
-  chart = "${path.module}/service-chart"
+  name      = var.name
+  namespace = var.namespace
+  chart     = "${path.module}/service-chart"
   values = [
     yamlencode({ deployment = merge(var.deployment, { "podAnnotations" : local.annotations }) }),
     yamlencode({ serviceAccount = var.serviceAccount }),

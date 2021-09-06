@@ -19,6 +19,9 @@ spec:
   {{- with .loadBalancerIP }}
   loadBalancerIP: {{ . }}
   {{- end }}
+  {{- with .externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
   {{- if or .ports .portsRanges }}
   ports:
   {{- end }}
@@ -27,7 +30,7 @@ spec:
   {{- end }}
   {{- range .portsRanges }}
   {{- $portsRange := . -}}
-  {{- range untilStep ( .start | int ) ( .end | int ) 1 }}
+  {{- range untilStep ( .start | int ) ( .end | int64 | add1 | int ) 1 }}
     - name: "{{ $portsRange.prefix }}-{{ . }}"
       protocol: "{{ $portsRange.protocol }}"
       port: {{ . }}
