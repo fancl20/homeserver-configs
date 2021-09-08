@@ -9,6 +9,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 0
+      maxUnavailable: 100%
   selector:
     matchLabels:
       {{- include "service-chart.selectorLabels" $ | nindent 6 }}
