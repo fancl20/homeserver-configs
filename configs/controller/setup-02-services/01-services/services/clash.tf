@@ -53,7 +53,6 @@ module "clash" {
   deployment = {
     image = {
       repository = "ghcr.io/fancl20/clash"
-      pullPolicy = "Always"
     }
     podAnnotations = {
       "k8s.v1.cni.cncf.io/networks" = jsonencode([

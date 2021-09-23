@@ -3,7 +3,7 @@ deployment:
   podAnnotations: {}
   image:
     repository: ""
-    pullPolicy: IfNotPresent
+    pullPolicy: ""
     tag: ""
   securityContext: {}
   command: []

@@ -25,6 +25,16 @@ chmod 600 .ssh/authorized_keys
 sudo rpm-ostree update
 sudo rpm-ostree kargs --append mitigations=off
 
+# Set up auto update
+sudo tee /etc/rpm-ostreed.conf <<EOF
+[Daemon]
+AutomaticUpdatePolicy=stage
+IdleExitTimeout=60
+EOF
+sudo cp systemd/sched-reboot.timer /etc/systemd/system/
+sudo systemctl enable --now rpm-ostreed-automatic.timer
+sudo systemctl enable --now sched-reboot.timer
+
 # Sync time
 sudo systemctl enable --now chronyd
 
