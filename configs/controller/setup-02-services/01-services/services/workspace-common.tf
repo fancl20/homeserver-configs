@@ -31,9 +31,7 @@ module "workspace-common" {
   name   = "workspace-common"
   deployment = {
     image = {
-      repository = "ghcr.io/fancl20/workspace"
-      tag        = "general-common"
-      pullPolicy = "Always"
+      repository = "ghcr.io/fancl20/coding-workspace"
     }
     args = ["/bin/sh", "-e", "-c", <<-EOT
       cp /vault/secrets/authorized_keys /root/.ssh/
