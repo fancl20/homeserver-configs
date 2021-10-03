@@ -73,6 +73,7 @@ resource "kubernetes_cron_job" "certbot" {
                 certbot certonly \
                   --agree-tos \
                   --no-eff-email \
+                  --preferred-chain "ISRG Root X1" \
                   -m fancl20@gmail.com \
                   --cert-name local \
                   --dns-google \
@@ -89,7 +90,6 @@ resource "kubernetes_cron_job" "certbot" {
               name  = "update-secret"
               image = "bitnami/kubectl"
               command = ["/bin/sh", "-e", "-c", <<-EOT
-                set -o pipefail
                 kubectl create secret tls "${var.domain_tls_ref}" \
                   --dry-run=client \
                   --key=/etc/letsencrypt/live/local/privkey.pem \

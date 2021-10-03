@@ -5,7 +5,7 @@
 export VAULT_ADDR="http://vault.local.d20.fan"
 export KUBE_CONFIG_PATH="/var/lib/k0s/pki/admin.conf"
 
-curl -s --fail https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/images/multus-daemonset.yml | k0s kubectl apply -f -
+curl -s --fail https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml | k0s kubectl apply -f -
 
 terraform_apply() {
   terraform -chdir=$1 init

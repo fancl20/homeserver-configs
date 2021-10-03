@@ -7,6 +7,7 @@ resource "helm_release" "ingress_nginx" {
   namespace  = "ingress-nginx"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
+  version    = "4.0.3"
   values = [
     yamlencode({
       controller = {
@@ -19,6 +20,7 @@ resource "helm_release" "ingress_nginx" {
         resources = {
           requests = { cpu = "100m", memory = "256Mi" }
         }
+        watchIngressWithoutClass = "true"
       }
     })
   ]
