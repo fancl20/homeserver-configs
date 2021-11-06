@@ -93,7 +93,7 @@ resource "kubernetes_cron_job" "certbot" {
                 kubectl create secret tls "${var.domain_tls_ref}" \
                   --dry-run=client \
                   --key=/etc/letsencrypt/live/local/privkey.pem \
-                  --cert=/etc/letsencrypt/live/local/cert.pem \
+                  --cert=/etc/letsencrypt/live/local/fullchain.pem \
                   -o yaml | kubectl apply -f -
                 EOT
               ]
