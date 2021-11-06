@@ -15,7 +15,7 @@ resource "kubernetes_cluster_role" "external_dns" {
   rule {
     api_groups = [""]
     resources  = ["nodes"]
-    verbs      = ["list"]
+    verbs      = ["list", "watch"]
   }
 }
 
@@ -48,7 +48,7 @@ module "external_dns" {
   deployment = {
     image = {
       repository = "k8s.gcr.io/external-dns/external-dns"
-      tag        = "v0.8.0"
+      tag        = "v0.10.0"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
       source /vault/secrets/env && exec /bin/external-dns \
