@@ -35,6 +35,12 @@ sudo cp systemd/sched-reboot.timer /etc/systemd/system/
 sudo systemctl enable --now rpm-ostreed-automatic.timer
 sudo systemctl enable --now sched-reboot.timer
 
+# Disable NetworkManager-dispatcher
+# NOTE: This probably is a bug in NetworkManager-dispatcher.  It get started
+# when shutdown.taget get triggered, which prevent shutdown from proceeding.
+# Disable it as a workaround and we are not using it anyway.
+sudo systemctl disable NetworkManager-dispatcher
+
 # Sync time
 sudo systemctl enable --now chronyd
 
