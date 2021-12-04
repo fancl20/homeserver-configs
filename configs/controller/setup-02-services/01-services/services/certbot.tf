@@ -46,7 +46,7 @@ module "certbot_vault_injector" {
   }
 }
 
-resource "kubernetes_cron_job" "certbot" {
+resource "kubernetes_cron_job_v1" "certbot" {
   metadata {
     name = "certbot"
   }

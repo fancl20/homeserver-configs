@@ -30,7 +30,7 @@ resource "kubernetes_secret" "vault_config_updater" {
   }
 }
 
-resource "kubernetes_cron_job" "vault_config_token_renewer" {
+resource "kubernetes_cron_job_v1" "vault_config_token_renewer" {
   metadata {
     name      = "vault-config-token-renewer"
     namespace = "vault"

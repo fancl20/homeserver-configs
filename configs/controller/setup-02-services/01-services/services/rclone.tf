@@ -16,7 +16,7 @@ module "rclone_vault_injector" {
   }
 }
 
-resource "kubernetes_cron_job" "rclone" {
+resource "kubernetes_cron_job_v1" "rclone" {
   metadata {
     name = "rclone"
   }

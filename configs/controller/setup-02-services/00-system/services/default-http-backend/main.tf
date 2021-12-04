@@ -49,7 +49,7 @@ resource "kubernetes_service" "default_http_backend" {
   }
 }
 
-resource "kubernetes_ingress" "default_http_backend" {
+resource "kubernetes_ingress_v1" "default_http_backend" {
   wait_for_load_balancer = true
   metadata {
     name = "default-http-backend"
@@ -58,10 +58,13 @@ resource "kubernetes_ingress" "default_http_backend" {
     rule {
       http {
         path {
-          path = "/"
           backend {
-            service_name = "default-http-backend"
-            service_port = 80
+            service {
+              name = "default-http-backend"
+              port {
+                number = 80
+              }
+            }
           }
         }
       }

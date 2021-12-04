@@ -5,6 +5,7 @@ resource "google_service_account" "vault_gcp" {
 }
 
 resource "google_project_iam_member" "vault_gcp" {
+  project = "home-servers-275405"
   role   = each.key
   member = "serviceAccount:${google_service_account.vault_gcp.email}"
   for_each = toset([
