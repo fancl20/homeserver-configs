@@ -12,18 +12,25 @@ resource "helm_release" "vault" {
     yamlencode({
       server = {
         enabled = true
-        postStart = ["/bin/sh", "-e", "-c", <<-EOT
+        postStart = ["/bin/sh", "-c", <<-EOT
           # Exit normally if token not exist - as it probablly means we haven't
           # finished the initilization.
           if [ ! -f "/etc/secrets/vault-config-updater/token" ]; then exit 0; fi
           until vault status &> /dev/null; do sleep 1; done
 
+          # If no valid token can be used to refresh the vault-config-updater,
+          # login manually and write auth/kubernetes/config. Then apply the
+          # terraform config to re-generate a valid vault-config-updater token.
+          # See also: 01-services/policies/vault/auth_kubernetes.tf
           /bin/vault login token=@/etc/secrets/vault-config-updater/token
           /bin/vault write auth/kubernetes/config \
             issuer="https://kubernetes.default.svc" \
             token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token \
             kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
             kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          
+          # Ignore all errors. We need a vault instance anyway to fix initializing issues.
+          exit 0
           EOT
         ]
         volumeMounts = [{

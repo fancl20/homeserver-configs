@@ -11,12 +11,8 @@ echo 'helm() { sudo helm --kubeconfig /var/lib/k0s/pki/admin.conf "$@"; }; expor
 # Install terraform
 sudo ./install_terraform.py
 
-# Setup containerd
-sudo mkdir /etc/k0s
-sudo cp ./containerd.toml /etc/k0s/
-
 # Create local data volumes
-mkdir -p /mnt/{vault,airflow}
+mkdir -p /mnt/vault
 
 # Initialize k0s
 sudo k0s install controller --enable-worker -c k0s.yaml
