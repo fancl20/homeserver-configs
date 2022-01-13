@@ -48,7 +48,7 @@ module "external_dns" {
   deployment = {
     image = {
       repository = "k8s.gcr.io/external-dns/external-dns"
-      tag        = "v0.10.0"
+      tag        = "v0.10.2"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
       source /vault/secrets/env && exec /bin/external-dns \
