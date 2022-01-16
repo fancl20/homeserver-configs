@@ -3,7 +3,7 @@ module "beets" {
   name   = "beets"
   deployment = {
     image = {
-      repository = "ghcr.io/linuxserver/beets"
+      repository = "lscr.io/linuxserver/beets"
     }
     env = [
       { name = "TZ", value = "Australia/Sydney" },

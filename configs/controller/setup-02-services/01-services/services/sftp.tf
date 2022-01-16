@@ -3,7 +3,7 @@ module "sftp" {
   name   = "sftp"
   deployment = {
     image = {
-      repository = "ghcr.io/linuxserver/openssh-server"
+      repository = "lscr.io/linuxserver/openssh-server"
     }
     command = ["/bin/sh", "-e", "-c", <<-EOT
       sed -i '/^#PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config

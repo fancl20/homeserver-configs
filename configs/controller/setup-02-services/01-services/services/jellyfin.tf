@@ -3,7 +3,7 @@ module "jellyfin" {
   name   = "jellyfin"
   deployment = {
     image = {
-      repository = "ghcr.io/linuxserver/jellyfin"
+      repository = "lscr.io/linuxserver/jellyfin"
     }
     env = [
       { name = "TZ", value = "Australia/Sydney" },

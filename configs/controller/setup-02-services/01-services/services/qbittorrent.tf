@@ -3,7 +3,7 @@ module "qbittorrent" {
   name   = "qbittorrent"
   deployment = {
     image = {
-      repository = "ghcr.io/linuxserver/qbittorrent"
+      repository = "lscr.io/linuxserver/qbittorrent"
     }
     env = [
       { name = "TZ", value = "Australia/Sydney" },
