@@ -9,6 +9,8 @@ resource "kubernetes_config_map" "clash" {
     external-controller: 0.0.0.0:9090
     external-ui: clash-dashboard-gh-pages
 
+    interface-name: net1
+
     dns:
       enable: true
       listen: 0.0.0.0:53
