@@ -4,15 +4,11 @@ resource "kubernetes_config_map" "clash" {
   }
   data = {
     "config.yaml" = <<-EOT
+    tproxy-port: 7893
+
     external-controller: 0.0.0.0:9090
     external-ui: clash-dashboard-gh-pages
-    
-    interface-name: net1
-    
-    tun:
-      enable: true
-      stack: gvisor
-    
+
     dns:
       enable: true
       listen: 0.0.0.0:53
@@ -54,6 +50,34 @@ module "clash" {
     image = {
       repository = "ghcr.io/fancl20/clash"
     }
+    command = ["/bin/sh", "-e", "-c", <<-EOT
+      cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml
+
+      NETFILTER_MARK=1
+      IPROUTE2_TABLE_ID=100
+
+      ip route replace local default dev lo table "$IPROUTE2_TABLE_ID"
+      ip rule add fwmark "$NETFILTER_MARK" lookup "$IPROUTE2_TABLE_ID"
+
+      nft -f - << EOF
+      define LOCAL_SUBNET = { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 }
+      table clash
+      flush table clash
+      table clash {
+          chain local {
+              type filter hook prerouting priority 0;
+              ip protocol != { tcp, udp } accept
+              ip daddr \$LOCAL_SUBNET accept
+
+              ip protocol tcp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
+              ip protocol udp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
+          }
+      }
+      EOF
+
+      exec /opt/bin/clash
+      EOT
+    ]
     podAnnotations = {
       "k8s.v1.cni.cncf.io/networks" = jsonencode([
         {

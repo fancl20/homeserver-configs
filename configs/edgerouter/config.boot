@@ -83,22 +83,20 @@ service {
         shared-network-name LAN1 {
             authoritative enable
             subnet 192.168.1.0/24 {
+                /* 192.168.1.1-192.168.1.4     used by router, controller, dns */
+                /* 192.168.1.5-192.168.1.37    used by metallb */
+                /* 192.168.1.245-192.168.1.250 used by clash and proxied devices */
                 default-router 192.168.1.1
                 dns-server 192.168.1.1
                 lease 86400
                 start 192.168.1.38 {
                     stop 192.168.1.243
                 }
-            }
-        }
-        shared-network-name LAN2 {
-            authoritative enable
-            subnet 192.168.2.0/24 {
-                default-router 192.168.2.1
-                dns-server 192.168.2.1
-                lease 86400
-                start 192.168.2.38 {
-                    stop 192.168.2.243
+                static-mapping PlayStation5 {
+                    mac-address 00:e4:21:e8:79:0c
+                    ip-address 192.168.1.250
+                    static-mapping-parameters "option routers 192.168.1.245;"
+                    static-mapping-parameters "option domain-name-servers 192.168.1.245;"
                 }
             }
         }
@@ -109,9 +107,8 @@ service {
         forwarding {
             cache-size 150
             listen-on eth1
-            listen-on eth2
-            name-server 8.8.8.8
-            name-server 8.8.4.4
+            name-server 1.1.1.1
+            name-server 1.0.0.1
             options server=/local.d20.fan/192.168.1.3
         }
     }
