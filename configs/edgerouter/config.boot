@@ -85,23 +85,17 @@ service {
             subnet 192.168.1.0/24 {
                 /* 192.168.1.1-192.168.1.4     used by router, controller, dns */
                 /* 192.168.1.5-192.168.1.37    used by metallb */
-                /* 192.168.1.245-192.168.1.250 used by clash and proxied devices */
+                /* 192.168.1.245               used by clash */
                 default-router 192.168.1.1
                 dns-server 192.168.1.1
                 lease 86400
                 start 192.168.1.38 {
                     stop 192.168.1.243
                 }
-                static-mapping PlayStation5 {
-                    mac-address 00:e4:21:e8:79:0c
-                    ip-address 192.168.1.250
-                    static-mapping-parameters "option routers 192.168.1.245;"
-                    static-mapping-parameters "option domain-name-servers 192.168.1.245;"
-                }
             }
         }
         static-arp disable
-        use-dnsmasq disable
+        use-dnsmasq enable
     }
     dns {
         forwarding {
@@ -110,6 +104,11 @@ service {
             name-server 1.1.1.1
             name-server 1.0.0.1
             options server=/local.d20.fan/192.168.1.3
+
+            /* PlayStation5*/
+            options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
+            options dhcp-option=tag:Proxy,option:router,192.168.1.245
+            options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245
         }
     }
     gui {
