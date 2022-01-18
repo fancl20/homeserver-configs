@@ -1,6 +1,12 @@
+resource "kubernetes_service_account" "rclone" {
+  metadata {
+    name = "rclone"
+  }
+}
+
 module "rclone_vault_injector" {
   source = "../modules/vault-injector"
-  role   = "homeserver"
+  role   = "data_backup"
   secrets = {
     config = {
       path     = "homeserver/data/backblaze"
@@ -62,7 +68,8 @@ resource "kubernetes_cron_job_v1" "rclone" {
                 claim_name = kubernetes_persistent_volume_claim.vault_storage_backup.metadata[0].name
               }
             }
-            restart_policy = "OnFailure"
+            restart_policy       = "OnFailure"
+            service_account_name = kubernetes_service_account.rclone.metadata[0].name
           }
         }
       }

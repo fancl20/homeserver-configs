@@ -2,8 +2,8 @@ resource "vault_auth_backend" "kubernetes" {
   type = "kubernetes"
 }
 
-resource "vault_policy" "auth_kubernetes_config_writer" {
-  name   = "auth_kubernetes_config_writer"
+resource "vault_policy" "vault_auth_kubernetes_config_writer" {
+  name   = "vault_auth_kubernetes_config_writer"
   policy = <<-EOT
     path "auth/${vault_auth_backend.kubernetes.path}/config" {
       capabilities = ["update"]
@@ -13,7 +13,7 @@ resource "vault_policy" "auth_kubernetes_config_writer" {
 
 resource "vault_token" "config_updater" {
   policies = [
-    vault_policy.auth_kubernetes_config_writer.name,
+    vault_policy.vault_auth_kubernetes_config_writer.name,
   ]
   renewable = true
   period    = "24h"

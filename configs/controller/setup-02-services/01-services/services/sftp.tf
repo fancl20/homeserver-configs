@@ -38,7 +38,7 @@ module "sftp" {
     }
   }
   vault_injector = {
-    role = "homeserver"
+    role = "data_ssh"
     secrets = {
       sftp_public_key = {
         path     = "homeserver/data/sftp"

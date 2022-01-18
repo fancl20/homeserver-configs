@@ -102,7 +102,7 @@ module "bind9" {
     }
   }
   vault_injector = {
-    role = "homeserver"
+    role = "external_dns"
     secrets = {
       bind9_externaldns_key = {
         path     = "homeserver/data/bind9"

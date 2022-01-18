@@ -64,7 +64,7 @@ module "workspace-common" {
     }
   }
   vault_injector = {
-    role = "homeserver"
+    role = "workspace_ssh"
     secrets = {
       authorized_keys = {
         path     = "homeserver/data/ssh"

@@ -114,7 +114,7 @@ module "clash" {
     enabled = true
   }
   vault_injector = {
-    role = "homeserver"
+    role = "proxy"
     secrets = {
       proxies = {
         path     = "homeserver/data/clash"

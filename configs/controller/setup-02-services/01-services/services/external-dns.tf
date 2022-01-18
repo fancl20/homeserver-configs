@@ -72,7 +72,7 @@ module "external_dns" {
     }
   }
   vault_injector = {
-    role = "homeserver"
+    role = "external_dns"
     secrets = {
       env = {
         path     = "homeserver/data/bind9"
