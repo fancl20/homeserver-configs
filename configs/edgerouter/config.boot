@@ -105,8 +105,10 @@ service {
             name-server 1.0.0.1
             options server=/local.d20.fan/192.168.1.3
 
-            /* PlayStation5*/
+            /* PlayStation5 */
             options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
+            /* Asrock B360M Pro4 */
+            options dhcp-host=70:85:c2:cb:22:7b,set:LAN1,set:Proxy
             options dhcp-option=tag:Proxy,option:router,192.168.1.245
             options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245
         }

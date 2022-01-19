@@ -26,8 +26,14 @@ resource "kubernetes_config_map" "clash" {
           ip = metadata["dst_ip"] or ctx.resolve_ip(metadata["host"])
           if ip == "":
             return "DIRECT"
-          if metadata["network"] == "udp" and ctx.geoip(ip) == "CN":
+
+          # Genshin Impact
+          if (metadata["network"] == "udp" and
+              metadata["dst_port"] in ("22101", "22102") and
+              ctx.geoip(ip) == "CN"):
             return "JP1-JP2"
+
+          # Default
           return "DIRECT"
     EOT
   }
