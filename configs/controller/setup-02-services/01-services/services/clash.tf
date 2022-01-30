@@ -32,6 +32,12 @@ resource "kubernetes_config_map" "clash" {
               metadata["dst_port"] in ("22101", "22102") and
               ctx.geoip(ip) == "CN"):
             return "JP1-JP2"
+          if metadata["host"] in (
+              "log-upload.mihoyo.com",
+              "sdk-static.mihoyo.com",
+              "hk4e-sdk.mihoyo.com",
+          ):
+            return "JP1-JP2"
 
           # Default
           return "DIRECT"
