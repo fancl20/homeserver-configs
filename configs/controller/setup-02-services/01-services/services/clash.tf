@@ -14,8 +14,10 @@ resource "kubernetes_config_map" "clash" {
     dns:
       enable: true
       listen: 0.0.0.0:53
-      enhanced-mode: fake-ip 
+      enhanced-mode: fake-ip
       fake-ip-range: 198.18.0.1/16
+      fake-ip-filter:
+        - "+.playstation.net"
       nameserver:
         - udp://192.168.1.1:53
     
@@ -82,6 +84,13 @@ module "clash" {
               type filter hook prerouting priority 0;
               ip protocol != { tcp, udp } accept
               ip daddr \$LOCAL_SUBNET accept
+
+              # ...This is a workaround to avoid PSN connection issue. PS5
+              # sometimes fails to connect PSN even with DIRECT rule. We have
+              # to bypass the *.playstation.net IP range to avoid clash
+              # touching the connection. PSN is using Akamai when this rule is
+              # written down.
+              ip daddr { 23.206.243.0/24 } accept
 
               ip protocol tcp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
               ip protocol udp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
