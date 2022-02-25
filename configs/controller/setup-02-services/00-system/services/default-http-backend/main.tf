@@ -40,7 +40,7 @@ resource "kubernetes_service" "default_http_backend" {
   }
   spec {
     selector = {
-      "app.kubernetes.io/name" = "default-http-backend"
+      "app.kubernetes.io/name" = kubernetes_deployment.default_http_backend.metadata[0].name
     }
     port {
       port        = 80
@@ -60,7 +60,7 @@ resource "kubernetes_ingress_v1" "default_http_backend" {
         path {
           backend {
             service {
-              name = "default-http-backend"
+              name = kubernetes_service.default_http_backend.metadata[0].name
               port {
                 number = 80
               }

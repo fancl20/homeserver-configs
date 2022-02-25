@@ -2,9 +2,20 @@ module "roon_server" {
   source = "../modules/general-service"
   name   = "roon-server"
   deployment = {
-    image = {
-      repository = "ghcr.io/fancl20/roon-server"
-    }
+    containers = [{
+      image = "ghcr.io/fancl20/roon-server:latest"
+      env = [
+        { name = "TZ", value = "Australia/Sydney" },
+      ]
+      volumeMounts = [
+        { name = "data", mountPath = "/data", subPath = "roon-server/data" },
+        { name = "data", mountPath = "/backup", subPath = "roon-server/backup" },
+        { name = "data", mountPath = "/music", subPath = "shared/music" },
+      ]
+    }]
+    volumes = [
+      local.mass_storage_volume,
+    ]
     podAnnotations = {
       "k8s.v1.cni.cncf.io/networks" = jsonencode([
         {
@@ -15,16 +26,5 @@ module "roon_server" {
         }
       ])
     }
-    env = [
-      { name = "TZ", value = "Australia/Sydney" },
-    ]
-    volumeMounts = [
-      { name = "data", mountPath = "/data", subPath = "roon-server/data" },
-      { name = "data", mountPath = "/backup", subPath = "roon-server/backup" },
-      { name = "data", mountPath = "/music", subPath = "shared/music" },
-    ]
-    volumes = [
-      local.mass_storage_volume,
-    ]
   }
 }

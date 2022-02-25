@@ -13,11 +13,9 @@ resource "kubernetes_config_map" "clash" {
 
     dns:
       enable: true
-      listen: 0.0.0.0:53
+      listen: 127.0.0.1:1153
       enhanced-mode: fake-ip
-      fake-ip-range: 198.18.0.1/16
-      fake-ip-filter:
-        - "+.playstation.net"
+      fake-ip-range: 198.18.0.0/16
       nameserver:
         - udp://192.168.1.1:53
     
@@ -40,9 +38,26 @@ resource "kubernetes_config_map" "clash" {
               "hk4e-sdk.mihoyo.com",
           ):
             return "JP1-JP2"
+  
+          # Alipay
+          if metadata["host"].endswith(".alipay.com"):
+            return "JP1-JP2"
 
           # Default
           return "DIRECT"
+    EOT
+
+    "Corefile" = <<-EOT
+    . {
+      forward . 192.168.1.1
+      log
+      errors
+    }
+    #mihoyo.com {
+    #  forward . 127.0.0.1:1153
+    #  log
+    #  errors
+    #}
     EOT
   }
 }
@@ -54,52 +69,75 @@ locals {
       name = kubernetes_config_map.clash.metadata[0].name
       items = [
         { key = "config.yaml", path = "config.yaml" },
+        { key = "Corefile", path = "Corefile" },
       ]
     }
   }
 }
 
-module "clash" {
+module "clash_dns" {
   source = "../modules/general-service"
   name   = "clash"
   deployment = {
-    image = {
-      repository = "ghcr.io/fancl20/clash"
-    }
-    command = ["/bin/sh", "-e", "-c", <<-EOT
-      cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml
+    containers = [
+      {
+        name    = "clash-dns"
+        image   = "coredns/coredns"
+        command = ["/coredns", "-conf", "/config/Corefile"]
+        env = [
+          { name = "TZ", value = "Australia/Sydney" },
+        ]
+        volumeMounts = [
+          { name = "config", mountPath = "/config" },
+        ]
+      },
+      {
+        name  = "clash"
+        image = "ghcr.io/fancl20/clash"
+        command = ["/bin/sh", "-e", "-c", <<-EOT
+          cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml
 
-      NETFILTER_MARK=1
-      IPROUTE2_TABLE_ID=100
+          NETFILTER_MARK=1
+          IPROUTE2_TABLE_ID=100
 
-      ip route replace local default dev lo table "$IPROUTE2_TABLE_ID"
-      ip rule add fwmark "$NETFILTER_MARK" lookup "$IPROUTE2_TABLE_ID"
+          ip route replace local default dev lo table "$IPROUTE2_TABLE_ID"
+          ip rule add fwmark "$NETFILTER_MARK" lookup "$IPROUTE2_TABLE_ID"
 
-      nft -f - << EOF
-      define LOCAL_SUBNET = { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 }
-      table clash
-      flush table clash
-      table clash {
-          chain local {
-              type filter hook prerouting priority 0;
+          nft -f - << EOF
+          table clash
+          flush table clash
+          table clash {
+            chain input {
+              type filter hook prerouting priority mangle; policy accept;
               ip protocol != { tcp, udp } accept
-              ip daddr \$LOCAL_SUBNET accept
+              ip daddr { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 } accept
 
-              # ...This is a workaround to avoid PSN connection issue. PS5
-              # sometimes fails to connect PSN even with DIRECT rule. We have
-              # to bypass the *.playstation.net IP range to avoid clash
-              # touching the connection. PSN is using Akamai when this rule is
-              # written down.
-              ip daddr { 23.0.0.0/12, 23.32.0.0/11, 23.206.243.0/24 } accept
-
+              ip daddr { 192.18.0.0/16 } goto proxy
+              udp dport { 22101, 22102 } goto proxy
+            }
+            chain proxy {
               ip protocol tcp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
               ip protocol udp mark set $NETFILTER_MARK tproxy to 127.0.0.1:7893
+            }
           }
-      }
-      EOF
+          EOF
 
-      exec /opt/bin/clash
-      EOT
+          exec /opt/bin/clash
+          EOT
+        ]
+        securityContext = {
+          capabilities = { add = ["NET_ADMIN"] }
+        }
+        env = [
+          { name = "TZ", value = "Australia/Sydney" },
+        ]
+        volumeMounts = [
+          { name = "config", mountPath = "/etc/config" },
+        ]
+      },
+    ]
+    volumes = [
+      local.clash_config,
     ]
     podAnnotations = {
       "k8s.v1.cni.cncf.io/networks" = jsonencode([
@@ -111,26 +149,12 @@ module "clash" {
         }
       ])
     }
-    securityContext = {
-      capabilities = { add = ["NET_ADMIN"] }
-    }
-    env = [
-      { name = "TZ", value = "Australia/Sydney" },
-    ]
-    volumeMounts = [
-      { name = "config", mountPath = "/etc/config" },
-    ]
-    volumes = [
-      local.clash_config,
-    ]
   }
-  services = {
-    clash = {
-      ports = [
-        { name = "webui", protocol = "TCP", port = 80, targetPort = 9090 },
-      ]
-    }
-  }
+  services = [{
+    ports = [
+      { name = "webui", protocol = "TCP", port = 80, targetPort = 9090 },
+    ]
+  }]
   ingress = {
     enabled = true
   }

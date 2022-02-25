@@ -6,8 +6,10 @@ variable "namespace" {
   default = "default"
 }
 
-variable "deployment" {}
-variable "serviceAccount" {
+variable "deployment" {
+  default = {}
+}
+variable "service_account" {
   default = {}
 }
 variable "services" {
@@ -16,9 +18,14 @@ variable "services" {
 variable "ingress" {
   default = {}
 }
+
+variable "hostname" {
+  default = ""
+}
 variable "domain_suffix" {
   default = ""
 }
+
 variable "vault_injector" {
   type = object({
     role    = string
@@ -34,25 +41,8 @@ module "vault_injector" {
 }
 
 locals {
-  annotations = merge(
-    module.vault_injector.annotations,
-    lookup(var.deployment, "podAnnotations", {})
-  )
-}
-
-resource "helm_release" "service" {
-  name      = var.name
-  namespace = var.namespace
-  chart     = "${path.module}/service-chart"
-  values = [
-    yamlencode({ deployment = merge(var.deployment, { "podAnnotations" : local.annotations }) }),
-    yamlencode({ serviceAccount = var.serviceAccount }),
-    yamlencode({ services = [for k, v in var.services : merge({ "name" : k }, v)] }),
-    yamlencode({ ingress = var.ingress }),
-    yamlencode({ domainSuffix = var.domain_suffix }),
-  ]
-
-  lifecycle {
-    ignore_changes = [chart]
+  hostname = format("%s.%s", coalesce(var.hostname, var.name), trimprefix(var.domain_suffix, "."))
+  selector_labels = {
+    "app.kubernetes.io/name" = var.name
   }
 }
