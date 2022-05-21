@@ -32,6 +32,8 @@ resource "kubernetes_config_map" "clash" {
               metadata["dst_port"] in ("22101", "22102") and
               ctx.geoip(ip) == "CN"):
             return "JP1-JP2"
+          if ctx.geoip(ip) == "CN":
+            return "JP2"
           if metadata["host"] in (
               "log-upload.mihoyo.com",
               "sdk-static.mihoyo.com",
@@ -112,7 +114,7 @@ module "clash_dns" {
               ip protocol != { tcp, udp } accept
               ip daddr { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 } accept
 
-              ip daddr { 192.18.0.0/16 } goto proxy
+              ip daddr { 192.18.0.0/16, 203.107.0.0/16, 101.226.0.0/16 } goto proxy
               udp dport { 22101, 22102 } goto proxy
             }
             chain proxy {
