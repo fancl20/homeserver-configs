@@ -16,6 +16,7 @@ curl -s --fail https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni
 terraform_apply() {
   terraform -chdir=$1 init --upgrade
   terraform -chdir=$1 apply
+  terraform -chdir=$1 refresh
 }
 
 terraform_apply 00-system

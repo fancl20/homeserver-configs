@@ -31,7 +31,7 @@ resource "kubernetes_config_map" "clash" {
           if (metadata["network"] == "udp" and
               metadata["dst_port"] in ("22101", "22102") and
               ctx.geoip(ip) == "CN"):
-            return "JP1-JP2"
+            return "SG1-SG2-CN2"
           if ctx.geoip(ip) == "CN":
             return "JP2"
           if metadata["host"] in (
@@ -39,11 +39,11 @@ resource "kubernetes_config_map" "clash" {
               "sdk-static.mihoyo.com",
               "hk4e-sdk.mihoyo.com",
           ):
-            return "JP1-JP2"
+            return "JP2"
   
           # Alipay
           if metadata["host"].endswith(".alipay.com"):
-            return "JP1-JP2"
+            return "JP2"
 
           # Default
           return "DIRECT"
@@ -115,6 +115,7 @@ module "clash_dns" {
               ip daddr { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 } accept
 
               ip daddr { 192.18.0.0/16, 203.107.0.0/16, 101.226.0.0/16 } goto proxy
+              ip daddr { 43.142.125.244 } goto proxy # Project Zomboid
               udp dport { 22101, 22102 } goto proxy
             }
             chain proxy {
