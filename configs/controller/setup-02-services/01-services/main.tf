@@ -9,6 +9,10 @@ module "vault" {
   source = "./policies/vault"
 }
 
+module "metallb" {
+  source = "./policies/metallb"
+}
+
 module "vault_restart" {
   source  = "./modules/vault-restart"
   trigger = module.vault.restart_trigger
