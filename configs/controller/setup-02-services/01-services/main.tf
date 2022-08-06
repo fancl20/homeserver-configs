@@ -37,9 +37,6 @@ resource "kubernetes_manifest" "multus_macvlan" {
             mode         = "bridge"
             ipam = {
               type = "static"
-              routes = [
-                { dst = "0.0.0.0/0", gw = "192.168.1.1" }
-              ]
             }
           },
           {

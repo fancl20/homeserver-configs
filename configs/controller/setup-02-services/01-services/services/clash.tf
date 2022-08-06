@@ -107,6 +107,8 @@ module "clash_dns" {
           NETFILTER_MARK=1
           IPROUTE2_TABLE_ID=100
 
+          ip route add 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
+          ip route replace default via 192.168.1.1 dev net1
           ip route replace local default dev lo table "$IPROUTE2_TABLE_ID"
           ip rule add fwmark "$NETFILTER_MARK" lookup "$IPROUTE2_TABLE_ID"
 
