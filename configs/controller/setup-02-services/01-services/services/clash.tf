@@ -121,7 +121,7 @@ module "clash_dns" {
               ip protocol != { tcp, udp } accept
               ip daddr { 127.0.0.0/8, 224.0.0.0/4, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 169.254.0.0/16, 240.0.0.0/4 } accept
 
-              ip daddr { 192.18.0.0/16, 203.107.0.0/16, 101.226.0.0/16 } goto proxy
+              ip daddr { 192.18.0.0/16, 203.107.0.0/16, 101.226.0.0/16, 138.113.112.0/24, 163.171.210.0/24 } goto proxy
               ip daddr { 43.142.125.244 } goto proxy # Project Zomboid
               udp dport { 22101, 22102 } goto proxy
             }

@@ -15,7 +15,9 @@ resource "helm_release" "ingress_nginx" {
           default-ssl-certificate = "default/${var.domain_tls_ref}"
         }
         config = {
-          enable-real-ip = "true"
+          enable-real-ip    = "true"
+          proxy-buffer-size = "16k"
+          proxy-body-size   = "512M"
         }
         resources = {
           requests = { cpu = "100m", memory = "256Mi" }
