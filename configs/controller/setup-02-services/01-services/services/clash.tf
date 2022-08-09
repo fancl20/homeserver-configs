@@ -88,8 +88,6 @@ module "clash_dns" {
         command = ["/bin/sh", "-e", "-c", <<-EOT
           cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml
 
-          echo -e "nameserver 8.8.8.8\n$(cat /etc/resolv.conf)" > /etc/resolv.conf
-
           mkdir -p /dev/net
           mknod /dev/net/tun c 10 200
           chmod 600 /dev/net/tun
