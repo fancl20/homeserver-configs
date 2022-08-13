@@ -11,11 +11,11 @@ resource "kubernetes_config_map" "clash" {
 
     ipv6: false
 
-    routing-mark: 1
     tun:
       enable: true
       stack: system
 
+    routing-mark: 1
     ebpf:
       redirect-to-tun:
         - net1
@@ -77,7 +77,7 @@ locals {
   }
 }
 
-module "clash_dns" {
+module "clash" {
   source = "../modules/general-service"
   name   = "clash"
   deployment = {
