@@ -132,6 +132,12 @@ service {
     }
     unms {
     }
+    upnp2 {
+        listen-on eth1
+        nat-pmp enable
+        secure-mode enable
+        wan eth0
+    }
 }
 system {
     analytics-handler {
@@ -177,4 +183,4 @@ system {
 
 /* Warning: Do not remove the following line. */
 /* === vyatta-config-version: "config-management@1:conntrack@1:cron@1:dhcp-relay@1:dhcp-server@4:firewall@5:ipsec@5:nat@3:qos@1:quagga@2:suspend@1:system@5:ubnt-l2tp@1:ubnt-pptp@1:ubnt-udapi-server@1:ubnt-unms@2:ubnt-util@1:vrrp@1:vyatta-netflow@1:webgui@1:webproxy@1:zone-policy@1" === */
-/* Release version: v2.0.9-hotfix.2.5402463.210511.1317 */
+/* Release version: v2.0.9-hotfix.4.5521907.220630.0658 */

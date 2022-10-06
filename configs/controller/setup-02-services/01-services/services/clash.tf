@@ -48,14 +48,6 @@ resource "kubernetes_config_map" "clash" {
           ):
             return "JP2"
 
-          # Alipay
-          if metadata["host"].endswith(".alipay.com"):
-            return "JP2"
-
-          # Project Zomboid
-          if ip == "43.142.125.244":
-            return "SG1-SG2-CN2"
-
           if ctx.geoip(ip) == "CN":
             return "JP2"
 
