@@ -132,12 +132,6 @@ service {
     }
     unms {
     }
-    upnp2 {
-        listen-on eth1
-        nat-pmp enable
-        secure-mode enable
-        wan eth0
-    }
 }
 system {
     analytics-handler {

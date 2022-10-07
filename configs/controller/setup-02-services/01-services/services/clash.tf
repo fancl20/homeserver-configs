@@ -25,6 +25,8 @@ resource "kubernetes_config_map" "clash" {
       listen: 0.0.0.0:53
       enhanced-mode: fake-ip
       fake-ip-range: 198.18.0.0/16
+      fake-ip-filter:
+        - '+.playstation.*'
       nameserver:
         - udp://192.168.1.1:53
     
