@@ -15,7 +15,8 @@ sudo ./install_terraform.py
 mkdir -p /mnt/vault
 
 # Initialize k0s
-sudo k0s install controller --enable-worker -c k0s.yaml
+mkdir -p /etc/k0s && cp k0s.yaml /etc/k0s/k0s.yaml
+sudo k0s install controller --enable-worker -c /etc/k0s/k0s.yaml
 sudo k0s start
 
 # Allow connections to kube-apiserver and trust Pod networking

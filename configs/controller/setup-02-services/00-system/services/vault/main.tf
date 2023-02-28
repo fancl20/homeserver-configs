@@ -7,7 +7,7 @@ resource "helm_release" "vault" {
   namespace  = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
-  version    = "0.20.1"
+  version    = "0.22.1"
   values = [
     yamlencode({
       server = {

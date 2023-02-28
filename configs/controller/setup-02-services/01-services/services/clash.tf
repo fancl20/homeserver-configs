@@ -27,6 +27,7 @@ resource "kubernetes_config_map" "clash" {
       fake-ip-range: 198.18.0.0/16
       fake-ip-filter:
         - '+.playstation.*'
+        - '+.local.d20.fan'
       nameserver:
         - udp://192.168.1.1:53
     
@@ -51,6 +52,11 @@ resource "kubernetes_config_map" "clash" {
             return "JP2"
 
           if ctx.geoip(ip) == "CN":
+            return "JP2"
+
+          if metadata["host"] in (
+              "boluo.chat",
+          ):
             return "JP2"
 
           # Default
