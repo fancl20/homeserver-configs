@@ -26,6 +26,7 @@ resource "kubernetes_config_map" "clash" {
       enhanced-mode: fake-ip
       fake-ip-range: 198.18.0.0/16
       fake-ip-filter:
+        - 'time.windows.com'
         - '+.playstation.*'
         - '+.local.d20.fan'
       nameserver:

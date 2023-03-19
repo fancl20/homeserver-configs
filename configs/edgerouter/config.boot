@@ -107,8 +107,8 @@ service {
 
             /* PlayStation5 */
             options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
-            /* Asrock B360M Pro4 */
-            options dhcp-host=70:85:c2:cb:22:7b,set:LAN1,set:Proxy
+            /* MSI B650I Edge */
+            options dhcp-host=04:7c:16:4f:8b:e1,set:LAN1,set:Proxy
 
             options dhcp-option=tag:Proxy,option:router,192.168.1.245
             options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245
