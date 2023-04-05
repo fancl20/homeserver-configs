@@ -194,7 +194,7 @@ spec:
           mountPath: /tmp/multus-conf
       initContainers:
         - name: install-multus-binary
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:stable
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.3 # {"$imagepolicy": "flux-system:multus-cni"}
           command:
             - "cp"
             - "/usr/src/multus-cni/bin/multus"
