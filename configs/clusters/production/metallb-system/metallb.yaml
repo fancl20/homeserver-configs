@@ -1,4 +1,9 @@
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: metallb-system
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
