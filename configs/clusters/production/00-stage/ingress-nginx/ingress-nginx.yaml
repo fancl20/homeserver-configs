@@ -26,6 +26,10 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
+  valuesFrom:
+  - kind: ConfigMap
+    name: ingress-nginx-helm-chart-value-overrides
+    valuesKey: values.yaml
 ---
 apiVersion: v1
 kind: ConfigMap

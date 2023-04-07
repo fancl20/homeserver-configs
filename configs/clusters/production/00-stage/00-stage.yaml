@@ -18,3 +18,7 @@ spec:
       kind: Deployment
       name: metallb-controller
       namespace: metallb-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
