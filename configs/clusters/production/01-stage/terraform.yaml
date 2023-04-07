@@ -10,12 +10,7 @@ spec:
   interval: 1m0s
   path: ./configs/clusters/production/01-stage
   backendConfig:
-    customConfiguration: |
-      backend "gcs" {
-        bucket      = "0c9cfd1d-dc77-43e6-9131-d5535a91d844"
-        prefix      = "terraform/state/clusters/production/01-stage"
-        credentials = var.google_credentials
-      }
+    disable: true
   approvePlan: auto
   disableDriftDetection: false # avoid constantly accessing gcp
   sourceRef:
