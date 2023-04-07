@@ -30,3 +30,9 @@ spec:
       kind: Deployment
       name: tf-controller
       namespace: flux-system
+    # This is not part of the 00-stage but is required by 01-stage.
+    # Manually apply the terraform in 01-stage for bootstrapping.
+    - apiVersion: v1
+      kind: Secret
+      name: tf-controller-key
+      namespace: flux-system
