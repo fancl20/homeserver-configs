@@ -1,0 +1,21 @@
+# tf-controller-key is managed by 01-stage and required by 01-stage.
+# For bootstrapping, this terraform need to be manually applied.
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: 01-stage
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./configs/clusters/production/01-stage
+  approvePlan: auto
+  disableDriftDetection: false # avoid constantly accessing gcp
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  healthChecks:
+    - apiVersion: v1
+      kind: Secret
+      name: tf-controller-key
+      namespace: flux-system
