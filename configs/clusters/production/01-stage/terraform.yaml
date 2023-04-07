@@ -16,6 +16,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: configs
-  varsFrom:
-    - kind: Secret
-      name: tf-controller-key
+  runnerPodTemplate:
+    spec:
+      envFrom:
+        - secretRef:
+            name: tf-controller-key

@@ -5,14 +5,9 @@ terraform {
   }
 }
 
-variable "google_credentials" {
-  type = string
-}
-
 provider "google" {
-  project     = "home-servers-275405"
-  region      = "australia-southeast1"
-  credentials = var.google_credentials
+  project = "home-servers-275405"
+  region  = "australia-southeast1"
 }
 
 provider "kubernetes" {}
