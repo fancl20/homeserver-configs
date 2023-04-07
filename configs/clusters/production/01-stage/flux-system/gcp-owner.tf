@@ -24,6 +24,6 @@ resource "kubernetes_secret" "tf_controller_key" {
     namespace = "flux-system"
   }
   data = {
-    "key.json" = base64decode(google_service_account_key.tf_controller.private_key)
+    "google_credentials" = base64decode(google_service_account_key.tf_controller.private_key)
   }
 }
