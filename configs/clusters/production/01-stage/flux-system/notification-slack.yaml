@@ -27,3 +27,5 @@ spec:
       name: '*'
     - kind: HelmRelease
       name: '*'
+    - kind: Terraform
+      name: '*'
