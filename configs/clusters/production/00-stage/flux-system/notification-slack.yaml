@@ -1,3 +1,4 @@
+# TODO: use token and vault secrets operator instead.
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta2
 kind: Provider
@@ -9,3 +10,22 @@ spec:
   channel: notifications
   secretRef:
     name: slack-webhook
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: slack
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: info
+  eventSources:
+    - kind: GitRepository
+      name: '*'
+    - kind: Kustomization
+      name: '*'
+    - kind: HelmRelease
+      name: '*'
+    - kind: Terraform
+      name: '*'
