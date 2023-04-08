@@ -1,0 +1,74 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  interval: 1h0s
+  url: https://helm.releases.hashicorp.com
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  interval: 1m0s
+  chart:
+    spec:
+      chart: vault
+      sourceRef:
+        kind: HelmRepository
+        name: vault
+  values:
+    server:
+      enable: true
+      volumeMounts:
+        - name: vault-kms
+          mountPath: /etc/secrets/vault-kms
+          readOnly: true
+      volumes:
+        - name: vault-kms
+          secret:
+            secretName: vault-kms-key
+      standalone:
+        enable: true
+        config: |-
+          ui = true
+          listener "tcp" {
+            tls_disable = 1
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+          }
+          storage "file" {
+            path = "/vault/data"
+          }
+          seal "gcpckms" {
+            credentials = "/etc/secrets/vault-kms/key.json"
+            project     = "home-servers-275405"
+            region      = "australia-southeast1"
+            key_ring    = "vault-unseal"
+            crypto_key  = "vault-unseal"
+          }
+      service:
+        enabled: true
+      ingress:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        hosts:
+          - host: vault.local.d20.fan
+        tls:
+          - hosts:
+            - vault.local.d20.fan
+      dataStorage:
+        enabled: true
+        size: 10Gi
+        storageClass: vault-storage
+        accessMode: ReadWriteOnce
+    injector:
+      enabled: true
+    ui:
+      enabled: true
+

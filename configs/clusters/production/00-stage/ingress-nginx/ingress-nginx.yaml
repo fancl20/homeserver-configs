@@ -26,19 +26,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-  valuesFrom:
-  - kind: ConfigMap
-    name: ingress-nginx-helm-chart-value-overrides
-    valuesKey: values.yaml
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: ingress-nginx-helm-chart-value-overrides
-  namespace: ingress-nginx
-data:
-  values.yaml: |-
+  values:
     controller:
       extraArgs:
         default-ssl-certificate: default/local-tls
