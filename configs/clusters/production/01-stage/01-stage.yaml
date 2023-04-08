@@ -21,3 +21,23 @@ spec:
       envFrom:
         - secretRef:
             name: tf-controller-key
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: 02-stage
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: 01-stage
+  interval: 1m0s
+  path: ./configs/clusters/production/02-stage
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  healthChecks:
+    - apiVersion: v1
+      kind: Secret
+      name: vault-kms-key
+      namespace: vault
