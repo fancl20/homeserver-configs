@@ -41,3 +41,8 @@ spec:
       kind: Secret
       name: vault-kms-key
       namespace: vault
+    - apiVersion: v1
+      kind: ConfigMap
+      name: vault-helm-chart-value-overrides
+      namespace: vault
+
