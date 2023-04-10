@@ -1,5 +1,7 @@
-# tf-controller-key is managed by 01-stage and required by 01-stage.
 # For bootstrapping, the terraform need to be manually applied.
+# TODO: since terraforms in 01-stage and 02-stage have to be manually applied
+# anyway, we can remove tf-controller-key and use short-lived gcp account from
+# vault after 03-stage.
 ---
 apiVersion: infra.contrib.fluxcd.io/v1alpha1
 kind: Terraform
@@ -12,7 +14,6 @@ spec:
   backendConfig:
     disable: true
   approvePlan: auto
-  disableDriftDetection: false # avoid constantly accessing gcp
   sourceRef:
     kind: GitRepository
     name: configs
@@ -45,4 +46,3 @@ spec:
       kind: ConfigMap
       name: vault-helm-chart-value-overrides
       namespace: vault
-

@@ -1,0 +1,60 @@
+# For bootstrapping, the terraform need to be manually applied.
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: 03-stage
+  namespace: flux-system
+spec:
+  interval: 1h0s
+  path: ./configs/clusters/production/03-stage
+  backendConfig:
+    disable: true
+  approvePlan: auto
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  runnerPodTemplate:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-init-first: "true"
+        vault.hashicorp.com/role: admin
+        vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/gcp_admin/key
+        vault.hashicorp.com/agent-inject-template-gcp: |
+          {{ with secret "gcp/roleset/gcp_admin/key" -}}
+          {{ .Data.private_key_data }}
+          {{- end }}
+    spec:
+      env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /tmp/key.json
+      initContainers:
+        name: setup-gcp
+        image: busybox:1.36.0 # {"$imagepolicy": "flux-system:busybox"}
+        command: ["/bin/sh", "-e", "-c", "base64 -d /vault/secrets/gcp > /tmp/key.json"]
+#---
+#apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+#kind: Kustomization
+#metadata:
+#  name: 04-stage
+#  namespace: flux-system
+#spec:
+#  dependsOn:
+#    - name: 03-stage
+#  interval: 1m0s
+#  path: ./configs/clusters/production/04-stage
+#  prune: true
+#  sourceRef:
+#    kind: GitRepository
+#    name: configs
+#  healthChecks:
+#    - apiVersion: v1
+#      kind: Secret
+#      name: vault-kms-key
+#      namespace: vault
+#    - apiVersion: v1
+#      kind: ConfigMap
+#      name: vault-helm-chart-value-overrides
+#      namespace: vault

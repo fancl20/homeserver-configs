@@ -5,9 +5,9 @@ resource "google_service_account" "vault_kms" {
 }
 
 resource "google_project_iam_member" "vault_kms" {
-  project = "home-servers-275405"
-  role   = each.key
-  member = "serviceAccount:${google_service_account.vault_kms.email}"
+  project = google_service_account.vault_kms.project
+  role    = each.key
+  member  = "serviceAccount:${google_service_account.vault_kms.email}"
   for_each = toset([
     "roles/cloudkms.cryptoKeyEncrypterDecrypter",
   ])
