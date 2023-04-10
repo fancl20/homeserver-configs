@@ -31,9 +31,9 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /tmp/key.json
       initContainers:
-        name: setup-gcp
-        image: busybox:1.36.0 # {"$imagepolicy": "flux-system:busybox"}
-        command: ["/bin/sh", "-e", "-c", "base64 -d /vault/secrets/gcp > /tmp/key.json"]
+        - name: setup-gcp
+          image: busybox:1.36.0 # {"$imagepolicy": "flux-system:busybox"}
+          command: ["/bin/sh", "-e", "-c", "base64 -d /vault/secrets/gcp > /tmp/key.json"]
 #---
 #apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 #kind: Kustomization
