@@ -40,6 +40,11 @@ resource "vault_policy" "admin" {
     path "sys/mounts" {
       capabilities = ["read"]
     }
+
+    # Enable gcp admin role
+    path "gcp/roleset/admin/key" {
+      capabilities = ["read"]
+    }
   EOT
 }
 
