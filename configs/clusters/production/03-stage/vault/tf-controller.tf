@@ -44,7 +44,7 @@ resource "vault_policy" "admin" {
 }
 
 # Read secret/gcp/roleset/admin/key
-resource "vault_gcp_secret_roleset" "gcp_admin" {
+resource "vault_gcp_secret_roleset" "admin" {
   backend     = vault_gcp_secret_backend.gcp.path
   roleset     = "admin"
   secret_type = "service_account_key"

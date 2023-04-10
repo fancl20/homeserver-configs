@@ -23,7 +23,7 @@ spec:
         vault.hashicorp.com/role: admin
         vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/gcp_admin/key
         vault.hashicorp.com/agent-inject-template-gcp: |
-          {{ with secret "gcp/roleset/gcp_admin/key" -}}
+          {{ with secret "gcp/roleset/admin/key" -}}
           {{ .Data.private_key_data }}
           {{- end }}
     spec:
