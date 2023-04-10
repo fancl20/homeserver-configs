@@ -21,7 +21,7 @@ spec:
         vault.hashicorp.com/agent-pre-populate-only: "true"
         vault.hashicorp.com/agent-init-first: "true"
         vault.hashicorp.com/role: admin
-        vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/gcp_admin/key
+        vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/admin/key
         vault.hashicorp.com/agent-inject-template-gcp: |
           {{ with secret "gcp/roleset/admin/key" -}}
           {{ .Data.private_key_data }}
