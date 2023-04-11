@@ -21,6 +21,7 @@ spec:
         vault.hashicorp.com/agent-pre-populate-only: "true"
         vault.hashicorp.com/agent-init-first: "true"
         vault.hashicorp.com/role: admin
+        vault.hashicorp.com/agent-inject-token: "true"
         vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/admin/key
         vault.hashicorp.com/agent-inject-template-gcp: |
           {{ with secret "gcp/roleset/admin/key" -}}
@@ -29,11 +30,13 @@ spec:
     spec:
       env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /tmp/key.json
+          value: /home/runner/key.json
+        - name: VAULT_ADDR
+          value:  http://vault.vault.svc:8200/
       initContainers:
         - name: setup-gcp
           image: ghcr.io/weaveworks/tf-runner:v0.14.0  # {"$imagepolicy": "flux-system:tf-runner"}
-          command: ["/bin/sh", "-e", "-c", "base64 -d /vault/secrets/gcp > /tmp/key.json"]
+          command: ["/bin/sh", "-ec", "base64 -d /vault/secrets/gcp > /home/runner/key.json && cp /vault/secrets/token /home/runner/.vault-token"]
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
