@@ -24,13 +24,6 @@ resource "google_project_service" "services" {
   ])
 }
 
-module "flux_system" {
-  source = "./flux-system"
-  depends_on = [
-    google_project_service.services,
-  ]
-}
-
 module "vault" {
   source = "./vault"
   depends_on = [

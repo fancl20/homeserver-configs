@@ -1,27 +1,3 @@
-# For bootstrapping, the terraform need to be manually applied.
-# TODO: since terraforms in 01-stage and 02-stage have to be manually applied
-# anyway, we can remove tf-controller-key and use short-lived gcp account from
-# vault after 03-stage.
----
-apiVersion: infra.contrib.fluxcd.io/v1alpha1
-kind: Terraform
-metadata:
-  name: 01-stage
-  namespace: flux-system
-spec:
-  interval: 1h0s
-  path: ./configs/clusters/production/01-stage
-  backendConfig:
-    disable: true
-  approvePlan: auto
-  sourceRef:
-    kind: GitRepository
-    name: configs
-  runnerPodTemplate:
-    spec:
-      envFrom:
-        - secretRef:
-            name: tf-controller-key
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
