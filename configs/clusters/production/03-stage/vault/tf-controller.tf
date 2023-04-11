@@ -41,9 +41,9 @@ resource "vault_policy" "admin" {
       capabilities = ["read"]
     }
 
-    # Enable gcp admin role
-    path "gcp/roleset/admin/key" {
-      capabilities = ["read"]
+    # Manage gcp secrets.
+    path "gcp/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
     }
   EOT
 }

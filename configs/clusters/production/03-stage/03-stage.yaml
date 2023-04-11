@@ -21,6 +21,7 @@ spec:
         vault.hashicorp.com/agent-pre-populate-only: "true"
         vault.hashicorp.com/agent-init-first: "true"
         vault.hashicorp.com/role: admin
+        vault.hashicorp.com/agent-run-as-same-user: "true"
         vault.hashicorp.com/agent-inject-token: "true"
         vault.hashicorp.com/agent-inject-secret-gcp: gcp/roleset/admin/key
         vault.hashicorp.com/agent-inject-template-gcp: |
@@ -34,7 +35,7 @@ spec:
         - name: VAULT_ADDR
           value:  http://vault.vault.svc:8200/
       initContainers:
-        - name: setup-gcp
+        - name: setup-creds
           image: ghcr.io/weaveworks/tf-runner:v0.14.0  # {"$imagepolicy": "flux-system:tf-runner"}
           command: ["/bin/sh", "-ec", "base64 -d /vault/secrets/gcp > /home/runner/key.json && cp /vault/secrets/token /home/runner/.vault-token"]
           securityContext:
@@ -44,6 +45,9 @@ spec:
               drop: ["ALL"]
             seccompProfile:
               type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /home/runner
+              name: home
 #---
 #apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 #kind: Kustomization
