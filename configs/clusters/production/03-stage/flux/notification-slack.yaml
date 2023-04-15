@@ -56,5 +56,5 @@ spec:
       name: '*'
     - kind: Terraform
       name: '*'
-  exclusionList:
-    - "^Dependencies.*" # https://github.com/fluxcd/kustomize-controller/issues/492
+#  exclusionList:
+#    - "^Dependencies.*" # https://github.com/fluxcd/kustomize-controller/issues/492
