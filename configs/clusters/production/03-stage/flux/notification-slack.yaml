@@ -34,8 +34,9 @@ metadata:
 spec:
   type: slack
   channel: notifications
+  address: https://slack.com/api/chat.postMessage
   secretRef:
-    name: slack-webhook
+    name: slack-token
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta2
 kind: Alert
