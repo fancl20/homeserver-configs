@@ -1,4 +1,30 @@
-# The token won't be available until vault synced the secrete.
+---
+apiVersion: secrets.hashicorp.com/v1alpha1
+kind: VaultAuth
+metadata:
+  name: notification-controller
+  namespace: flux-system
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: notifier
+    serviceAccount: notification-controller
+---
+apiVersion: secrets.hashicorp.com/v1alpha1
+kind: VaultStaticSecret
+metadata:
+  name: slack-token
+  namespace: flux-system
+spec:
+  vaultAuthRef: notification-controller
+  mount: kvv2
+  type: kv-v2
+  name: secret
+  refreshAfter: 60s
+  destination:
+    create: true
+    name: slack-token
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta2
 kind: Provider

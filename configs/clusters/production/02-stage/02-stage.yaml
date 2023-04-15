@@ -23,3 +23,7 @@ spec:
       kind: StatefulSet
       name: vault
       namespace: vault
+    - apiVersion: CustomResourceDefinition
+      name: vaultauths.secrets.hashicorp.com
+    - apiVersion: CustomResourceDefinition
+      name: vaultstaticsecrets.secrets.hashicorp.com
