@@ -1,8 +1,3 @@
-# For bootstrapping vault:
-# - Initialization
-# - Enable auth/kubernetes
-# - Set tf-controller admin role
-# We can't healthcheck these but they should be persisted once setup.
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
