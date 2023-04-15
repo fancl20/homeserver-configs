@@ -29,7 +29,7 @@ resource "vault_policy" "admin" {
 
     # Enable and manage the key/value secrets engine at `secret/` path
     ## List, create, update, and delete key/value secrets
-    path "secret/*" {
+    path "homeserver/*" {
       capabilities = ["create", "read", "update", "delete", "list"]
     }
     ## Manage secrets engines

@@ -20,7 +20,7 @@ spec:
   vaultAuthRef: notification-controller
   mount: kvv2
   type: kv-v2
-  name: secret
+  name: slack-token
   refreshAfter: 60s
   destination:
     create: true
