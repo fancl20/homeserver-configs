@@ -18,9 +18,9 @@ metadata:
   namespace: flux-system
 spec:
   vaultAuthRef: notification-controller
-  mount: kvv2
+  mount: homeserver
   type: kv-v2
-  name: slack-token
+  name: slack
   refreshAfter: 60s
   destination:
     create: true
