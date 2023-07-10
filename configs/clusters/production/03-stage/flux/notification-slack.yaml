@@ -20,7 +20,7 @@ spec:
   vaultAuthRef: notification-controller
   mount: homeserver
   type: kv-v2
-  name: slack
+  path: slack
   refreshAfter: 60s
   destination:
     create: true
