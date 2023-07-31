@@ -2,11 +2,11 @@
 apiVersion: infra.contrib.fluxcd.io/v1alpha1
 kind: Terraform
 metadata:
-  name: "placeholder"
+  name: ${layer_name}
   namespace: flux-system
 spec:
   interval: 1h0s
-  path: "placeholder"
+  path:  ./configs/clusters/production/${layer_name}
   backendConfig:
     disable: true
   approvePlan: auto
