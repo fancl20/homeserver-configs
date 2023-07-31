@@ -2,30 +2,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 03-stage
+  name: 02-stage
   namespace: flux-system
 spec:
   dependsOn:
-  - name: 02-stage
+  - name: 01-stage
   interval: 1m0s
-  path: ./configs/clusters/production/03-stage
+  path: ./configs/clusters/production/02-stage
   prune: true
   sourceRef:
     kind: GitRepository
     name: configs
-  components:
-    - ../../components/terraform
-  postBuild:
-    substitute:
-      layer_name: 03-stage
   healthChecks:
-  - apiVersion: apps/v1
-    kind: StatefulSet
-    name: vault
+  - apiVersion: v1
+    kind: Secret
+    name: vault-kms-key
     namespace: vault
-  - apiVersion: apiextensions.k8s.io/v1
-    kind: CustomResourceDefinition
-    name: vaultauths.secrets.hashicorp.com
-  - apiVersion: apiextensions.k8s.io/v1
-    kind: CustomResourceDefinition
-    name: vaultstaticsecrets.secrets.hashicorp.com
+  - apiVersion: v1
+    kind: ConfigMap
+    name: vault-helm-chart-value-overrides
+    namespace: vault
