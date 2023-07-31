@@ -1,6 +1,6 @@
 # For bootstrapping, the terraform need to be manually applied.
-bases:
-- ../../../base/terraform
+resources:
+- ../../../components/terraform
 patches:
 - target:
     kind: Terraform

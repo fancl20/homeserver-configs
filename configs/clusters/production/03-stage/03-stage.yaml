@@ -14,4 +14,4 @@ spec:
     kind: GitRepository
     name: configs
   components:
-  - ../99-apps/images.yaml
+  - ../../components/images
