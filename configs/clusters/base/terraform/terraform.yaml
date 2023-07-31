@@ -29,21 +29,21 @@ spec:
           {{- end }}
     spec:
       env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /home/runner/key.json
-        - name: VAULT_ADDR
-          value:  http://vault.vault.svc:8200/
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /home/runner/key.json
+      - name: VAULT_ADDR
+        value:  http://vault.vault.svc:8200/
       initContainers:
-        - name: setup-creds
-          image: ghcr.io/weaveworks/tf-runner:v0.14.0  # {"$imagepolicy": "flux-system:tf-runner"}
-          command: ["/bin/sh", "-ec", "base64 -d /vault/secrets/gcp > /home/runner/key.json && cp /vault/secrets/token /home/runner/.vault-token"]
-          securityContext:
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
-          volumeMounts:
-            - mountPath: /home/runner
-              name: home
+      - name: setup-creds
+        image: ghcr.io/weaveworks/tf-runner:v0.14.0  # {"$imagepolicy": "flux-system:tf-runner"}
+        command: ["/bin/sh", "-ec", "base64 -d /vault/secrets/gcp > /home/runner/key.json && cp /vault/secrets/token /home/runner/.vault-token"]
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /home/runner
+          name: home

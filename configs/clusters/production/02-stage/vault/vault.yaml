@@ -22,6 +22,6 @@ spec:
         kind: HelmRepository
         name: vault
   valuesFrom:
-    - kind: ConfigMap
-      name: "vault-helm-chart-value-overrides"
-      valuesKey: values.yaml
+  - kind: ConfigMap
+    name: "vault-helm-chart-value-overrides"
+    valuesKey: values.yaml
