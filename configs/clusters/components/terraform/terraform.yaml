@@ -35,7 +35,7 @@ spec:
         value:  http://vault.vault.svc:8200/
       initContainers:
       - name: setup-creds
-        image: ghcr.io/weaveworks/tf-runner:v0.14.0  # {"$imagepolicy": "flux-system:tf-runner"}
+        image: ghcr.io/weaveworks/tf-runner
         command: ["/bin/sh", "-ec", "base64 -d /vault/secrets/gcp > /home/runner/key.json && cp /vault/secrets/token /home/runner/.vault-token"]
         securityContext:
           runAsNonRoot: true
