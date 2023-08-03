@@ -7,13 +7,4 @@ images:
 
 resources:
 - multus-daemonset.yaml # From https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/deployments/multus-daemonset.yml
-
----
-apiVersion: image.toolkit.fluxcd.io/v1beta2
-kind: ImageRepository
-metadata:
-  name: multus-cni
-  namespace: kube-system
-spec:
-  image: ghcr.io/k8snetworkplumbingwg/multus-cni
-  interval: 1h
+- repositories.yaml
