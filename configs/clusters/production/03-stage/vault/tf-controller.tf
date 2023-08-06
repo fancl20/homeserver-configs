@@ -68,7 +68,7 @@ resource "vault_gcp_secret_roleset" "admin" {
 resource "vault_kubernetes_auth_backend_role" "admin" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "admin"
-  bound_service_account_names      = ["tf-runner"]
+  bound_service_account_names      = ["tf-runner", "source-controller"]
   bound_service_account_namespaces = ["flux-system"]
   token_policies                   = ["default", vault_policy.admin.name]
 }
