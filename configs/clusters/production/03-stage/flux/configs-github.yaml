@@ -8,7 +8,7 @@ spec:
   method: kubernetes
   mount: kubernetes
   kubernetes:
-    role: admin
+    role: source-controller
     serviceAccount: source-controller
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
