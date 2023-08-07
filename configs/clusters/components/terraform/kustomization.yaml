@@ -5,4 +5,3 @@ images:
   newTag: v0.15.1 # {"$imagepolicy": "flux-system:tf-runner:tag"}
 resources:
 - terraform.yaml
-- repositories.yaml

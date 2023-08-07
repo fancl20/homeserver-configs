@@ -1,3 +1,4 @@
+# Used in components/terrafrom
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
