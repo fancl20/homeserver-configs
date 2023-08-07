@@ -1,0 +1,21 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: tf-runner
+  namespace: flux-system
+spec:
+  image: ghcr.io/weaveworks/tf-runner
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: tf-runner
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: tf-runner
+  policy:
+    semver:
+      range: x
