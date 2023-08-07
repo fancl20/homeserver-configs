@@ -1,0 +1,51 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: source-controller
+  namespace: flux-system
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: source-controller
+    serviceAccount: source-controller
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: configs
+  namespace: flux-system
+spec:
+  vaultAuthRef: source-controller
+  mount: homeserver
+  type: kv-v2
+  path: github_pat
+  refreshAfter: 60s
+  destination:
+    name: configs
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: configs
+  namespace: flux-system
+spec:
+  interval: 30m
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.github.com
+        name: fluxcdbot
+      messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}}'
+    push:
+      branch: main
+  update:
+    path: ./configs/clusters
+    strategy: Setters
