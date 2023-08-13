@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "beets",
+      "namespace": "default"
+   },
+   "spec": {
+      "image": "lscr.io/linuxserver/beets",
+      "interval": "1h"
+   }
+}

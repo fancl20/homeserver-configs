@@ -1,0 +1,21 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImagePolicy",
+   "metadata": {
+      "name": "beets",
+      "namespace": "default"
+   },
+   "spec": {
+      "filterTags": {
+         "pattern": ".*-ls.*"
+      },
+      "imageRepositoryRef": {
+         "name": "beets"
+      },
+      "policy": {
+         "semver": {
+            "range": "x-ls"
+         }
+      }
+   }
+}
