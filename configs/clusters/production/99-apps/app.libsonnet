@@ -153,7 +153,7 @@
     },
   },
 
-  Image(name, namespace='default'):: {
+  Image(name, namespace='flux-system'):: {
     Repository(repository, spec={}):: self {
       [name + '_repository.yaml']: {
         apiVersion: 'image.toolkit.fluxcd.io/v1beta2',

@@ -3,7 +3,7 @@ apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
   name: multus-cni
-  namespace: kube-system
+  namespace: flux-system
 spec:
   image: ghcr.io/k8snetworkplumbingwg/multus-cni
   interval: 1h
@@ -12,7 +12,7 @@ apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
   name: multus-cni
-  namespace: kube-system
+  namespace: flux-system
 spec:
   imageRepositoryRef:
     name: multus-cni

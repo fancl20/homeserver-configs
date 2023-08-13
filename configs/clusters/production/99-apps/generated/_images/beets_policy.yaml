@@ -3,7 +3,7 @@
    "kind": "ImagePolicy",
    "metadata": {
       "name": "beets",
-      "namespace": "default"
+      "namespace": "flux-system"
    },
    "spec": {
       "filterTags": {

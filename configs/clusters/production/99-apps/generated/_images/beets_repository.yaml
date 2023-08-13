@@ -3,7 +3,7 @@
    "kind": "ImageRepository",
    "metadata": {
       "name": "beets",
-      "namespace": "default"
+      "namespace": "flux-system"
    },
    "spec": {
       "image": "lscr.io/linuxserver/beets",
