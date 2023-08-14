@@ -35,12 +35,6 @@
          "spec": {
             "containers": [
                {
-                  "command": [
-                     "/bin/sh",
-                     "-e",
-                     "-c",
-                     "rm -f /etc/bind/pri/*.jnl\nexec /usr/sbin/named -g -c /etc/bind/named.conf -u bind\n"
-                  ],
                   "image": "internetsystemsconsortium/bind9",
                   "name": "bind9",
                   "resources": {

@@ -4,10 +4,6 @@ local images = import '_images.jsonnet';
 app.Base('bind9')
 .PodContainers([{
   image: images.bind9,
-  command: ['/bin/sh', '-e', '-c', |||
-    rm -f /etc/bind/pri/*.jnl
-    exec /usr/sbin/named -g -c /etc/bind/named.conf -u bind
-  |||],
   resources: {
     requests: { memory: '128Mi', cpu: '100m' },
     limits: { memory: '128Mi', cpu: '200m' },
