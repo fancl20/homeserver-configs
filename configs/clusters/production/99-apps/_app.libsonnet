@@ -9,13 +9,18 @@
   },
 
   DefaultPolicy:: {
-    LinuxServer:: {
+    LinuxServer(range='x'):: {
       filterTags: { pattern: '.*-ls.*' },
       policy: {
-        semver: { range: 'x-ls' },
+        semver: { range: range + '-ls' },
+      },
+    },
+    Semver(range='x'):: {
+      policy: {
+        semver: { range: range },
       },
     },
   },
 
-  DNSStaticIP:: '192.168.1.3'
+  DNSStaticIP:: '192.168.1.3',
 }

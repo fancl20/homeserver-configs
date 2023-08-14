@@ -6,15 +6,12 @@
       "namespace": "flux-system"
    },
    "spec": {
-      "filterTags": {
-         "pattern": ".*-ls.*"
-      },
       "imageRepositoryRef": {
          "name": "bind9"
       },
       "policy": {
          "semver": {
-            "range": "x-ls"
+            "range": "x"
          }
       }
    }
