@@ -14,7 +14,7 @@ app.Base('bind9')
   },
   volumeMounts: [
     { name: 'config', mountPath: '/etc/bind/named.conf', subPath: 'named.conf' },
-    { name: 'config', mountPath: '/etc/bind/local.d20.fan.zone', subPath: 'local.d20.fan.zone' },
+    { name: 'config', mountPath: '/var/lib/bind/local.d20.fan.zone', subPath: 'local.d20.fan.zone' },
   ],
 }])
 .PodVolumes([
@@ -63,7 +63,7 @@ app.Base('bind9')
   include "/vault/secrets/bind9_externaldns_key";
   zone "local.d20.fan" {
     type master;
-    file "/etc/bind/local.d20.fan.zone";
+    file "/var/lib/bind/local.d20.fan.zone";
     allow-transfer { key "externaldns-key"; };
     update-policy { grant externaldns-key zonesub ANY; };
   };

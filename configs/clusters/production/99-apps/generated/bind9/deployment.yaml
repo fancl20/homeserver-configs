@@ -60,7 +60,7 @@
                         "subPath": "named.conf"
                      },
                      {
-                        "mountPath": "/etc/bind/local.d20.fan.zone",
+                        "mountPath": "/var/lib/bind/local.d20.fan.zone",
                         "name": "config",
                         "subPath": "local.d20.fan.zone"
                      }
