@@ -1,8 +1,9 @@
-local app = import 'app.libsonnet';
+local app = import '_app.libsonnet';
+local images = import '_images.jsonnet';
 
 app.Base('beets')
 .PodContainers([{
-  image: 'lscr.io/linuxserver/beets',
+  image: images.beets,
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },
     { name: 'DOCKER_MODS', value: 'ghcr.io/fancl20/beets-shntool:latest' },

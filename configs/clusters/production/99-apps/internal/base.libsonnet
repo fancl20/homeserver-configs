@@ -1,3 +1,5 @@
+local kustomize = import 'kustomize.libsonnet';
+
 {
   Base(name, namespace='default'):: {
     local match = { 'app.kubernetes.io/name': name },
@@ -144,51 +146,7 @@
         },
       },
     },
-  },
 
-  Volumes:: {
-    mass_storage:: {
-      name: 'data',
-      persistentVolumeClaim: { claimName: 'mass-storage' },
-    },
-  },
-
-  Image(name, namespace='flux-system'):: {
-    Repository(repository, spec={}):: self {
-      [name + '_repository.yaml']: {
-        apiVersion: 'image.toolkit.fluxcd.io/v1beta2',
-        kind: 'ImageRepository',
-        metadata: {
-          name: name,
-          namespace: namespace,
-        },
-        spec: spec {
-          image: repository,
-          interval: '1h',
-        },
-      },
-    },
-    Policy(spec):: self {
-      [name + '_policy.yaml']: {
-        apiVersion: 'image.toolkit.fluxcd.io/v1beta2',
-        kind: 'ImagePolicy',
-        metadata: {
-          name: name,
-          namespace: namespace,
-        },
-        spec: spec {
-          imageRepositoryRef: { name: name },
-        },
-      },
-    },
-  },
-
-  DefaultPolicy:: {
-    LinuxServer:: {
-      filterTags: { pattern: '.*-ls.*' },
-      policy: {
-        semver: { range: 'x-ls' },
-      },
-    },
+    Kustomize():: kustomize.Kustomize(name, namespace, self),
   },
 }

@@ -1,0 +1,21 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImagePolicy",
+   "metadata": {
+      "name": "bind9",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "filterTags": {
+         "pattern": ".*-ls.*"
+      },
+      "imageRepositoryRef": {
+         "name": "bind9"
+      },
+      "policy": {
+         "semver": {
+            "range": "x-ls"
+         }
+      }
+   }
+}
