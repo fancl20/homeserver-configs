@@ -4,4 +4,4 @@ images:
 - name: lscr.io/linuxserver/beets # {"$imagepolicy": "flux-system:beets:name"}
   newTag: '1.6.0-ls182' # {"$imagepolicy": "flux-system:beets:tag"}
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
-  newTag: '9.16' # {"$imagepolicy": "flux-system:bind9:tag"}
+  newTag: '9.19' # {"$imagepolicy": "flux-system:bind9:tag"}
