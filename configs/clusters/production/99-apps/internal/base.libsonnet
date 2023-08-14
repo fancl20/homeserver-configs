@@ -86,6 +86,12 @@ local kustomize = import 'kustomize.libsonnet';
                 'vault.hashicorp.com/agent-pre-populate-only': 'true',
                 'vault.hashicorp.com/agent-init-first': 'true',
                 'vault.hashicorp.com/role': role,
+              } + {
+                ['vault.hashicorp.com/agent-inject-secret-' + i.key]: i.value.path
+                for i in std.objectKeysValues(secrets)
+              } + {
+                ['vault.hashicorp.com/agent-inject-template-' + i.key]: i.value.template
+                for i in std.objectKeysValues(secrets)
               },
             },
           },

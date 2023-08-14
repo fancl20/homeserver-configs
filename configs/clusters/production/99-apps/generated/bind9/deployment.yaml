@@ -20,7 +20,14 @@
       },
       "template": {
          "metadata": {
-            "annotations": { },
+            "annotations": {
+               "vault.hashicorp.com/agent-init-first": "true",
+               "vault.hashicorp.com/agent-inject": "true",
+               "vault.hashicorp.com/agent-inject-secret-bind9_externaldns_key": "homeserver/data/bind9",
+               "vault.hashicorp.com/agent-inject-template-bind9_externaldns_key": "{{ with secret \"homeserver/data/bind9\" -}}\nkey externaldns-key {\n  algorithm {{ .Data.data.externaldns_key_algorithm }};\n  secret \"{{ .Data.data.externaldns_key_secret }}\";\n};\n{{- end }}\n",
+               "vault.hashicorp.com/agent-pre-populate-only": "true",
+               "vault.hashicorp.com/role": "external_dns"
+            },
             "labels": {
                "app.kubernetes.io/name": "bind9"
             }

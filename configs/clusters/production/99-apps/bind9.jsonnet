@@ -24,6 +24,19 @@ app.Base('bind9')
   app.Volumes.mass_storage,
   { name: 'config', configMap: { name: 'bind9' } },
 ])
+.VaultInjector('external_dns', {
+  bind9_externaldns_key: {
+    path: 'homeserver/data/bind9',
+    template: |||
+      {{ with secret "homeserver/data/bind9" -}}
+      key externaldns-key {
+        algorithm {{ .Data.data.externaldns_key_algorithm }};
+        secret "{{ .Data.data.externaldns_key_secret }}";
+      };
+      {{- end }}
+    |||,
+  },
+})
 .Service({
   ports: [
     { name: 'dns-udp', protocol: 'UDP', port: 53, targetPort: 5353 },
