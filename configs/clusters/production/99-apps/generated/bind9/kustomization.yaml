@@ -6,7 +6,8 @@
             "local.d20.fan.zone",
             "named.conf"
          ],
-         "name": "bind9"
+         "name": "bind9",
+         "namespace": "default"
       }
    ],
    "kind": "Kustomization",

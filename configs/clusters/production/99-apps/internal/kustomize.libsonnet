@@ -14,6 +14,7 @@
       Kustomization+: {
         configMapGenerator: [{
           name: name,
+          namespace: namespace,
           files: [file] + if std.objectHas(k, 'configMapGenerator') then k.configMapGenerator[0].files else [],
         }],
       },
