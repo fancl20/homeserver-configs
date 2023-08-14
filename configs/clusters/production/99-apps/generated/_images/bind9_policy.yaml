@@ -10,8 +10,8 @@
          "name": "bind9"
       },
       "policy": {
-         "semver": {
-            "range": "x"
+         "numerical": {
+            "order": "asc"
          }
       }
    }

@@ -14,7 +14,7 @@
       },
       "policy": {
          "semver": {
-            "range": "x-ls"
+            "range": "*-ls"
          }
       }
    }

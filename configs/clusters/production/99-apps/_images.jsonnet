@@ -6,4 +6,4 @@ app.Image('beets')
 +
 app.Image('bind9')
 .Repository('internetsystemsconsortium/bind9')
-.Policy(app.DefaultPolicy.Semver())
+.Policy({ policy: { numerical: { order: 'asc' } } })

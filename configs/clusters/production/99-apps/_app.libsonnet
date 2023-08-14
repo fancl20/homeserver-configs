@@ -9,13 +9,13 @@
   },
 
   DefaultPolicy:: {
-    LinuxServer(range='x'):: {
+    LinuxServer(range='*'):: {
       filterTags: { pattern: '.*-ls.*' },
       policy: {
         semver: { range: range + '-ls' },
       },
     },
-    Semver(range='x'):: {
+    Semver(range='*'):: {
       policy: {
         semver: { range: range },
       },
