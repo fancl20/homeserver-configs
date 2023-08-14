@@ -60,36 +60,15 @@
                         "subPath": "named.conf"
                      },
                      {
-                        "mountPath": "/etc/bind/pri/local.d20.fan.zone",
+                        "mountPath": "/etc/bind/local.d20.fan.zone",
                         "name": "config",
                         "subPath": "local.d20.fan.zone"
-                     },
-                     {
-                        "mountPath": "/etc/bind",
-                        "name": "data",
-                        "subPath": "bind9/etc/bind"
-                     },
-                     {
-                        "mountPath": "/var/cache/bind",
-                        "name": "data",
-                        "subPath": "bind9/var/cache/bind"
-                     },
-                     {
-                        "mountPath": "/var/lib/bind",
-                        "name": "data",
-                        "subPath": "bind9/var/lib/bind"
                      }
                   ]
                }
             ],
             "serviceAccountName": "bind9",
             "volumes": [
-               {
-                  "name": "data",
-                  "persistentVolumeClaim": {
-                     "claimName": "mass-storage"
-                  }
-               },
                {
                   "configMap": {
                      "name": "bind9"
