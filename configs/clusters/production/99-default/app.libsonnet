@@ -9,8 +9,9 @@
   },
 
   DefaultPolicy:: {
+    // Workaround for some irregular tags
     LinuxServer(range='*'):: {
-      filterTags: { pattern: '.*-ls.*' },
+      filterTags: { pattern: '.*-ls\\d{3,}' },
       policy: {
         semver: { range: range + '-ls' },
       },
