@@ -2,13 +2,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 99-apps
+  name: 99-default
   namespace: flux-system
 spec:
   dependsOn:
   - name: 03-stage
   interval: 1m0s
-  path: ./configs/clusters/production/99-apps
+  path: ./configs/clusters/production/99-default
   prune: true
   sourceRef:
     kind: GitRepository

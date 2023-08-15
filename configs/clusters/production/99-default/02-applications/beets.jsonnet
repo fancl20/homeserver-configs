@@ -1,5 +1,5 @@
-local app = import '_app.libsonnet';
-local images = import '_images.jsonnet';
+local app = import '../app.libsonnet';
+local images = import '../images.jsonnet';
 
 app.Base('beets')
 .PodContainers([{

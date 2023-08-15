@@ -1,5 +1,5 @@
-(import 'internal/base.libsonnet') +
-(import 'internal/image.libsonnet') +
+(import '00-libsonnet/base.libsonnet') +
+(import '00-libsonnet/image.libsonnet') +
 {
   Volumes:: {
     mass_storage:: {
