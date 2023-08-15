@@ -1,0 +1,77 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "calibre",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "calibre"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "calibre"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     },
+                     {
+                        "name": "PUID",
+                        "value": "0"
+                     },
+                     {
+                        "name": "GUID",
+                        "value": "0"
+                     },
+                     {
+                        "name": "DOCKER_MODS",
+                        "value": "linuxserver/mods:universal-calibre:latest"
+                     }
+                  ],
+                  "image": "lscr.io/linuxserver/calibre-web",
+                  "name": "calibre",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "data",
+                        "subPath": "calibre/config"
+                     },
+                     {
+                        "mountPath": "/books",
+                        "name": "data",
+                        "subPath": "shared/calibre"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "calibre",
+            "volumes": [
+               {
+                  "name": "data",
+                  "persistentVolumeClaim": {
+                     "claimName": "mass-storage"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

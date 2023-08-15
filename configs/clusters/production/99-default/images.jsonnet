@@ -7,3 +7,7 @@ app.Image('beets')
 app.Image('bind9')
 .Repository('internetsystemsconsortium/bind9')
 .Policy({ policy: { numerical: { order: 'asc' } } })
++
+app.Image('calibre')
+.Repository('lscr.io/linuxserver/calibre-web')
+.Policy(app.DefaultPolicy.LinuxServer())
