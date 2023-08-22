@@ -35,7 +35,7 @@ app.Base('bind9')
     { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 5353 },
   ],
   type: 'LoadBalancer',
-  loadBalancerIP: app.DNSStaticIP,
+  loadBalancerIP: app.StaticIP.DNS,
 })
 .Kustomize()
 .Config('named.conf', |||
@@ -74,5 +74,5 @@ app.Base('bind9')
                                   60         ; minimum (1 minute)
                                   )
                           NS      ns.local.d20.fan.
-  ns                      A       %(DNSStaticIP)s
-||| % app)
+  ns                      A       %(DNS)s
+||| % app.StaticIP)
