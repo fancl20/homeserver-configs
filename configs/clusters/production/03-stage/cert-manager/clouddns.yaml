@@ -1,0 +1,25 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: certbot
+    serviceAccount: cert-manager
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultDynamicSecret
+metadata:
+  name: clouddns
+  namespace: cert-manager
+spec:
+  destination:
+    create: true
+    name: clouddns-dns01-solver-svc-acct
+  mount: gcp
+  path: roleset/certbot/key
+  vaultAuthRef: cert-manager

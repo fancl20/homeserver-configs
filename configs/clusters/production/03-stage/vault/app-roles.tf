@@ -11,8 +11,8 @@ resource "vault_policy" "certbot" {
 resource "vault_kubernetes_auth_backend_role" "certbot" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "certbot"
-  bound_service_account_names      = ["certbot"]
-  bound_service_account_namespaces = ["default"]
+  bound_service_account_names      = ["certbot", "cert-manager"]
+  bound_service_account_namespaces = ["default", "cert-manager"]
   token_policies                   = ["default", vault_policy.certbot.name]
 }
 

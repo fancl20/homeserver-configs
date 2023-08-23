@@ -15,3 +15,8 @@ spec:
     name: configs
   components:
   - ../../components/images
+#  healthChecks:
+#  - apiVersion: v1
+#    kind: Secret
+#    name: d20-fan-tls
+#    namespace: ingress-nginx
