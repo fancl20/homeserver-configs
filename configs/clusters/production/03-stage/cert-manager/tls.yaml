@@ -8,6 +8,8 @@ spec:
   acme:
     email: fancl20@gmail.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: clouddns-issuer-account-key
     solvers:
     - dns01:
         cloudDNS:
