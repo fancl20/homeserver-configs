@@ -35,3 +35,4 @@ spec:
     kind: HelmRelease
     name: ingress-nginx
     namespace: ingress-nginx
+  # TODO cert-manager & external-secrets
