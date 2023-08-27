@@ -30,6 +30,7 @@ spec:
     controller:
       extraArgs:
         default-ssl-certificate: default/local-tls
+        #default-ssl-certificate: cert-manager/d20-fan-tls
       config:
         enable-real-ip: "true"
         proxy-buffer-size: "16k"

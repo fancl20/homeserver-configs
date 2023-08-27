@@ -52,7 +52,7 @@ resource "vault_policy" "admin" {
 resource "vault_gcp_secret_roleset" "admin" {
   backend     = vault_gcp_secret_backend.gcp.path
   roleset     = "admin"
-  secret_type = "service_account_key"
+  secret_type = "access_token"
   project     = google_service_account.vault_gcp.project
   token_scopes = [
     "https://www.googleapis.com/auth/cloud-platform",
