@@ -29,4 +29,5 @@ spec:
   issuerRef:
     name: clouddns
   dnsNames:
-  - '*.local.d20.fan'
+  - local.d20.fan
+  wildcard: true
