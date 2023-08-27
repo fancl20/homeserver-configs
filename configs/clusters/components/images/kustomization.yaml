@@ -6,4 +6,4 @@ images:
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
   newTag: '9.19' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
-  newTag: '0.6.20-ls225' # {"$imagepolicy": "flux-system:calibre:tag"}
+  newTag: '0.6.20-ls226' # {"$imagepolicy": "flux-system:calibre:tag"}
