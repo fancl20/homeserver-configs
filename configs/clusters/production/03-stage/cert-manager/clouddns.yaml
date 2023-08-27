@@ -26,9 +26,10 @@ spec:
   target:
     name: clouddns-dns01-solver-svc-acct
     creationPolicy: Owner
-    engineVersion: v2
-    data:
-      private_key_data: "{{ .private_key_data | b64dec }}"
+    template:
+      engineVersion: v2
+      data:
+        private_key_data: "{{ .private_key_data | b64dec }}"
   dataFrom:
   - sourceRef:
       generatorRef:
