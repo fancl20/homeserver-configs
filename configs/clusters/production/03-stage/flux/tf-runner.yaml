@@ -41,22 +41,20 @@ metadata:
 spec:
   refreshInterval: 8h
   target:
-    name: clouddns-dns01-solver-svc-acct
+    name: tf-runner
     creationPolicy: Owner
     template:
       engineVersion: v2
       data:
-        VAULT_TOKEN: "{{ $var := .vault | fromJson }}{{ $var.id }}"
-        GOOGLE_OAUTH_ACCESS_TOKEN: "{{ $var := .gcp | fromJson }}{{ $var.token }}"
-  data:
-  - secretKey: gcp
-    sourceRef:
+        VAULT_TOKEN: "{{ .id }}"
+        GOOGLE_OAUTH_ACCESS_TOKEN: "{{ .token }}"
+  dataFrom:
+  - sourceRef:
       generatorRef:
         apiVersion: generators.external-secrets.io/v1alpha1
         kind: VaultDynamicSecret
         name: tf-gcp-token
-  - secretKey: vault
-    sourceRef:
+  - sourceRef:
       generatorRef:
         apiVersion: generators.external-secrets.io/v1alpha1
         kind: VaultDynamicSecret
