@@ -1,29 +1,37 @@
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultAuth
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
 metadata:
   name: source-controller
   namespace: flux-system
 spec:
-  method: kubernetes
-  mount: kubernetes
-  kubernetes:
-    role: source-controller
-    serviceAccount: source-controller
+  provider:
+    vault:
+      server: http://vault.vault.svc:8200/
+      path: homeserver
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: source-controller
+          serviceAccountRef:
+            name: source-controller
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultStaticSecret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
   name: configs
   namespace: flux-system
 spec:
-  vaultAuthRef: source-controller
-  mount: homeserver
-  type: kv-v2
-  path: github_pat
-  refreshAfter: 60s
-  destination:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: source-controller
+    kind: SecretStore
+  target:
     name: configs
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: github_pat
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageUpdateAutomation
