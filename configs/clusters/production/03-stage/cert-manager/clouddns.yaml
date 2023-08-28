@@ -6,7 +6,9 @@ metadata:
   namespace: cert-manager
 spec:
   path: "/gcp/roleset/certbot/key"
-  method: "GET"
+  method: "POST"
+  parameters:
+    ttl: 24h
   provider:
     server: http://vault.vault.svc:8200/
     auth:

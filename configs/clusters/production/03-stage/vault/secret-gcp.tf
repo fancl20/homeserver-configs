@@ -21,6 +21,5 @@ resource "google_service_account_key" "vault_gcp" {
 }
 
 resource "vault_gcp_secret_backend" "gcp" {
-  credentials               = base64decode(google_service_account_key.vault_gcp.private_key)
-  default_lease_ttl_seconds = 86400
+  credentials = base64decode(google_service_account_key.vault_gcp.private_key)
 }
