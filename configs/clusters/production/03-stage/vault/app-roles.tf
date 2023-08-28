@@ -3,7 +3,7 @@ resource "vault_policy" "certbot" {
   name   = "kubernetes_certbot"
   policy = <<-EOT
     path "gcp/roleset/certbot/key" {
-      capabilities = ["read"]
+      capabilities = ["create", "read", "update"]
     }
   EOT
 }
