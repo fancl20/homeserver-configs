@@ -2,7 +2,7 @@
 
 kubectl apply -k '00-stage/flux'
 
-# configs will be managed by vault-secrets-operator after the bootstrap.
+# configs will be managed by external-secrets after the bootstrap.
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
