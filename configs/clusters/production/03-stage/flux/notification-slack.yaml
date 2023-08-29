@@ -1,30 +1,37 @@
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultAuth
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
 metadata:
   name: notification-controller
   namespace: flux-system
 spec:
-  method: kubernetes
-  mount: kubernetes
-  kubernetes:
-    role: notifier
-    serviceAccount: notification-controller
+  provider:
+    vault:
+      server: http://vault.vault.svc:8200/
+      path: homeserver
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: notifier
+          serviceAccountRef:
+            name: notification-controller
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultStaticSecret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
   name: slack-token
   namespace: flux-system
 spec:
-  vaultAuthRef: notification-controller
-  mount: homeserver
-  type: kv-v2
-  path: slack
-  refreshAfter: 60s
-  destination:
-    create: true
+  refreshInterval: 1m
+  secretStoreRef:
+    name: notification-controller
+    kind: SecretStore
+  target:
     name: slack-token
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: slack
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta2
 kind: Provider
