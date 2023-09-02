@@ -4,6 +4,7 @@ import json
 import os
 import pathlib
 import subprocess
+import sys
 import tarfile
 import urllib.request
 
@@ -53,6 +54,12 @@ def main():
       pathlib.Path('00-stage', 'tekton-pipelines', 'pipelines.yaml'),
       'https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml',
   )
+
+  # 99-default
+  subprocess.check_call([
+      sys.executable,
+      'generate.py',
+  ], cwd=pathlib.Path('99-default'))
 
 
 if __name__ == '__main__':

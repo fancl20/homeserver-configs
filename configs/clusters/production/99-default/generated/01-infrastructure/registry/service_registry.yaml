@@ -1,0 +1,23 @@
+{
+   "apiVersion": "v1",
+   "kind": "Service",
+   "metadata": {
+      "annotations": null,
+      "name": "registry",
+      "namespace": "default"
+   },
+   "spec": {
+      "ports": [
+         {
+            "name": "http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 5000
+         }
+      ],
+      "selector": {
+         "app.kubernetes.io/name": "registry"
+      },
+      "type": "ClusterIP"
+   }
+}

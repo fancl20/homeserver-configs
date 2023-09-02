@@ -7,3 +7,5 @@ images:
   newTag: '9.19' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
   newTag: '0.6.20-ls226' # {"$imagepolicy": "flux-system:calibre:tag"}
+- name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
+  newTag: '2.8.1' # {"$imagepolicy": "flux-system:registry:tag"}

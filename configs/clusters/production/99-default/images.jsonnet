@@ -11,3 +11,7 @@ app.Image('bind9')
 app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
 .Policy(app.DefaultPolicy.LinuxServer())
++
+app.Image('registry')
+.Repository('docker.io/library/registry')
+.Policy(app.DefaultPolicy.Semver())
