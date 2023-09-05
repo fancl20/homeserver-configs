@@ -39,7 +39,7 @@ metadata:
   name: tf-runner
   namespace: flux-system
 spec:
-  refreshInterval: 40m
+  refreshInterval: 20m
   target:
     name: tf-runner
     creationPolicy: Owner
