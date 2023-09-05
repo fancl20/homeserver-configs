@@ -7,7 +7,7 @@ metadata:
 spec:
   dependsOn:
   - name: 03-stage
-  interval: 1m0s
+  interval: 15m
   path: ./configs/clusters/production/99-default
   prune: true
   sourceRef:

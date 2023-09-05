@@ -14,7 +14,7 @@ metadata:
   name: vault
   namespace: vault
 spec:
-  interval: 1m0s
+  interval: 15m
   chart:
     spec:
       chart: vault
