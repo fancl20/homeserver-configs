@@ -18,7 +18,7 @@ metadata:
   name: 00-stage
   namespace: flux-system
 spec:
-  interval: 1m
+  interval: 15m
   path: ./configs/clusters/production/00-stage
   prune: true
   sourceRef:
