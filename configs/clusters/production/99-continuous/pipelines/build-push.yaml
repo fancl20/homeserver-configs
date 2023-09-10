@@ -1,4 +1,3 @@
----
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
@@ -10,7 +9,7 @@ spec:
     type: string
   - name: base_tag
     type: string
-    default: testing-20230725 # {"$imagepolicy": "flux-system:debian:tag"}
+    default: testing-20230814 # {"$imagepolicy": "flux-system:debian:tag"}
   workspaces:
   - name: dockerconfig
   tasks:
