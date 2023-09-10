@@ -5,7 +5,7 @@ metadata:
   name: configs
   namespace: flux-system
 spec:
-  interval: 15m
+  interval: 1m
   ref:
     branch: main
   url: https://github.com/fancl20/homeserver-configs.git
