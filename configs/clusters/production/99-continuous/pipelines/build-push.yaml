@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
@@ -7,13 +8,13 @@ spec:
   params:
   - name: image
     type: string
-  - name: base
+  - name: base_tag
     type: string
-    default: docker.io/debian/snapshot:testing-20230725
+    default: testing-20230725 # {"$imagepolicy": "flux-system:debian:tag"}
   workspaces:
   - name: dockerconfig
   tasks:
-  - name: clash
+  - name: build-push
     taskRef:
       name: kaniko
     workspaces:
@@ -29,4 +30,28 @@ spec:
     - name: EXTRA_ARGS
       value:
       - --build-arg
-      - BASE_IMAGE=$(params.base)
+      - BASE_TAG=$(params.base_tag)
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: debian
+  namespace: flux-system
+spec:
+  image: docker.io/debian/snapshot
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: debian
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: debian
+  filterTags:
+    pattern: '^testing-(?P<timestamp>.*)$'
+    extract: '$timestamp'
+  policy:
+    alphabetical:
+      order: asc

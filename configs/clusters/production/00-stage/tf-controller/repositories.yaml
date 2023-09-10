@@ -19,4 +19,4 @@ spec:
     name: tf-runner
   policy:
     semver:
-      range: x
+      range: "*"

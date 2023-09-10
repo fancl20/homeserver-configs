@@ -1,7 +1,7 @@
-ARG BASE_IMAGE
-FROM $BASE_IMAGE
+ARG BASE_TAG
+FROM docker.io/debian/snapshot:$BASE_TAG
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+RUN apt-get update && apt-get install -y \
       iproute2 nftables procps curl jq unzip dumb-init && \
     # Install clash premium
     mkdir -p /opt/bin && \
