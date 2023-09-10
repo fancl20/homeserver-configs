@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-push
+  namespace: continuous
+spec:
+  params:
+  - name: image
+    type: string
+  - name: base
+    type: string
+    default: docker.io/debian/snapshot:testing-20230725
+  workspaces:
+  - name: dockerconfig
+  tasks:
+  - name: clash
+    taskRef:
+      name: kaniko
+    workspaces:
+    - name: dockerconfig
+      workspace: dockerconfig
+    params:
+    - name: IMAGE
+      value: registry.local.d20.fan/fancl20/$(params.image)
+    - name: CONTEXT
+      value: git://github.com/fancl20/homeserver-configs.git#refs/heads/main
+    - name: CONTEXT_SUB_PATH
+      value: images/$(params.image)
+    - name: EXTRA_ARGS
+      value:
+      - --build-arg
+      - BASE_IMAGE=$(params.base)

@@ -61,6 +61,15 @@ def main():
       'generate.py',
   ], cwd=pathlib.Path('99-default'))
 
+  get_url(
+      pathlib.Path('99-default', '03-pipelines', 'tasks', 'git-clone.yaml'),
+      'https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.9/git-clone.yaml',
+  )
+  get_url(
+      pathlib.Path('99-default', '03-pipelines', 'tasks', 'kaniko.yaml'),
+      'https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.6/kaniko.yaml',
+  )
+
 
 if __name__ == '__main__':
   main()
