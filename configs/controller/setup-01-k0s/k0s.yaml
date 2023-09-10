@@ -9,8 +9,6 @@ spec:
     k0sApiPort: 9443
     sans:
     - 192.168.1.2
-    extraArgs:
-      feature-gates: ServiceLBNodePortControl=true,MixedProtocolLBService=true
   storage:
     type: etcd
     etcd:

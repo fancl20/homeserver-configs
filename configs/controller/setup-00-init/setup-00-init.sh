@@ -50,6 +50,12 @@ sudo cp systemd/var-mnt-data.mount /etc/systemd/system/
 sudo cp systemd/var-mnt-data.automount /etc/systemd/system/
 sudo systemctl enable --now var-mnt-data.automount
 
+# Increase FS watcher limit
+sudo tee /etc/sysctl.d/50-inotify-max.conf <<EOF
+fs.inotify.max_user_instances = 8192
+fs.inotify.max_user_watches = 248213
+EOF
+
 cat <<"EOF"
 Reboot the system to make the change take effect:
 

@@ -109,6 +109,8 @@ service {
             options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
             /* MSI B650I Edge */
             options dhcp-host=04:7c:16:4f:8b:e1,set:LAN1,set:Proxy
+            /* Asus ROG Ally */
+            options dhcp-host=74:97:79:c3:cd:23,set:LAN1,set:Proxy
 
             options dhcp-option=tag:Proxy,option:router,192.168.1.245
             options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245

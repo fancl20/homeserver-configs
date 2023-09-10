@@ -31,38 +31,21 @@ resource "kubernetes_config_map" "clash" {
         - '+.local.d20.fan'
       nameserver:
         - udp://192.168.1.1:53
-    
-    mode: script
+
+    mode: Rule
+
     script:
-      code: |
-        def main(ctx, metadata):
-          ip = metadata["dst_ip"] or ctx.resolve_ip(metadata["host"])
-          if ip == "":
-            return "DIRECT"
+      engine: expr
+      shortcuts:
+        genshin: network == 'udp' and dst_port in [22101, 22102]
+        mihoyo: host in ['log-upload.mihoyo.com', 'sdk-static.mihoyo.com', 'hk4e-sdk.mihoyo.com']
 
-          # Genshin Impact
-          if (metadata["network"] == "udp" and
-              metadata["dst_port"] in ("22101", "22102") and
-              ctx.geoip(ip) == "CN"):
-            return "SG1-SG2-CN2"
-          if metadata["host"] in (
-              "log-upload.mihoyo.com",
-              "sdk-static.mihoyo.com",
-              "hk4e-sdk.mihoyo.com",
-          ):
-            return "JP2"
-
-          if ctx.geoip(ip) == "CN":
-            return "JP2"
-
-          if metadata["host"] in (
-              "boluo.chat",
-          ):
-            return "JP2"
-
-          # Default
-          return "DIRECT"
-    EOT
+    rules:
+      - SCRIPT,genshin,SG1-SG2-CN2
+      - SCRIPT,mihoyo,JP2
+      - GEOIP,CN,JP2
+      - MATCH,DIRECT
+        EOT
   }
 }
 

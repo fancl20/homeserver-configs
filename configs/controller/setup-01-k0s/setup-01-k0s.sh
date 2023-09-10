@@ -4,9 +4,9 @@
 curl -sSLf https://get.k0s.sh | sudo sh
 echo 'kubectl() { sudo k0s kubectl "$@"; }; export -f kubectl' >> $HOME/.bashrc
 
-# Install helm
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-echo 'helm() { sudo helm --kubeconfig /var/lib/k0s/pki/admin.conf "$@"; }; export -f helm' >> $HOME/.bashrc
+# Install flux
+curl -sSLf https://fluxcd.io/install.sh | sudo bash
+echo 'flux() { sudo flux --kubeconfig /var/lib/k0s/pki/admin.conf "$@"; }; export -f flux' >> $HOME/.bashrc
 
 # Install terraform
 sudo ./install_terraform.py
@@ -16,7 +16,7 @@ mkdir -p /mnt/vault
 
 # Initialize k0s
 mkdir -p /etc/k0s && cp k0s.yaml /etc/k0s/k0s.yaml
-sudo k0s install controller --enable-worker -c /etc/k0s/k0s.yaml
+sudo k0s install controller --enable-worker --no-taints
 sudo k0s start
 
 # Allow connections to kube-apiserver and trust Pod networking
