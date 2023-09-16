@@ -15,9 +15,7 @@ metadata:
 spec:
   params:
   - name: image
-    type: string
   - name: script
-    type: string
   resourcetemplates:
   - apiVersion: tekton.dev/v1
     kind: PipelineRun
