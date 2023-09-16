@@ -1,0 +1,16 @@
+---
+apiVersion: triggers.tekton.dev/v1
+kind: TriggerBinding
+metadata:
+  name: clash
+  namespace: continuous
+spec:
+  params:
+  - name: image
+    value: clash
+  - name: script
+    value: |
+      set -ex
+      curl -s --fail -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Dreamacro/clash/releases/tags/premium > metadata.json
+      cat metadata.json | jq -rj '.assets[] | select(.name | startswith("clash-linux-amd64-20")) | .updated_at' | date -f - +%s | tr -d "\n" > $(results.VERSION.path)
+      cat metadata.json | jq -rj '.assets[] | select(.name | startswith("clash-linux-amd64-20")) | .browser_download_url' > $(results.URL.path)

@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dockerconfig
+  namespace: continuous
+data:
+  config.json: "{}"
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: build-push
+  namespace: continuous
+spec:
+  params:
+  - name: image
+    type: string
+  - name: script
+    type: string
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: $(params.image)-
+      namespace: continuous
+    spec:
+      pipelineRef:
+        name: build-push
+      workspaces:
+      - name: dockerconfig
+        configmap:
+          name: dockerconfig
+      params:
+      - name: image
+        value: $(params.image)
+      - name: script
+        value: $(params.script)
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: images-build-push
+  namespace: continuous
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: images-build-push
+  namespace: continuous
+subjects:
+- kind: ServiceAccount
+  name: images-build-push
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: images-build-push
+  namespace: continuous
+spec:
+  serviceAccountName: images-build-push
+  triggers:
+  - name: clash
+    bindings:
+    - ref: clash
+    template:
+      ref: build-push

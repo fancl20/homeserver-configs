@@ -1,4 +1,5 @@
-apiVersion: tekton.dev/v1beta1
+---
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: build-push
@@ -9,7 +10,6 @@ spec:
     type: string
   - name: script
     type: string
-    default: echo -n v0.0.0 > $(results.VERSION.path)
   - name: base_tag
     type: string
     default: testing-20230904 # {"$imagepolicy": "flux-system:debian:tag"}

@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
@@ -8,7 +9,7 @@ spec:
     - name: FETCHER_TAG
       description: Tag of the fetcher image.
     - name: SCRIPT
-      default: echo -n v0.0.0 > $(results.VERSION.path)
+      description: Script updates the results.
   results:
     - name: VERSION
       description: Version of the image to be built.
