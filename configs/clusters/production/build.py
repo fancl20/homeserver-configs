@@ -62,6 +62,10 @@ def main():
       pathlib.Path('00-stage', 'tekton-pipelines', 'interceptors.yaml'),
       'https://storage.googleapis.com/tekton-releases/triggers/latest/interceptors.yaml',
   )
+  get_url(
+      pathlib.Path('00-stage', 'tekton-pipelines', 'dashboard.yaml'),
+      'https://storage.googleapis.com/tekton-releases/dashboard/latest/release.yaml',
+  )
 
   # 99-default
   subprocess.check_call([
