@@ -4,8 +4,8 @@ local images = import '../images.jsonnet';
 app.Base('clash')
 .PodContainers([{
   image: images.clash,
-  command: ['/bin/sh', '-e', '-c', |||
-    cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml
+  command: ['/bin/bash', '-ex', '-c', |||
+    cat /etc/config/config.yaml <(echo) /vault/secrets/proxies > /root/.config/clash/config.yaml
 
     mkdir -p /dev/net
     mknod /dev/net/tun c 10 200
