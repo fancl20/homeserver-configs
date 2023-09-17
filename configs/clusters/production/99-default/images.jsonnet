@@ -12,6 +12,10 @@ app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
 .Policy(app.DefaultPolicy.LinuxServer())
 +
+app.Image('clash')
+.Repository('registry.local.d20.fan/fancl20/clash')
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
++
 app.Image('registry')
 .Repository('docker.io/library/registry')
 .Policy(app.DefaultPolicy.Semver())

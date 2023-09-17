@@ -1,0 +1,38 @@
+{
+   "apiVersion": "networking.k8s.io/v1",
+   "kind": "Ingress",
+   "metadata": {
+      "name": "clash",
+      "namespace": "default"
+   },
+   "spec": {
+      "rules": [
+         {
+            "host": "clash.local.d20.fan",
+            "http": {
+               "paths": [
+                  {
+                     "backend": {
+                        "service": {
+                           "name": "clash",
+                           "port": {
+                              "number": 80
+                           }
+                        }
+                     },
+                     "path": "/",
+                     "pathType": "Prefix"
+                  }
+               ]
+            }
+         }
+      ],
+      "tls": [
+         {
+            "hosts": [
+               "clash.local.d20.fan"
+            ]
+         }
+      ]
+   }
+}

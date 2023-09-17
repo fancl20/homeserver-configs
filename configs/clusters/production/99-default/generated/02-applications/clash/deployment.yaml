@@ -1,0 +1,81 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "clash",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "clash"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "vault.hashicorp.com/agent-init-first": "true",
+               "vault.hashicorp.com/agent-inject": "true",
+               "vault.hashicorp.com/agent-inject-secret-proxies": "homeserver/data/clash",
+               "vault.hashicorp.com/agent-inject-template-proxies": "{{ with secret \"homeserver/data/clash\" -}}\n{{ .Data.data.proxies }}\n{{- end }}\n",
+               "vault.hashicorp.com/agent-pre-populate-only": "true",
+               "vault.hashicorp.com/role": "proxy"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "clash"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/bin/sh",
+                     "-e",
+                     "-c",
+                     "cat /etc/config/config.yaml /vault/secrets/proxies > /root/.config/clash/config.yaml\n\nmkdir -p /dev/net\nmknod /dev/net/tun c 10 200\nchmod 600 /dev/net/tun\n\nip route add 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/bin/clash\n"
+                  ],
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     }
+                  ],
+                  "image": "registry.local.d20.fan/fancl20/clash",
+                  "name": "clash",
+                  "securityContext": {
+                     "capabilities": {
+                        "add": [
+                           "NET_ADMIN",
+                           "SYS_MODULE",
+                           "SYS_ADMIN"
+                        ]
+                     }
+                  },
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/etc/config",
+                        "name": "config"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "clash",
+            "volumes": [
+               {
+                  "configMap": {
+                     "name": "clash"
+                  },
+                  "name": "config"
+               }
+            ]
+         }
+      }
+   }
+}

@@ -1,0 +1,19 @@
+{
+   "apiVersion": "kustomize.config.k8s.io/v1beta1",
+   "configMapGenerator": [
+      {
+         "files": [
+            "config.yaml"
+         ],
+         "name": "clash",
+         "namespace": "default"
+      }
+   ],
+   "kind": "Kustomization",
+   "resources": [
+      "deployment.yaml",
+      "ingress.yaml",
+      "service_clash.yaml",
+      "serviceaccount.yaml"
+   ]
+}

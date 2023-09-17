@@ -1,0 +1,23 @@
+{
+   "apiVersion": "v1",
+   "kind": "Service",
+   "metadata": {
+      "annotations": null,
+      "name": "clash",
+      "namespace": "default"
+   },
+   "spec": {
+      "ports": [
+         {
+            "name": "webui",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 9090
+         }
+      ],
+      "selector": {
+         "app.kubernetes.io/name": "clash"
+      },
+      "type": "ClusterIP"
+   }
+}
