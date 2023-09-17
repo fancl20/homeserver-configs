@@ -15,12 +15,11 @@ metadata:
 spec:
   params:
   - name: image
-  - name: script
   resourcetemplates:
   - apiVersion: tekton.dev/v1
     kind: PipelineRun
     metadata:
-      generateName: $(params.image)-
+      generateName: $(tt.params.image)-
       namespace: continuous
     spec:
       pipelineRef:
@@ -29,11 +28,12 @@ spec:
       - name: dockerconfig
         configmap:
           name: dockerconfig
+      - name: scripts
+        configmap:
+          name: $(tt.params.image)-scripts
       params:
       - name: image
-        value: $(params.image)
-      - name: script
-        value: $(params.script)
+        value: $(tt.params.image)
 ---
 apiVersion: v1
 kind: ServiceAccount

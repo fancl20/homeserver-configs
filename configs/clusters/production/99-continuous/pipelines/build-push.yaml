@@ -8,13 +8,12 @@ spec:
   params:
   - name: image
     type: string
-  - name: script
-    type: string
   - name: base_tag
     type: string
     default: testing-20230904 # {"$imagepolicy": "flux-system:debian:tag"}
   workspaces:
   - name: dockerconfig
+  - name: scripts
   tasks:
   - name: build-fetcher
     taskRef:
@@ -35,18 +34,15 @@ spec:
       - --build-arg
       - BASE_TAG=$(params.base_tag)
   - name: fetch-latest
-    runAfter:
-    - build-fetcher
     taskRef:
       name: fetch-latest
+    workspaces:
+    - name: scripts
+      workspace: scripts
     params:
-    - name: FETCHER_TAG
-      value: v0.1.0-$(params.base_tag)
-    - name: SCRIPT
-      value: $(params.script)
+    - name: FETCHER_IMAGE
+      value: $(tasks.build-fetcher.results.IMAGE_URL)
   - name: build-push
-    runAfter:
-    - fetch-latest
     taskRef:
       name: kaniko
     workspaces:
