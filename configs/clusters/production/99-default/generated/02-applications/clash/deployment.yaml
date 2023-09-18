@@ -21,6 +21,7 @@
       "template": {
          "metadata": {
             "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.245/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:40\",\n        \"name\": \"macvlan\"\n    }\n]",
                "vault.hashicorp.com/agent-init-first": "true",
                "vault.hashicorp.com/agent-inject": "true",
                "vault.hashicorp.com/agent-inject-secret-proxies": "homeserver/data/clash",
@@ -39,7 +40,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "cat /etc/config/config.yaml <(echo) /vault/secrets/proxies > /root/.config/clash/config.yaml\n\nmkdir -p /dev/net\nmknod /dev/net/tun c 10 200\nchmod 600 /dev/net/tun\n\nip route add 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/bin/clash\n"
+                     "cat /etc/config/config.yaml <(echo) /vault/secrets/proxies > /root/.config/clash/config.yaml\n\nmkdir -p /dev/net\nmknod /dev/net/tun c 10 200\nchmod 600 /dev/net/tun\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/bin/clash\n"
                   ],
                   "env": [
                      {

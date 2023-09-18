@@ -11,7 +11,7 @@ app.Base('clash')
     mknod /dev/net/tun c 10 200
     chmod 600 /dev/net/tun
 
-    ip route add 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
+    ip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
     ip route replace default via 192.168.1.1 dev net1
 
     exec /opt/bin/clash
@@ -26,6 +26,16 @@ app.Base('clash')
     { name: 'config', mountPath: '/etc/config' },
   ],
 }])
+.PodAnnotations({
+  'k8s.v1.cni.cncf.io/networks': std.manifestJson([
+    {
+      name: 'macvlan',
+      ips: ['192.168.1.245/24'],
+      mac: '26:1e:94:c2:23:40',
+      gateway: ['192.168.1.1'],
+    },
+  ]),
+})
 .PodVolumes([
   { name: 'config', configMap: { name: 'clash' } },
 ])
