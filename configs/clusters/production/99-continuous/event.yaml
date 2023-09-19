@@ -75,11 +75,17 @@ metadata:
 spec:
   serviceAccountName: images-build-push
   triggers:
+  - name: fetcher
+    bindings:
+    - ref: fetcher
+    template:
+      ref: build-push
   - name: clash
     bindings:
     - ref: clash
     template:
       ref: build-push
+
 ---
 apiVersion: batch/v1
 kind: CronJob

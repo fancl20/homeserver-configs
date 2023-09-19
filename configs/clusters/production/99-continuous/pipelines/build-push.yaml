@@ -11,43 +11,14 @@ spec:
   - name: base_tag
     type: string
     default: testing-20230904 # {"$imagepolicy": "flux-system:debian:tag"}
+  - name: fetcher_image
+    default: registry.local.d20.fan/fancl20/fetcher:v0.1.0-testing-20230904 # {"$imagepolicy": "flux-system:fetcher"}
+    type: string
   workspaces:
   - name: dockerconfig
   - name: scripts
   tasks:
-  - name: check-fetcher
-    taskRef:
-      name: crane
-    params:
-    - name: ARGS
-      value:
-      - manifest
-      - registry.local.d20.fan/fancl20/fetcher:v0.1.0-$(params.base_tag)
-  - name: build-fetcher
-    when:
-    - input: $(tasks.check-fetcher.results.EXIT_CODE)
-      operator: notin
-      values: ["0"]
-    taskRef:
-      name: kaniko
-    workspaces:
-    - name: dockerconfig
-      workspace: dockerconfig
-    params:
-    - name: IMAGE
-      value: registry.local.d20.fan/fancl20/fetcher:v0.1.0-$(params.base_tag)
-    - name: CONTEXT
-      value: git://github.com/fancl20/homeserver-configs.git#refs/heads/main
-    - name: CONTEXT_SUB_PATH
-      value: images/fetcher
-    - name: EXTRA_ARGS
-      value:
-      - --cache=true
-      - --build-arg
-      - BASE_TAG=$(params.base_tag)
   - name: fetch-latest
-    runAfter:
-    - build-fetcher
     taskRef:
       name: fetch-latest
     workspaces:
@@ -55,8 +26,8 @@ spec:
       workspace: scripts
     params:
     - name: FETCHER_IMAGE
-      value: registry.local.d20.fan/fancl20/fetcher:v0.1.0-$(params.base_tag)
-  - name: check-target
+      value: $(params.fetcher_image)
+  - name: check-tag
     taskRef:
       name: crane
     params:
@@ -66,7 +37,7 @@ spec:
       - registry.local.d20.fan/fancl20/$(params.image):$(tasks.fetch-latest.results.VERSION)-$(params.base_tag)
   - name: build-push
     when:
-    - input: $(tasks.check-fetcher.results.EXIT_CODE)
+    - input: $(tasks.check-tag.results.EXIT_CODE)
       operator: notin
       values: ["0"]
     taskRef:
