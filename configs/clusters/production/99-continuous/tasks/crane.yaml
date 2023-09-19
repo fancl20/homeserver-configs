@@ -1,0 +1,45 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: crane
+  namespace: continuous
+spec:
+  params:
+    - name: ARGS
+      type: array
+      default: []
+  results:
+    - name: EXIT_CODE
+  steps:
+    - name: crane
+      image: gcr.io/go-containerregistry/crane:v0.15.2 # {"$imagepolicy": "flux-system:crane"}
+      args:
+        - $(params.ARGS)
+      onError: continue
+    - name: write-output
+      image: docker.io/library/bash:5.2.15 # {"$imagepolicy": "flux-system:bash"}
+      script: |
+        set -e
+        cat "$(steps.step-crane.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: crane
+  namespace: flux-system
+spec:
+  image: gcr.io/go-containerregistry/crane
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: crane
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: crane
+  policy:
+    semver:
+      range: "*"

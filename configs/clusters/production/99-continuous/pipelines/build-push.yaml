@@ -15,7 +15,19 @@ spec:
   - name: dockerconfig
   - name: scripts
   tasks:
+  - name: check-fetcher
+    taskRef:
+      name: crane
+    params:
+    - name: ARGS
+      value:
+      - manifest
+      - registry.local.d20.fan/fancl20/fetcher:v0.1.0-$(params.base_tag)
   - name: build-fetcher
+    when:
+    - input: $(tasks.check-fetcher.results.EXIT_CODE)
+      operator: notin
+      values: ["0"]
     taskRef:
       name: kaniko
     workspaces:
@@ -34,6 +46,8 @@ spec:
       - --build-arg
       - BASE_TAG=$(params.base_tag)
   - name: fetch-latest
+    runAfter:
+    - build-fetcher
     taskRef:
       name: fetch-latest
     workspaces:
@@ -41,8 +55,20 @@ spec:
       workspace: scripts
     params:
     - name: FETCHER_IMAGE
-      value: $(tasks.build-fetcher.results.IMAGE_URL)
+      value: registry.local.d20.fan/fancl20/fetcher:v0.1.0-$(params.base_tag)
+  - name: check-target
+    taskRef:
+      name: crane
+    params:
+    - name: ARGS
+      value:
+      - manifest
+      - registry.local.d20.fan/fancl20/$(params.image):$(tasks.fetch-latest.results.VERSION)-$(params.base_tag)
   - name: build-push
+    when:
+    - input: $(tasks.check-fetcher.results.EXIT_CODE)
+      operator: notin
+      values: ["0"]
     taskRef:
       name: kaniko
     workspaces:

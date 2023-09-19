@@ -87,7 +87,7 @@ metadata:
   name: images-build-push
   namespace: continuous
 spec:
-  schedule: "0 17 * * *"
+  schedule: "00 04 * * *"
   jobTemplate:
     spec:
       template:
