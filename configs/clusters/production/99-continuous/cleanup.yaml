@@ -75,18 +75,31 @@ spec:
                   value: "3"
               command:
                 - /bin/bash
+                - -e
                 - -c
-                - >
-                  while read -r PIPELINE; do
+                - |
+                  while read -r PIPELINE_TO_REMOVE; do
+                    test -n "${PIPELINE_TO_REMOVE}" || continue;
+                    kubectl delete ${PIPELINE_TO_REMOVE} \
+                        && echo "$(date -Is) PipelineRun ${PIPELINE_TO_REMOVE} deleted." \
+                        || echo "$(date -Is) Unable to delete PipelineRun ${PIPELINE_TO_REMOVE}.";
+                  done < <(kubectl --namespace continuous get pipelinerun --sort-by=.metadata.creationTimestamp -o json | python3 -c "$(cat <<EOF
+                  import json
+                  import os
+                  import sys
 
-                    while read -r PIPELINE_TO_REMOVE; do
-                      test -n "${PIPELINE_TO_REMOVE}" || continue;
-                      kubectl delete ${PIPELINE_TO_REMOVE} \
-                          && echo "$(date -Is) PipelineRun ${PIPELINE_TO_REMOVE} deleted." \
-                          || echo "$(date -Is) Unable to delete PipelineRun ${PIPELINE_TO_REMOVE}.";
-                    done < <(kubectl get pipelinerun -l tekton.dev/pipeline=${PIPELINE} --sort-by=.metadata.creationTimestamp -o name | head -n -${NUM_TO_KEEP});
-                  done < <(kubectl get pipelinerun -o go-template='{{range .items}}{{index .metadata.labels "tekton.dev/pipeline"}}{{"\n"}}{{end}}' | uniq);
+                  NUM_TO_KEEP = int(os.environ['NUM_TO_KEEP'])
 
+                  counts = dict()
+                  for p in reversed(json.load(sys.stdin)['items']):
+                    lables = p['metadata']['labels']
+                    key = f'{lables["tekton.dev/pipeline"]}|{lables.get("triggers.tekton.dev/trigger", "")}'
+                    if (n := counts.get(key, 0)) < NUM_TO_KEEP:
+                      counts[key] = n + 1
+                      continue
+                    print(p['metadata']['name'])
+                  EOF
+                  )")
               resources:
                 requests:
                   cpu: 50m
