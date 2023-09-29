@@ -80,10 +80,10 @@ spec:
                 - |
                   while read -r PIPELINE_TO_REMOVE; do
                     test -n "${PIPELINE_TO_REMOVE}" || continue;
-                    kubectl delete ${PIPELINE_TO_REMOVE} \
+                    kubectl delete pipelinerun ${PIPELINE_TO_REMOVE} \
                         && echo "$(date -Is) PipelineRun ${PIPELINE_TO_REMOVE} deleted." \
                         || echo "$(date -Is) Unable to delete PipelineRun ${PIPELINE_TO_REMOVE}.";
-                  done < <(kubectl --namespace continuous get pipelinerun --sort-by=.metadata.creationTimestamp -o json | python3 -c "$(cat <<EOF
+                  done < <(kubectl get pipelinerun --sort-by=.metadata.creationTimestamp -o json | python3 -c "$(cat <<EOF
                   import json
                   import os
                   import sys
