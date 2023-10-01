@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "external_dns",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "k8s.gcr.io/external-dns/external-dns",
+      "interval": "1h"
+   }
+}

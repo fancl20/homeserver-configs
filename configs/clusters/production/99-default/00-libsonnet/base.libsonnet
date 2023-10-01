@@ -108,6 +108,37 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    ClusterRole(rules):: self {
+      'clusterrole.yaml': {
+        apiVersion: 'rbac.authorization.k8s.io/v1',
+        kind: 'ClusterRole',
+        metadata: {
+          name: name,
+        },
+        rules: rules,
+      },
+    },
+
+    ClusterRoleBinding(role_ref=[{
+      apiGroup: 'rbac.authorization.k8s.io',
+      kind: 'ClusterRole',
+      name: name,
+    }]):: self {
+      'clusterrolebinding.yaml': {
+        apiVersion: 'rbac.authorization.k8s.io/v1',
+        kind: 'ClusterRoleBinding',
+        metadata: {
+          name: name,
+        },
+        roleRef: role_ref,
+        subjects: [{
+          kind: 'ServiceAccount',
+          name: name,
+          namespace: namespace,
+        }],
+      },
+    },
+
     Service(spec, service_name=name, external_dns=false,):: self {
       local merged = { type: 'ClusterIP', selector: match } + spec,
       ['service_' + name + '.yaml']: {

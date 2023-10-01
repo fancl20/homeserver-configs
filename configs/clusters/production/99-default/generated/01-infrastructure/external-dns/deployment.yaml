@@ -1,0 +1,63 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "external-dns",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "external-dns"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "vault.hashicorp.com/agent-init-first": "true",
+               "vault.hashicorp.com/agent-inject": "true",
+               "vault.hashicorp.com/agent-inject-secret-bind9_externaldns_key": "homeserver/data/bind9",
+               "vault.hashicorp.com/agent-inject-template-bind9_externaldns_key": "{{ with secret \"homeserver/data/bind9\" -}}\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET=\"{{ .Data.data.externaldns_key_secret }}\"\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG=\"{{ .Data.data.externaldns_key_algorithm }}\"\n{{- end }}\n",
+               "vault.hashicorp.com/agent-pre-populate-only": "true",
+               "vault.hashicorp.com/role": "external_dns"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "external-dns"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/bin/sh",
+                     "-e",
+                     "-c",
+                     "source /vault/secrets/env && exec /bin/external-dns \\\n  --registry=txt \\\n  --txt-prefix=external-dns- \\\n  --txt-owner-id=k8s \\\n  --provider=rfc2136 \\\n  --rfc2136-host=bind9.default \\\n  --rfc2136-port=53 \\\n  --rfc2136-zone=local.d20.fan \\\n  --rfc2136-tsig-keyname=externaldns-key \\\n  --rfc2136-tsig-axfr \\\n  --source=service \\\n  --source=ingress \\\n  --domain-filter=local.d20.fan\n"
+                  ],
+                  "image": "k8s.gcr.io/external-dns/external-dns",
+                  "name": "external-dns",
+                  "resources": {
+                     "limits": {
+                        "cpu": "200m",
+                        "memory": "64Mi"
+                     },
+                     "requests": {
+                        "cpu": "100m",
+                        "memory": "32Mi"
+                     }
+                  }
+               }
+            ],
+            "serviceAccountName": "external-dns",
+            "volumes": [ ]
+         }
+      }
+   }
+}
