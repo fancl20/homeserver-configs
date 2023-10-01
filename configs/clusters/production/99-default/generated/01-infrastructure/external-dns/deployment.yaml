@@ -23,8 +23,8 @@
             "annotations": {
                "vault.hashicorp.com/agent-init-first": "true",
                "vault.hashicorp.com/agent-inject": "true",
-               "vault.hashicorp.com/agent-inject-secret-bind9_externaldns_key": "homeserver/data/bind9",
-               "vault.hashicorp.com/agent-inject-template-bind9_externaldns_key": "{{ with secret \"homeserver/data/bind9\" -}}\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET=\"{{ .Data.data.externaldns_key_secret }}\"\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG=\"{{ .Data.data.externaldns_key_algorithm }}\"\n{{- end }}\n",
+               "vault.hashicorp.com/agent-inject-secret-env": "homeserver/data/bind9",
+               "vault.hashicorp.com/agent-inject-template-env": "{{ with secret \"homeserver/data/bind9\" -}}\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET=\"{{ .Data.data.externaldns_key_secret }}\"\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG=\"{{ .Data.data.externaldns_key_algorithm }}\"\n{{- end }}\n",
                "vault.hashicorp.com/agent-pre-populate-only": "true",
                "vault.hashicorp.com/role": "external_dns"
             },

@@ -25,7 +25,7 @@ app.Base('external-dns')
   },
 }])
 .VaultInjector('external_dns', {
-  bind9_externaldns_key: {
+  env: {
     path: 'homeserver/data/bind9',
     template: |||
       {{ with secret "homeserver/data/bind9" -}}
