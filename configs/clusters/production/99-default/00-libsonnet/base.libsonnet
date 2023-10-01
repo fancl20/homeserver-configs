@@ -119,11 +119,11 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
-    ClusterRoleBinding(role_ref=[{
+    ClusterRoleBinding(role_ref={
       apiGroup: 'rbac.authorization.k8s.io',
       kind: 'ClusterRole',
       name: name,
-    }]):: self {
+    }):: self {
       'clusterrolebinding.yaml': {
         apiVersion: 'rbac.authorization.k8s.io/v1',
         kind: 'ClusterRoleBinding',
