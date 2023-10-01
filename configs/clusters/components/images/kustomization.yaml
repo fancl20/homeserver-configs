@@ -10,6 +10,6 @@ images:
 - name: registry.local.d20.fan/fancl20/clash # {"$imagepolicy": "flux-system:clash:name"}
   newTag: '1692285082-testing-20230919' # {"$imagepolicy": "flux-system:clash:tag"}
 - name: k8s.gcr.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
-  newTag: 'v0.10.2' # {"$imagepolicy": "flux-system:external-dns:tag"}
+  newTag: 'v0.13.4' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '2.8.2' # {"$imagepolicy": "flux-system:registry:tag"}
