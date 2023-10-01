@@ -16,7 +16,7 @@ app.Image('clash')
 .Repository('registry.local.d20.fan/fancl20/clash')
 .Policy({ policy: { alphabetical: { order: 'asc' } } })
 +
-app.Image('external_dns')
+app.Image('external-dns')
 .Repository('k8s.gcr.io/external-dns/external-dns')
 .Policy(app.DefaultPolicy.Semver())
 +

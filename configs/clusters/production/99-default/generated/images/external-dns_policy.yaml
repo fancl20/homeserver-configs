@@ -2,12 +2,12 @@
    "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
    "kind": "ImagePolicy",
    "metadata": {
-      "name": "external_dns",
+      "name": "external-dns",
       "namespace": "flux-system"
    },
    "spec": {
       "imageRepositoryRef": {
-         "name": "external_dns"
+         "name": "external-dns"
       },
       "policy": {
          "semver": {

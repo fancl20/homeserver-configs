@@ -3,7 +3,7 @@ local images = import '../images.jsonnet';
 
 app.Base('external-dns')
 .PodContainers([{
-  image: images.external_dns,
+  image: images['external-dns'],
   command: ['/bin/sh', '-e', '-c', |||
     source /vault/secrets/env && exec /bin/external-dns \
       --registry=txt \
