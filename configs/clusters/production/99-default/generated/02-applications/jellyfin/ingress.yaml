@@ -1,0 +1,38 @@
+{
+   "apiVersion": "networking.k8s.io/v1",
+   "kind": "Ingress",
+   "metadata": {
+      "name": "jellyfin",
+      "namespace": "default"
+   },
+   "spec": {
+      "rules": [
+         {
+            "host": "jellyfin.local.d20.fan",
+            "http": {
+               "paths": [
+                  {
+                     "backend": {
+                        "service": {
+                           "name": "jellyfin",
+                           "port": {
+                              "number": 80
+                           }
+                        }
+                     },
+                     "path": "/",
+                     "pathType": "Prefix"
+                  }
+               ]
+            }
+         }
+      ],
+      "tls": [
+         {
+            "hosts": [
+               "jellyfin.local.d20.fan"
+            ]
+         }
+      ]
+   }
+}

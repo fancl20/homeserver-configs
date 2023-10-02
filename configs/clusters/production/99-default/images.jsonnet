@@ -24,6 +24,10 @@ app.Image('fava')
 .Repository('registry.local.d20.fan/fancl20/fava')
 .Policy(app.DefaultPolicy.Semver('*-testing-'))
 +
+app.Image('jellyfin')
+.Repository('lscr.io/linuxserver/jellyfin')
+.Policy(app.DefaultPolicy.LinuxServer('*-1'))
++
 app.Image('registry')
 .Repository('docker.io/library/registry')
 .Policy(app.DefaultPolicy.Semver())
