@@ -6,7 +6,6 @@ app.Base('beets')
   image: images.beets,
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },
-    { name: 'DOCKER_MODS', value: 'ghcr.io/fancl20/beets-shntool:latest' },
   ],
   volumeMounts: [
     { name: 'data', mountPath: '/config', subPath: 'beets/config' },

@@ -2,14 +2,14 @@
    "apiVersion": "apps/v1",
    "kind": "Deployment",
    "metadata": {
-      "name": "beets",
+      "name": "fava",
       "namespace": "default"
    },
    "spec": {
       "replicas": 1,
       "selector": {
          "matchLabels": {
-            "app.kubernetes.io/name": "beets"
+            "app.kubernetes.io/name": "fava"
          }
       },
       "strategy": {
@@ -22,40 +22,36 @@
          "metadata": {
             "annotations": { },
             "labels": {
-               "app.kubernetes.io/name": "beets"
+               "app.kubernetes.io/name": "fava"
             }
          },
          "spec": {
             "containers": [
                {
+                  "command": [
+                     "/usr/local/bin/fava",
+                     "--port",
+                     "5000",
+                     "/data/main.beancount"
+                  ],
                   "env": [
                      {
                         "name": "TZ",
                         "value": "Australia/Sydney"
                      }
                   ],
-                  "image": "lscr.io/linuxserver/beets",
-                  "name": "beets",
+                  "image": "registry.local.d20.fan/fancl20/fava",
+                  "name": "fava",
                   "volumeMounts": [
                      {
-                        "mountPath": "/config",
+                        "mountPath": "/data",
                         "name": "data",
-                        "subPath": "beets/config"
-                     },
-                     {
-                        "mountPath": "/music",
-                        "name": "data",
-                        "subPath": "shared/music"
-                     },
-                     {
-                        "mountPath": "/downloads",
-                        "name": "data",
-                        "subPath": "shared/downloads"
+                        "subPath": "workspaces/common/accounting"
                      }
                   ]
                }
             ],
-            "serviceAccountName": "beets",
+            "serviceAccountName": "fava",
             "volumes": [
                {
                   "name": "data",

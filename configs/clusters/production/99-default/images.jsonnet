@@ -20,6 +20,10 @@ app.Image('external-dns')
 .Repository('k8s.gcr.io/external-dns/external-dns')
 .Policy(app.DefaultPolicy.Semver())
 +
+app.Image('fava')
+.Repository('registry.local.d20.fan/fancl20/fava')
+.Policy(app.DefaultPolicy.Semver('*-testing-'))
++
 app.Image('registry')
 .Repository('docker.io/library/registry')
 .Policy(app.DefaultPolicy.Semver())

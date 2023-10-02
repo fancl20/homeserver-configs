@@ -12,7 +12,7 @@ FROM docker.io/debian/snapshot:$BASE_TAG
 RUN apt-get update && apt-get install -y --no-install-recommends \
       python3
 
-COPY --from=builder /install /usr/local
+COPY --from=builder /install /usr
 
 ENV FAVA_HOST "0.0.0.0"
 EXPOSE 5000

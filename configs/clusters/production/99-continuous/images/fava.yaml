@@ -10,7 +10,7 @@ data:
     curl -s --fail -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/beancount/fava/tags > metadata.json
     FAVA_VERSION=$(cat metadata.json | jq -rj '.[0].name')
     echo -n "${FAVA_VERSION}" > "${RESULT_VERSION}"
-    echo "git+https://github.com/beancount/fava@${FAVA_VERSION}#egg=fava" > "${RESULT_URL}"
+    echo "fava==${FAVA_VERSION#v}" > "${RESULT_URL}"
 ---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
