@@ -16,4 +16,4 @@ images:
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.11-1-ls227' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
-  newTag: '2.8.2' # {"$imagepolicy": "flux-system:registry:tag"}
+  newTag: '2.8.3' # {"$imagepolicy": "flux-system:registry:tag"}
