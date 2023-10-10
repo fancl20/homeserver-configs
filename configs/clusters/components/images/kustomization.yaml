@@ -14,6 +14,6 @@ images:
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
   newTag: 'v1.26.1-testing-20230919' # {"$imagepolicy": "flux-system:fava:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
-  newTag: '10.8.11-1-ls228' # {"$imagepolicy": "flux-system:jellyfin:tag"}
+  newTag: '10.8.11-1-ls229' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '2.8.3' # {"$imagepolicy": "flux-system:registry:tag"}
