@@ -31,7 +31,7 @@ spec:
       description: URL of the image just built.
   steps:
     - name: build-and-push
-      image: gcr.io/kaniko-project/executor:v1.16.0 # {"$imagepolicy": "flux-system:kaniko"}
+      image: gcr.io/kaniko-project/executor:v1.17.0 # {"$imagepolicy": "flux-system:kaniko"}
       args:
         - $(params.EXTRA_ARGS)
         - --dockerfile=$(params.DOCKERFILE)
