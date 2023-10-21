@@ -3,7 +3,7 @@ FROM docker.io/debian/snapshot:$BASE_TAG
 
 ARG URL
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      iproute2 nftables procps curl unzip dumb-init && \
+      ca-certificates iproute2 nftables procps curl unzip dumb-init && \
     # Install clash premium
     mkdir -p /opt/bin && \
     curl -s --fail -L $URL | gzip -d > /opt/bin/clash && chmod +x /opt/bin/clash && \

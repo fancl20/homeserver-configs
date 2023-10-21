@@ -7,7 +7,7 @@ metadata:
 data:
   fetch-latest.sh: |
     set -ex
-    echo -n "v0.2.0" > "${RESULT_VERSION}"
+    echo -n "v0.3.0" > "${RESULT_VERSION}"
     echo -n "" > "${RESULT_URL}"
 ---
 apiVersion: triggers.tekton.dev/v1beta1
