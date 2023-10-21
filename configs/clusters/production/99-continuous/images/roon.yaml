@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: roon-scripts
+  namespace: continuous
+data:
+  fetch-latest.sh: |
+    set -ex
+    LAST_MODIFIED=$(curl -s -I https://download.roonlabs.net/builds/RoonServer_linuxx64.tar.bz2 | grep last-modified)
+    echo "${LAST_MODIFIED#last-modified: }" | date -f - +%s | tr -d "\n" > "${RESULT_VERSION}"
+    echo -n https://download.roonlabs.net/builds/RoonServer_linuxx64.tar.bz > "${RESULT_URL}"
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: roon
+  namespace: continuous
+spec:
+  params:
+  - name: image
+    value: roon
