@@ -34,8 +34,7 @@ spec:
       params:
       - name: image
         value: $(tt.params.image)
-      timeouts:
-        pipeline: "4h"
+      timeout: "4h"
 ---
 apiVersion: v1
 kind: ServiceAccount
