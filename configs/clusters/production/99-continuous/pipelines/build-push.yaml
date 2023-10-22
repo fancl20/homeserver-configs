@@ -58,6 +58,7 @@ spec:
       - BASE_TAG=$(params.base_tag)
       - --build-arg
       - URL=$(tasks.fetch-latest.results.URL)
+    timeout: "4h"
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
