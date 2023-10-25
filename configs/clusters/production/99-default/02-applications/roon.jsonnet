@@ -10,6 +10,9 @@ app.Base('roon-server')
 
     exec /app/RoonServer/start.sh
   |||],
+  securityContext: {
+    capabilities: { add: ['NET_ADMIN'] },
+  },
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },
   ],
