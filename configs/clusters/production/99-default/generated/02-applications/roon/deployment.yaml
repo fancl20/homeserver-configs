@@ -1,0 +1,78 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "roon-server",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "roon-server"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.244/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:39\",\n        \"name\": \"macvlan\"\n    }\n]"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "roon-server"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/bin/bash",
+                     "-ex",
+                     "-c",
+                     "ip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /app/RoonServer/start.sh\n"
+                  ],
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     }
+                  ],
+                  "image": "registry.local.d20.fan/fancl20/roon",
+                  "name": "roon-server",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/data",
+                        "name": "data",
+                        "subPath": "roon-server/data"
+                     },
+                     {
+                        "mountPath": "/backup",
+                        "name": "data",
+                        "subPath": "roon-server/backup"
+                     },
+                     {
+                        "mountPath": "/music",
+                        "name": "data",
+                        "subPath": "shared/music"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "roon-server",
+            "volumes": [
+               {
+                  "name": "data",
+                  "persistentVolumeClaim": {
+                     "claimName": "mass-storage"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

@@ -31,3 +31,7 @@ app.Image('jellyfin')
 app.Image('registry')
 .Repository('docker.io/library/registry')
 .Policy(app.DefaultPolicy.Semver())
++
+app.Image('roon')
+.Repository('registry.local.d20.fan/fancl20/roon')
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
