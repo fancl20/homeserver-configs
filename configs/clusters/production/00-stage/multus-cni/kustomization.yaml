@@ -2,7 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: ghcr.io/k8snetworkplumbingwg/multus-cni # {"$imagepolicy": "flux-system:multus-cni:name"}
-  newTag: v4.0.2 # {"$imagepolicy": "flux-system:multus-cni:tag"}
+  newTag: c777c1969845b0ea1a1050e77c9c851bcd3e6c5298d185adccae0fb46ba8b04e # until 4.0.3 release
+  # newTag: v4.0.2 # {"$imagepolicy": "flux-system:multus-cni:tag"}
 resources:
 - multus-daemonset.yaml # From https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/deployments/multus-daemonset.yml
 - repositories.yaml
