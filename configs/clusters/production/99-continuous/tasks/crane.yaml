@@ -1,4 +1,3 @@
----
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
@@ -18,7 +17,7 @@ spec:
         - $(params.ARGS)
       onError: continue
     - name: write-output
-      image: docker.io/library/bash:5.2.15 # {"$imagepolicy": "flux-system:bash"}
+      image: docker.io/library/bash:5.2.21 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
         cat "$(steps.step-crane.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
