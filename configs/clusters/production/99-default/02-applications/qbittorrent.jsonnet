@@ -17,18 +17,16 @@ app.Base('qbittorrent')
 .PodVolumes([
   app.Volumes.mass_storage,
 ])
-.Service(
-  {
-    name: 'qbittorrent-ui',
-    ports: [
-      { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8080 },
-    ],
-  }, {
-    name: 'qbittorrent-p2p',
-    ports: [
-      { name: 'tcp', protocol: 'TCP', port: 6881, targetPort: 6881 },
-      { name: 'udp', protocol: 'udp', port: 6881, targetPort: 6881 },
-    ],
-  }
-)
+.Service({
+  ports: [
+    { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8080 },
+  ],
+}, service_name='qbittorrent-ui')
+.Service({
+  name: 'qbittorrent-p2p',
+  ports: [
+    { name: 'tcp', protocol: 'TCP', port: 6881, targetPort: 6881 },
+    { name: 'udp', protocol: 'UDP', port: 6881, targetPort: 6881 },
+  ],
+}, service_name='qbittorrent-p2p')
 .Ingress(service='qbittorrent-ui')

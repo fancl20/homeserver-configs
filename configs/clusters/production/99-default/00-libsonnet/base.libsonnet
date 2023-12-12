@@ -141,7 +141,7 @@ local kustomize = import 'kustomize.libsonnet';
 
     Service(spec, service_name=name, external_dns=false,):: self {
       local merged = { type: 'ClusterIP', selector: match } + spec,
-      ['service_' + name + '.yaml']: {
+      ['service_' + service_name + '.yaml']: {
         apiVersion: 'v1',
         kind: 'Service',
         metadata: {
