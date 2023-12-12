@@ -1,0 +1,73 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "qbittorrent",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "qbittorrent"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "qbittorrent"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     },
+                     {
+                        "name": "PUID",
+                        "value": "0"
+                     },
+                     {
+                        "name": "GUID",
+                        "value": "0"
+                     }
+                  ],
+                  "image": "lscr.io/linuxserver/qbittorrent",
+                  "name": "qbittorrent",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "data",
+                        "subPath": "qbittorrent/config"
+                     },
+                     {
+                        "mountPath": "/downloads",
+                        "name": "data",
+                        "subPath": "shared/downloads"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "qbittorrent",
+            "volumes": [
+               {
+                  "name": "data",
+                  "persistentVolumeClaim": {
+                     "claimName": "mass-storage"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

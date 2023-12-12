@@ -28,6 +28,10 @@ app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
 .Policy(app.DefaultPolicy.LinuxServer('*-1'))
 +
+app.Image('qbittorrent')
+.Repository('lscr.io/linuxserver/qbittorrent')
+.Policy(app.DefaultPolicy.LinuxServer('*-r0'))
++
 app.Image('registry')
 .Repository('docker.io/library/registry')
 .Policy(app.DefaultPolicy.Semver())
