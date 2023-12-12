@@ -107,8 +107,10 @@ service {
 
             /* PlayStation5 */
             options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
-            /* MSI B650I Edge */
+            /* MSI B650I Edge Ethernet */
             options dhcp-host=04:7c:16:4f:8b:e1,set:LAN1,set:Proxy
+            /* MSI B650I Edge Wi-Fi */
+            options dhcp-host=f0:a6:54:4e:f9:0d,set:LAN1,set:Proxy
             /* Asus ROG Ally */
             options dhcp-host=74:97:79:c3:cd:23,set:LAN1,set:Proxy
 
