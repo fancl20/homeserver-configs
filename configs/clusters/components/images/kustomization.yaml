@@ -14,7 +14,7 @@ images:
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
   newTag: 'v1.26.2-testing-20231120' # {"$imagepolicy": "flux-system:fava:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
-  newTag: '10.8.13-1-ls238' # {"$imagepolicy": "flux-system:jellyfin:tag"}
+  newTag: '10.8.13-1-ls239' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '4.6.2-r0-ls302' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
