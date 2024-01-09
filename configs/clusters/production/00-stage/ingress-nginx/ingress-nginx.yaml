@@ -33,7 +33,7 @@ spec:
       config:
         enable-real-ip: "true"
         proxy-buffer-size: "16k"
-        proxy-body-size: "512M"
+        proxy-body-size: "4G"
       resources:
         requests:
           cpu: 100m
