@@ -10,7 +10,9 @@ RUN pip install --prefix="/install" $URL
 FROM docker.io/debian/snapshot:$BASE_TAG
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      python3
+      python3  && \
+    # Cleanup
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 COPY --from=builder /install /usr
 

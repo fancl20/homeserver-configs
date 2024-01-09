@@ -98,6 +98,11 @@ spec:
     - ref: roon
     template:
       ref: build-push
+  - name: workspace
+    bindings:
+    - ref: workspace
+    template:
+      ref: build-push
 ---
 apiVersion: batch/v1
 kind: CronJob
