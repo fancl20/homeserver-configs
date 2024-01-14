@@ -39,3 +39,7 @@ app.Image('registry')
 app.Image('roon')
 .Repository('registry.local.d20.fan/fancl20/roon')
 .Policy({ policy: { alphabetical: { order: 'asc' } } })
++
+app.Image('workspace')
+.Repository('registry.local.d20.fan/fancl20/workspace')
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
