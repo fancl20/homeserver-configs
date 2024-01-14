@@ -41,7 +41,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "cp /vault/secrets/authorized_keys /root/.ssh/\ncp /vault/secrets/id_rsa /root/.ssh/\nchmod 700 /root/.ssh && chmod 600 /root/.ssh/*\n\nexec /usr/sbin/sshd -D -f /etc/config/sshd_config\n"
+                     "cp /vault/secrets/authorized_keys /root/.ssh/\ncp /vault/secrets/id_rsa /root/.ssh/\nmkdir /run/sshd\nchmod 700 /root/.ssh && chmod 600 /root/.ssh/*\n\nexec /usr/sbin/sshd -D -f /etc/config/sshd_config\n"
                   ],
                   "env": [
                      {
@@ -78,7 +78,7 @@
                },
                {
                   "configMap": {
-                     "name": "sshd_config"
+                     "name": "workspace-common"
                   },
                   "name": "config"
                },

@@ -9,6 +9,7 @@
       "namespace": "default"
    },
    "spec": {
+      "allocateLoadBalancerNodePorts": false,
       "ports": [
          {
             "name": "ssh",
@@ -20,6 +21,6 @@
       "selector": {
          "app.kubernetes.io/name": "workspace-common"
       },
-      "type": "ClusterIP"
+      "type": "LoadBalancer"
    }
 }

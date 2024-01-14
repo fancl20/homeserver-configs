@@ -7,6 +7,7 @@ app.Base('workspace-common')
   command: ['/bin/bash', '-ex', '-c', |||
     cp /vault/secrets/authorized_keys /root/.ssh/
     cp /vault/secrets/id_rsa /root/.ssh/
+    mkdir /run/sshd
     chmod 700 /root/.ssh && chmod 600 /root/.ssh/*
 
     exec /usr/sbin/sshd -D -f /etc/config/sshd_config
@@ -22,7 +23,7 @@ app.Base('workspace-common')
 }])
 .PodVolumes([
   app.Volumes.mass_storage,
-  { name: 'config', configMap: { name: 'sshd_config' } },
+  { name: 'config', configMap: { name: 'workspace-common' } },
   { name: 'ssh', emptyDir: {} },
 ])
 .VaultInjector('workspace_ssh', {
