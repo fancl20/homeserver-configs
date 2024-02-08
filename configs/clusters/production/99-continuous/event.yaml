@@ -83,9 +83,9 @@ spec:
     - ref: fetcher
     template:
       ref: build-push
-  - name: clash
+  - name: dae
     bindings:
-    - ref: clash
+    - ref: dae
     template:
       ref: build-push
   - name: fava

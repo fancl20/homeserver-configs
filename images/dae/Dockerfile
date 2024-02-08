@@ -1,0 +1,19 @@
+ARG BASE_TAG
+FROM docker.io/debian/snapshot:$BASE_TAG
+
+ARG URL
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates iproute2 nftables procps curl unzip dumb-init && \
+    # Install dea
+    mkdir -p /opt/dae && \
+    curl -s --fail -L -o /tmp/dae.zip $URL  && \
+    unzip /tmp/dae.zip -d /opt/dae/ && mv /opt/dae/daed-* /opt/dae/daed && chmod +x /opt/dae/daed && \
+    # Update geodata
+    mkdir -p /usr/local/share/dae && \
+    curl -L -o /usr/local/share/dae/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
+    curl -L -o /usr/local/share/dae/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat && \
+    # Cleanup
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+ENTRYPOINT ["dumb-init"]
+CMD ["/opt/dae/daed"]
