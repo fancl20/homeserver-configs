@@ -52,6 +52,18 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    PodSecurityContext(securityContext):: self {
+      Deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              securityContext+: securityContext,
+            },
+          },
+        },
+      },
+    },
+
     PodContainers(containers):: self {
       Deployment+: {
         spec+: {

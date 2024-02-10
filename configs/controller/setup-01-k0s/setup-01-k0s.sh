@@ -16,7 +16,7 @@ mkdir -p /mnt/vault
 
 # Initialize k0s
 mkdir -p /etc/k0s && cp k0s.yaml /etc/k0s/k0s.yaml
-sudo k0s install controller --enable-worker --no-taints
+sudo k0s install controller --enable-worker --no-taints --kubelet-extra-args='--allowed-unsafe-sysctls=net.ipv4.*,net.ipv6.*'
 sudo k0s start
 
 # Allow connections to kube-apiserver and trust Pod networking

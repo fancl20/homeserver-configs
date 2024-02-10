@@ -87,7 +87,7 @@ resource "vault_kubernetes_auth_backend_role" "data_ssh" {
   token_policies                   = ["default", vault_policy.data_ssh.name]
 }
 
-# Clash requires proxy information.
+# Clash & dae requires proxy information.
 resource "vault_policy" "proxy" {
   name   = "kubernetes_proxy"
   policy = <<-EOT
@@ -100,7 +100,7 @@ resource "vault_policy" "proxy" {
 resource "vault_kubernetes_auth_backend_role" "proxy" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "proxy"
-  bound_service_account_names      = ["clash"]
+  bound_service_account_names      = ["clash", "dae"]
   bound_service_account_namespaces = ["default"]
   token_policies                   = ["default", vault_policy.proxy.name]
 }
