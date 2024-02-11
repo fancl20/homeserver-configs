@@ -22,4 +22,4 @@ images:
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
   newTag: '1707318071-testing-20240130' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
-  newTag: '202406-testing-20231218' # {"$imagepolicy": "flux-system:workspace:tag"}
+  newTag: '202406-testing-20240130' # {"$imagepolicy": "flux-system:workspace:tag"}
