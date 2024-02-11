@@ -1,0 +1,40 @@
+global {
+  lan_interface: net1
+  wan_interface: net1
+
+  log_level: info
+  allow_insecure: false
+
+  auto_config_kernel_parameter: false
+  auto_config_firewall_rule: true
+}
+dns {
+  ipversion_prefer: 4
+  upstream {
+    googledns: 'tcp+udp://8.8.8.8:53'
+  }
+  routing {
+    request {
+      fallback: googledns
+    }
+  }
+}
+routing{
+  pname(NetworkManager, systemd-resolved) -> direct
+  dip(geoip:private) -> direct
+
+  dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
+  domain(full: log-upload.mihoyo.com, full: sdk-static.mihoyo.com, full: hk4e-sdk.mihoyo.com) -> general
+
+  fallback: direct
+}
+group {
+  general {
+    filter: name(JP2)
+    policy: min_moving_avg
+  }
+  game {
+    filter: name(SG1-SG2-CN2)
+    policy: min_moving_avg
+  }
+}

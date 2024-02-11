@@ -21,7 +21,13 @@
       "template": {
          "metadata": {
             "annotations": {
-               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.246/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:41\",\n        \"name\": \"macvlan\"\n    }\n]"
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.246/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:41\",\n        \"name\": \"macvlan\"\n    }\n]",
+               "vault.hashicorp.com/agent-init-first": "true",
+               "vault.hashicorp.com/agent-inject": "true",
+               "vault.hashicorp.com/agent-inject-secret-node.dae": "homeserver/data/dae",
+               "vault.hashicorp.com/agent-inject-template-node.dae": "{{ with secret \"homeserver/data/dae\" -}}\n{{ index .Data.data.config }}\n{{- end }}\n",
+               "vault.hashicorp.com/agent-pre-populate-only": "true",
+               "vault.hashicorp.com/role": "proxy"
             },
             "labels": {
                "app.kubernetes.io/name": "dae"
@@ -34,7 +40,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "mount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nsleep 9999\nexec /opt/dae/dae-linux-x86_64 run -c /etc/dae/config.dae\n"
+                     "mkdir -p /etc/dae\ncat /config/config.dae <(echo) /vault/secrets/node.dae > /etc/dae/config.dae\nchmod 0600 /etc/dae/config.dae\n\nmount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64 run --disable-timestamp -c /etc/dae/config.dae\n"
                   ],
                   "env": [
                      {
@@ -52,7 +58,13 @@
                            "SYS_ADMIN"
                         ]
                      }
-                  }
+                  },
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "config"
+                     }
+                  ]
                }
             ],
             "securityContext": {
@@ -78,10 +90,10 @@
             "serviceAccountName": "dae",
             "volumes": [
                {
-                  "name": "data",
-                  "persistentVolumeClaim": {
-                     "claimName": "mass-storage"
-                  }
+                  "configMap": {
+                     "name": "dae"
+                  },
+                  "name": "config"
                }
             ]
          }
