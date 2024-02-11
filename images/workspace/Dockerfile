@@ -1,14 +1,15 @@
 FROM docker.io/library/debian:$BASE_TAG as builder
 
 RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.list.d/debian.sources && \
-    echo "Acquire::Check-Valid-Until false;\nAcquire::http::Dl-Limit=500;" > /etc/apt/apt.conf.d/10nocheckvalid
+    echo "Acquire::Check-Valid-Until false;\nAcquire::http::Dl-Limit=500;" > /etc/apt/apt.conf.d/10nocheckvalid && \
+    apt-get update
 
 ADD scripts /tmp/scripts
 
 ENV PIPX_HOME=/opt/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
         dumb-init openssh-server curl wget vim git jq fish build-essential python3-dev python3-venv pipx && \
     mkdir /var/run/sshd && \
     # Install commonly used cross projects' dependencies
