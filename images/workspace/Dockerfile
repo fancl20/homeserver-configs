@@ -1,4 +1,7 @@
-FROM docker.io/debian/snapshot:$BASE_TAG as builder
+FROM docker.io/library/debian:$BASE_TAG as builder
+
+RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.list.d/debian.sources && \
+    echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/10nocheckvalid
 
 ADD scripts /tmp/scripts
 

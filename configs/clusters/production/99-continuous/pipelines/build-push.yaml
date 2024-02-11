@@ -66,7 +66,7 @@ metadata:
   name: debian
   namespace: flux-system
 spec:
-  image: docker.io/debian/snapshot
+  image: docker.io/library/debian
   interval: 1h
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
@@ -78,7 +78,7 @@ spec:
   imageRepositoryRef:
     name: debian
   filterTags:
-    pattern: '^testing-(?P<timestamp>.*)$'
+    pattern: '^testing-(?P<timestamp>\d+)$'
     extract: '$timestamp'
   policy:
     alphabetical:
