@@ -40,16 +40,6 @@ app.Base('dae')
     { name: 'net.ipv4.ip_forward', value: '1' },
   ],
 })
-.VaultInjector('proxy', {
-  'config.dae': {
-    path: 'homeserver/data/dae',
-    template: |||
-      {{ with secret "homeserver/data/clash" -}}
-      {{ index .Data.data.dae }}
-      {{- end }}
-    |||,
-  },
-})
 .PodVolumes([
   app.Volumes.mass_storage,
 ])

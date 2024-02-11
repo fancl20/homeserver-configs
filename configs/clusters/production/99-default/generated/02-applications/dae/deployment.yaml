@@ -21,13 +21,7 @@
       "template": {
          "metadata": {
             "annotations": {
-               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.246/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:41\",\n        \"name\": \"macvlan\"\n    }\n]",
-               "vault.hashicorp.com/agent-init-first": "true",
-               "vault.hashicorp.com/agent-inject": "true",
-               "vault.hashicorp.com/agent-inject-secret-config.dae": "homeserver/data/dae",
-               "vault.hashicorp.com/agent-inject-template-config.dae": "{{ with secret \"homeserver/data/clash\" -}}\n{{ index .Data.data.dae }}\n{{- end }}\n",
-               "vault.hashicorp.com/agent-pre-populate-only": "true",
-               "vault.hashicorp.com/role": "proxy"
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.246/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:41\",\n        \"name\": \"macvlan\"\n    }\n]"
             },
             "labels": {
                "app.kubernetes.io/name": "dae"

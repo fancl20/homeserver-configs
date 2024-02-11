@@ -85,7 +85,7 @@ service {
             subnet 192.168.1.0/24 {
                 /* 192.168.1.1-192.168.1.4     used by router, controller, dns */
                 /* 192.168.1.5-192.168.1.37    used by metallb */
-                /* 192.168.1.245               used by clash */
+                /* 192.168.1.246               used by dae */
                 default-router 192.168.1.1
                 dns-server 192.168.1.1
                 lease 86400
@@ -114,8 +114,7 @@ service {
             /* Asus ROG Ally */
             options dhcp-host=74:97:79:c3:cd:23,set:LAN1,set:Proxy
 
-            options dhcp-option=tag:Proxy,option:router,192.168.1.245
-            options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245
+            options dhcp-option=tag:Proxy,option:router,192.168.1.246
         }
     }
     gui {
