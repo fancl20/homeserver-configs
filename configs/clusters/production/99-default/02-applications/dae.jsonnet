@@ -3,7 +3,7 @@ local images = import '../images.jsonnet';
 
 app.Base('dae')
 .PodContainers([{
-  image: 'registry.local.d20.fan/fancl20/dae:v0.3.3.p1-testing-20231218',
+  image: images.dae,
   command: ['/bin/bash', '-ex', '-c', |||
     mount bpffs /sys/fs/bpf/ -t bpf
 

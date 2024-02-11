@@ -2,11 +2,11 @@
    "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
    "kind": "ImageRepository",
    "metadata": {
-      "name": "clash",
+      "name": "dae",
       "namespace": "flux-system"
    },
    "spec": {
-      "image": "registry.local.d20.fan/fancl20/clash",
+      "image": "registry.local.d20.fan/fancl20/dae",
       "interval": "1h"
    }
 }

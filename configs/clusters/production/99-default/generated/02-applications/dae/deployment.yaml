@@ -42,7 +42,7 @@
                         "value": "Australia/Sydney"
                      }
                   ],
-                  "image": "registry.local.d20.fan/fancl20/dae:v0.3.3.p1-testing-20231218",
+                  "image": "registry.local.d20.fan/fancl20/dae",
                   "name": "dae",
                   "securityContext": {
                      "capabilities": {

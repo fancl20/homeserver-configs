@@ -6,9 +6,9 @@ images:
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
   newTag: '9.19' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
-  newTag: '0.6.21-ls252' # {"$imagepolicy": "flux-system:calibre:tag"}
-- name: registry.local.d20.fan/fancl20/clash # {"$imagepolicy": "flux-system:clash:name"}
-  newTag: '1692285082-testing-20231009' # {"$imagepolicy": "flux-system:clash:tag"}
+  newTag: '0.6.21-ls251' # {"$imagepolicy": "flux-system:calibre:tag"}
+- name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
+  newTag: 'v0.3.3.p1-testing-20231218' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: k8s.gcr.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.13.4' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
@@ -22,4 +22,4 @@ images:
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
   newTag: '1707318071-testing-20231218' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
-  newTag: '202406-testing-20231218' # {"$imagepolicy": "flux-system:workspace:tag"}
+  newTag: '202405-testing-20231218' # {"$imagepolicy": "flux-system:workspace:tag"}
