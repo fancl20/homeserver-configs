@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
     # Install dea
     mkdir -p /opt/dae && \
     curl -s --fail -L -o /tmp/dae.zip $URL  && \
-    unzip /tmp/dae.zip -d /opt/dae/ \
+    unzip /tmp/dae.zip -d /opt/dae/ && \
     # Update geodata
     mkdir -p /usr/local/share/dae && \
     curl -L -o /usr/local/share/dae/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
