@@ -10,16 +10,14 @@ app.Base('dae')
     ip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
     ip route replace default via 192.168.1.1 dev net1
 
-    exec /opt/dae/daed run
+    sleep 9999
+    exec /opt/dae/dae-linux-x86_64 run -c /etc/dae/config.dae
   |||],
   securityContext: {
     capabilities: { add: ['NET_ADMIN', 'SYS_MODULE', 'SYS_ADMIN'] },
   },
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },
-  ],
-  volumeMounts: [
-    { name: 'data', mountPath: '/etc/daed', subPath: 'dae/config' },
   ],
 }])
 .PodAnnotations({
@@ -43,9 +41,4 @@ app.Base('dae')
 .PodVolumes([
   app.Volumes.mass_storage,
 ])
-.Service({
-  ports: [
-    { name: 'webui', protocol: 'TCP', port: 80, targetPort: 2023 },
-  ],
-})
 .Ingress()

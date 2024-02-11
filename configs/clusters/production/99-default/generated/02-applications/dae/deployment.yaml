@@ -34,7 +34,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "mount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/daed run\n"
+                     "mount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nsleep 9999\nexec /opt/dae/dae-linux-x86_64 run -c /etc/dae/config.dae\n"
                   ],
                   "env": [
                      {
@@ -52,14 +52,7 @@
                            "SYS_ADMIN"
                         ]
                      }
-                  },
-                  "volumeMounts": [
-                     {
-                        "mountPath": "/etc/daed",
-                        "name": "data",
-                        "subPath": "dae/config"
-                     }
-                  ]
+                  }
                }
             ],
             "securityContext": {

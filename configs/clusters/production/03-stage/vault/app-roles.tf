@@ -87,6 +87,23 @@ resource "vault_kubernetes_auth_backend_role" "data_ssh" {
   token_policies                   = ["default", vault_policy.data_ssh.name]
 }
 
+# dae requires proxy information.
+resource "vault_policy" "proxy" {
+  name   = "kubernetes_proxy"
+  policy = <<-EOT
+    path "homeserver/data/dae" {
+      capabilities = ["read"]
+    }
+  EOT
+}
+resource "vault_kubernetes_auth_backend_role" "proxy" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "proxy"
+  bound_service_account_names      = ["dae"]
+  bound_service_account_namespaces = ["default"]
+  token_policies                   = ["default", vault_policy.proxy.name]
+}
+
 # Workspace requires private key for using Git inside.
 resource "vault_policy" "workspace_ssh" {
   name   = "kubernetes_workspace_ssh"

@@ -11,13 +11,13 @@ RUN apt-get install -y --no-install-recommends \
     # Install dea
     mkdir -p /opt/dae && \
     curl -s --fail -L -o /tmp/dae.zip $URL  && \
-    unzip /tmp/dae.zip -d /opt/dae/ && mv /opt/dae/daed-* /opt/dae/daed && chmod +x /opt/dae/daed && \
+    unzip /tmp/dae.zip -d /opt/dae/ \
     # Update geodata
-    mkdir -p /usr/local/share/daed && \
-    curl -L -o /usr/local/share/daed/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
-    curl -L -o /usr/local/share/daed/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat && \
+    mkdir -p /usr/local/share/dae && \
+    curl -L -o /usr/local/share/dae/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
+    curl -L -o /usr/local/share/dae/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat && \
     # Cleanup
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ENTRYPOINT ["dumb-init"]
-CMD ["/opt/dae/daed"]
+CMD ["/opt/dae/dae-linux-x86_64"]

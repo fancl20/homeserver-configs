@@ -6,6 +6,10 @@
       "namespace": "flux-system"
    },
    "spec": {
+      "filterTags": {
+         "extract": "$SEMVER-testing-$PATCH-$TESTING",
+         "pattern": "^v(?P<SEMVER>[0-9.]+)+(?:\\.p)?(?P<PATCH>\\d+)?-testing-(?P<TESTING>.+)$"
+      },
       "imageRepositoryRef": {
          "name": "dae"
       },
