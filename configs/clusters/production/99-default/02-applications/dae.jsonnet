@@ -30,8 +30,8 @@ app.Base('dae')
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {
       name: 'macvlan',
-      ips: ['192.168.1.246/24'],
-      mac: '26:1e:94:c2:23:41',
+      ips: ['192.168.1.245/24'],
+      mac: '26:1e:94:c2:23:40',
       gateway: ['192.168.1.1'],
     },
   ]),
