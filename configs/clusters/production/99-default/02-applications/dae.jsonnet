@@ -62,7 +62,7 @@ app.Base('dae')
 .Config('config.dae', |||
   global {
     lan_interface: net1
-    wan_interface: net1
+    # wan_interface: net1 # https://github.com/daeuniverse/dae/pull/447
 
     log_level: info
     allow_insecure: false
@@ -71,18 +71,21 @@ app.Base('dae')
     auto_config_firewall_rule: true
   }
   dns {
-    ipversion_prefer: 4
     upstream {
-      googledns: 'tcp+udp://8.8.8.8:53'
+      googledns: 'udp+tcp://dns.google.com:53'
     }
     routing {
       request {
         fallback: googledns
       }
+      response {
+        upstream(googledns) -> accept
+        fallback: accept
+      }
     }
   }
   routing{
-    pname(NetworkManager, systemd-resolved) -> direct
+    pname(NetworkManager, systemd-resolved) -> direct(must)
     dip(geoip:private) -> direct
 
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
