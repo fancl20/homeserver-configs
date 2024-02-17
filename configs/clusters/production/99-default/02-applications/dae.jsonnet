@@ -87,7 +87,7 @@ app.Base('dae')
     dip(geoip:private) -> direct
 
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
-    domain(full: log-upload.mihoyo.com, full: sdk-static.mihoyo.com, full: hk4e-sdk.mihoyo.com) -> general
+    domain(full: log-upload.mihoyo.com, full: sdk-static.mihoyo.com, full: hk4e-sdk.mihoyo.com, suffix: yuanshen.com) -> general
 
     fallback: direct
   }
