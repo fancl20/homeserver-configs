@@ -69,7 +69,7 @@ spec:
           serviceAccount: tekton-pipelinerun-cleaner
           containers:
             - name: kubectl
-              image: docker.io/alpine/k8s:1.29.1 # {"$imagepolicy": "flux-system:alpine-k8s"}
+              image: docker.io/alpine/k8s:1.29.2 # {"$imagepolicy": "flux-system:alpine-k8s"}
               env:
                 - name: NUM_TO_KEEP
                   value: "3"
