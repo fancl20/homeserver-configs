@@ -6,7 +6,7 @@ images:
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
   newTag: '9.19' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
-  newTag: '0.6.21-ls254' # {"$imagepolicy": "flux-system:calibre:tag"}
+  newTag: '0.6.21-ls255' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: 'v0.5.1-testing-20240211' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: k8s.gcr.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
