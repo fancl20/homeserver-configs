@@ -16,7 +16,7 @@ images:
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
-  newTag: '4.6.3-r0-ls320' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
+  newTag: '4.6.4-r0-ls321' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '2.8.3' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
