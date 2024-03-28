@@ -25,7 +25,7 @@ routing{
   dip(geoip:private) -> direct
 
   dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
-  domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general
+  domain(suffix: mihoyo.com, suffix: yuanshen.com) -> game
 
   fallback: direct
 }
