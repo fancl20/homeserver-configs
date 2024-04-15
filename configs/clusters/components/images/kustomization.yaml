@@ -20,6 +20,6 @@ images:
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '2.8.3' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '1712067773-testing-20240330' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '1712067773-testing-20240408' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
-  newTag: '202414-testing-20240330' # {"$imagepolicy": "flux-system:workspace:tag"}
+  newTag: '202415-testing-20240408' # {"$imagepolicy": "flux-system:workspace:tag"}
