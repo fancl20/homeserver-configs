@@ -66,6 +66,9 @@ app.Base('dae')
     log_level: info
     allow_insecure: false
 
+    tcp_check_url: 'https://dns.alidns.com/'
+    udp_check_dns: 'dns.alidns.com:53'
+
     auto_config_kernel_parameter: false
     auto_config_firewall_rule: true
   }
