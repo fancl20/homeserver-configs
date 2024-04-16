@@ -97,7 +97,7 @@ app.Base('dae')
       policy: min_moving_avg
     }
     game {
-      filter: name(SG1-SG2-CN2)
+      filter: name(SG1-SG2-CN2-CN3)
       policy: min_moving_avg
     }
   }
