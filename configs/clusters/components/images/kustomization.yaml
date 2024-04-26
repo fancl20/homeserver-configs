@@ -12,7 +12,7 @@ images:
 - name: k8s.gcr.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.13.4' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
-  newTag: 'v1.27.3-testing-20240408' # {"$imagepolicy": "flux-system:fava:tag"}
+  newTag: 'v1.27.3-testing-20240423' # {"$imagepolicy": "flux-system:fava:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
