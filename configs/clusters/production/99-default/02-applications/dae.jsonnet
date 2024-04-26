@@ -89,14 +89,19 @@ app.Base('dae')
   routing{
     dip(geoip:private) -> direct
 
+    domain(full: autopatchcn.yuanshen.com) -> general-sg
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
-    domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general
+    domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general-cn
 
     fallback: direct
   }
   group {
-    general {
+    general-sg {
       filter: name(SG1)
+      policy: min_moving_avg
+    }
+    general-cn {
+      filter: name(SG1-SG2-CN2)
       policy: min_moving_avg
     }
     game {
