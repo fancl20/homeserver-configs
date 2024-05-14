@@ -11,7 +11,7 @@ spec:
     type: string
     default: testing-20240513 # {"$imagepolicy": "flux-system:debian:tag"}
   - name: fetcher_image
-    default: registry.local.d20.fan/fancl20/fetcher:v0.3.0-testing-20240423 # {"$imagepolicy": "flux-system:fetcher"}
+    default: registry.local.d20.fan/fancl20/fetcher:v0.3.0-testing-20240513 # {"$imagepolicy": "flux-system:fetcher"}
     type: string
   workspaces:
   - name: dockerconfig
