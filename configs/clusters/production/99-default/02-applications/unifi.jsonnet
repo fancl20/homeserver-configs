@@ -32,11 +32,7 @@ app.Base('unifi')
 .VaultInjector('unifi', {
   unifi_mongo_pass: {
     path: 'homeserver/data/unifi',
-    template: |||
-      {{ with secret "homeserver/data/unifi" -}}
-      {{ .Data.data.db_password }}
-      {{- end }}
-    |||,
+    template: '{{ with secret "homeserver/data/unifi" -}}{{ .Data.data.db_password }}{{- end }}',
   },
   init_mongo_js: {
     path: 'homeserver/data/unifi',
