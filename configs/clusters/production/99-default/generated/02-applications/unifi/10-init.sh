@@ -1,1 +1,0 @@
-cp /vault/secrets/init_mongo_js /docker-entrypoint-initdb.d/

@@ -20,8 +20,7 @@ app.Base('unifi')
     image: images.mongo,
     volumeMounts: [
       { name: 'data', mountPath: '/data/db', subPath: 'unifi/data/db' },
-      { name: 'config', mountPath: '/docker-entrypoint-initdb.d/10-init.sh', subPath: '10-init.sh' },
-      { name: 'config', mountPath: '/docker-entrypoint-initdb.d/20-init-mongo.js', subPath: '20-init-mongo.js' },
+      { name: 'config', mountPath: '/docker-entrypoint-initdb.d' },
     ],
   },
 ])
@@ -33,19 +32,6 @@ app.Base('unifi')
   unifi_mongo_pass: {
     path: 'homeserver/data/unifi',
     template: '{{ with secret "homeserver/data/unifi" -}}{{ .Data.data.db_password }}{{- end }}',
-  },
-  init_mongo_js: {
-    path: 'homeserver/data/unifi',
-    template: |||
-      db.getSiblingDB("unifi").createUser({
-        user: "unifi",
-        pwd: "{{ .Data.data.db_password }}",
-        roles: [
-          { db: "unifi", role: "dbOwner" },
-          { db: "unifi_stat", role: "dbOwner" }
-        ]
-      });
-    |||,
   },
 })
 .PodAnnotations({
@@ -59,5 +45,18 @@ app.Base('unifi')
   ]),
 })
 .Kustomize()
-.Config('20-init-mongo.js', 'placeholder')
-.Config('10-init.sh', 'cp /vault/secrets/init_mongo_js /docker-entrypoint-initdb.d/')
+.Config('10-init-mongo.sh', |||
+  set -e
+
+  mongo <<EOF
+  use unifi
+  db.createUser({
+    user: 'unifi',
+    pwd: '$(cat /vault/secrets/unifi_mongo_pass)',
+    roles: [
+      { db: 'unifi', role: 'dbOwner' },
+      { db: 'unifi_stat', role: 'dbOwner' },
+    ]
+  })
+  EOF
+|||)
