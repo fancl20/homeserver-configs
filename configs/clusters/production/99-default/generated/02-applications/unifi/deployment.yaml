@@ -1,0 +1,105 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "unifi",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "unifi"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"gateway\": [\n            \"192.168.1.1\"\n        ],\n        \"ips\": [\n            \"192.168.1.246/24\"\n        ],\n        \"mac\": \"26:1e:94:c2:23:41\",\n        \"name\": \"macvlan\"\n    }\n]",
+               "vault.hashicorp.com/agent-init-first": "true",
+               "vault.hashicorp.com/agent-inject": "true",
+               "vault.hashicorp.com/agent-inject-secret-init_mongo_js": "homeserver/data/unifi",
+               "vault.hashicorp.com/agent-inject-secret-unifi_mongo_pass": "homeserver/data/unifi",
+               "vault.hashicorp.com/agent-inject-template-init_mongo_js": "db.getSiblingDB(\"unifi\").createUser({\n  user: \"unifi\",\n  pwd: \"{{ .Data.data.db_password }}\",\n  roles: [\n    { db: \"unifi\", role: \"dbOwner\" },\n    { db: \"unifi_stat\", role: \"dbOwner\" }\n  ]\n});\n",
+               "vault.hashicorp.com/agent-inject-template-unifi_mongo_pass": "{{ with secret \"homeserver/data/unifi\" -}}\n{{ .Data.data.db_password }}\n{{- end }}\n",
+               "vault.hashicorp.com/agent-pre-populate-only": "true",
+               "vault.hashicorp.com/role": "unifi"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "unifi"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     },
+                     {
+                        "name": "MONGO_HOST",
+                        "value": "127.0.0.1"
+                     },
+                     {
+                        "name": "FILE__MONGO_PASS",
+                        "value": "/vault/secrets/unifi_mongo_pass"
+                     }
+                  ],
+                  "image": "lscr.io/linuxserver/unifi-network-application",
+                  "name": "unifi",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "data",
+                        "subPath": "unifi/data/config"
+                     }
+                  ]
+               },
+               {
+                  "image": "docker.io/library/mongo",
+                  "name": "mongo",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/data/db",
+                        "name": "data",
+                        "subPath": "unifi/data/db"
+                     },
+                     {
+                        "mountPath": "/docker-entrypoint-initdb.d/10-init.sh",
+                        "name": "config",
+                        "subPath": "10-init.sh"
+                     },
+                     {
+                        "mountPath": "/docker-entrypoint-initdb.d/20-init-mongo.js",
+                        "name": "config",
+                        "subPath": "20-init-mongo.js"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "unifi",
+            "volumes": [
+               {
+                  "name": "data",
+                  "persistentVolumeClaim": {
+                     "claimName": "mass-storage"
+                  }
+               },
+               {
+                  "configMap": {
+                     "name": "unifi"
+                  },
+                  "name": "config"
+               }
+            ]
+         }
+      }
+   }
+}

@@ -33,6 +33,10 @@ app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
 .Policy(app.DefaultPolicy.LinuxServer('*-1'))
 +
+app.Image('mongo')
+.Repository('docker.io/library/mongo')
+.Policy(app.DefaultPolicy.Semver('4.*'))
++
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')
 .Policy(app.DefaultPolicy.LinuxServer('*-r0'))
@@ -44,6 +48,10 @@ app.Image('registry')
 app.Image('roon')
 .Repository('registry.local.d20.fan/fancl20/roon')
 .Policy({ policy: { alphabetical: { order: 'asc' } } })
++
+app.Image('unifi')
+.Repository('lscr.io/linuxserver/unifi-network-application')
+.Policy(app.DefaultPolicy.LinuxServer())
 +
 app.Image('workspace')
 .Repository('registry.local.d20.fan/fancl20/workspace')

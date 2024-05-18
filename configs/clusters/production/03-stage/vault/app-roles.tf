@@ -104,6 +104,23 @@ resource "vault_kubernetes_auth_backend_role" "proxy" {
   token_policies                   = ["default", vault_policy.proxy.name]
 }
 
+# Unifi requires mongo db password.
+resource "vault_policy" "unifi" {
+  name   = "kubernetes_unifi"
+  policy = <<-EOT
+    path "homeserver/data/unifi" {
+      capabilities = ["read"]
+    }
+  EOT
+}
+resource "vault_kubernetes_auth_backend_role" "unifi" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "unifi"
+  bound_service_account_names      = ["unifi"]
+  bound_service_account_namespaces = ["default"]
+  token_policies                   = ["default", vault_policy.unifi.name]
+}
+
 # Workspace requires private key for using Git inside.
 resource "vault_policy" "workspace_ssh" {
   name   = "kubernetes_workspace_ssh"
