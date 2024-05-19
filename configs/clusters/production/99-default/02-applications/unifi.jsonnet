@@ -9,6 +9,9 @@ app.Base('unifi')
     env: [
       { name: 'TZ', value: 'Australia/Sydney' },
       { name: 'MONGO_HOST', value: '127.0.0.1' },
+      { name: 'MONGO_PORT', value: '27017' },
+      { name: 'MONGO_DBNAME', value: 'unifi' },
+      { name: 'MONGO_USER', value: 'unifi' },
       { name: 'FILE__MONGO_PASS', value: '/vault/secrets/unifi_mongo_pass' },
     ],
     volumeMounts: [
