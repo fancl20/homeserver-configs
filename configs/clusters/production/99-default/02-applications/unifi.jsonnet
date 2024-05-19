@@ -47,6 +47,16 @@ app.Base('unifi')
     },
   ]),
 })
+.Service({
+  ports: [
+    { name: 'webui', protocol: 'TCP', port: 443, targetPort: 8443 },
+  ],
+})
+.Ingress(port=443, metadata={
+  annotations: {
+    'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS',
+  },
+})
 .Kustomize()
 .Config('10-init-mongo.sh', |||
   set -e

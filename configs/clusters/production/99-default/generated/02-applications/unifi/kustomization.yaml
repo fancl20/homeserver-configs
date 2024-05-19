@@ -12,6 +12,8 @@
    "kind": "Kustomization",
    "resources": [
       "deployment.yaml",
+      "ingress.yaml",
+      "service_unifi.yaml",
       "serviceaccount.yaml"
    ]
 }
