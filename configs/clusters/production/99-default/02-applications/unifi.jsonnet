@@ -21,6 +21,7 @@ app.Base('unifi')
   {
     name: 'mongo',
     image: images.mongo,
+    command: ['mongod', '--bind_ip', '127.0.0.1'],
     volumeMounts: [
       { name: 'data', mountPath: '/data/db', subPath: 'unifi/data/db' },
       { name: 'config', mountPath: '/docker-entrypoint-initdb.d' },

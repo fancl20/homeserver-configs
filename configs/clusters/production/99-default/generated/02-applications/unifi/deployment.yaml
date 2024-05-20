@@ -73,6 +73,11 @@
                   ]
                },
                {
+                  "command": [
+                     "mongod",
+                     "--bind_ip",
+                     "127.0.0.1"
+                  ],
                   "image": "docker.io/library/mongo",
                   "name": "mongo",
                   "volumeMounts": [
