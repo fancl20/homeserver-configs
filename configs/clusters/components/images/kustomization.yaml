@@ -8,7 +8,7 @@ images:
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
   newTag: '0.6.21-ls270' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
-  newTag: 'v0.6.0-testing-20240513' # {"$imagepolicy": "flux-system:dae:tag"}
+  newTag: 'v0.6.0-testing-20240612' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: k8s.gcr.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.13.4' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
