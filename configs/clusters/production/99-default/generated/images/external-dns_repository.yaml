@@ -6,7 +6,7 @@
       "namespace": "flux-system"
    },
    "spec": {
-      "image": "k8s.gcr.io/external-dns/external-dns",
+      "image": "registry.k8s.io/external-dns/external-dns",
       "interval": "1h"
    }
 }
