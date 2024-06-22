@@ -20,14 +20,7 @@
       },
       "template": {
          "metadata": {
-            "annotations": {
-               "vault.hashicorp.com/agent-init-first": "true",
-               "vault.hashicorp.com/agent-inject": "true",
-               "vault.hashicorp.com/agent-inject-secret-env": "homeserver/data/bind9",
-               "vault.hashicorp.com/agent-inject-template-env": "{{ with secret \"homeserver/data/bind9\" -}}\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET=\"{{ .Data.data.externaldns_key_secret }}\"\nexport EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG=\"{{ .Data.data.externaldns_key_algorithm }}\"\n{{- end }}\n",
-               "vault.hashicorp.com/agent-pre-populate-only": "true",
-               "vault.hashicorp.com/role": "external_dns"
-            },
+            "annotations": { },
             "labels": {
                "app.kubernetes.io/name": "external-dns"
             }
@@ -35,13 +28,28 @@
          "spec": {
             "containers": [
                {
-                  "command": [
-                     "/bin/sh",
-                     "-e",
-                     "-c",
-                     "source /vault/secrets/env && exec /bin/external-dns \\\n  --registry=txt \\\n  --txt-prefix=external-dns- \\\n  --txt-owner-id=k8s \\\n  --provider=rfc2136 \\\n  --rfc2136-host=bind9.default \\\n  --rfc2136-port=53 \\\n  --rfc2136-zone=local.d20.fan \\\n  --rfc2136-tsig-keyname=externaldns-key \\\n  --rfc2136-tsig-axfr \\\n  --source=service \\\n  --source=ingress \\\n  --domain-filter=local.d20.fan\n"
+                  "args": [
+                     "--registry=txt",
+                     "--txt-prefix=external-dns-",
+                     "--txt-owner-id=k8s",
+                     "--provider=rfc2136",
+                     "--rfc2136-host=bind9.default",
+                     "--rfc2136-port=53",
+                     "--rfc2136-zone=local.d20.fan",
+                     "--rfc2136-tsig-keyname=externaldns-key",
+                     "--rfc2136-tsig-axfr",
+                     "--source=service",
+                     "--source=ingress",
+                     "--domain-filter=local.d20.fan"
                   ],
-                  "image": "k8s.gcr.io/external-dns/external-dns",
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "external-dns"
+                        }
+                     }
+                  ],
+                  "image": "registry.k8s.io/external-dns/external-dns",
                   "name": "external-dns",
                   "resources": {
                      "limits": {

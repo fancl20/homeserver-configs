@@ -23,7 +23,7 @@ app.Image('dae')
 +
 app.Image('external-dns')
 .Repository('registry.k8s.io/external-dns/external-dns')
-.Policy(app.DefaultPolicy.Semver('>=0.14.0'))  // Workaround for https://github.com/fancl20/homeserver-configs/commit/3f3d5f3d037a5084320de1971c1e138b3b3c1b3b
+.Policy(app.DefaultPolicy.Semver())
 +
 app.Image('fava')
 .Repository('registry.local.d20.fan/fancl20/fava')
