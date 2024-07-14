@@ -56,7 +56,7 @@ def main():
 
   # Argo Workflows
   get_url(
-      pathlib.Path('00-stage', 'argo-workflows', 'workflows.yaml'),
+      pathlib.Path('00-stage', 'argo', 'workflows.yaml'),
       {
           a['name']: a['browser_download_url']
           for a in github_latest('argoproj/argo-workflows')['assets']
