@@ -9,6 +9,9 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/args/1
       value: --auth-mode=server
+    - op: add
+      path: /spec/template/spec/containers/0/args/2
+      value: --access-control-allow-origin=*
   target:
     kind: Deployment
     name: argo-server
