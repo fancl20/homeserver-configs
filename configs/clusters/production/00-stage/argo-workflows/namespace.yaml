@@ -1,0 +1,10 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: argo
+#---
+#kind: Namespace
+#apiVersion: v1
+#metadata:
+#  name: continuous
