@@ -45,7 +45,7 @@ spec:
       securityContext:
         runAsUser: 0
     - name: write-url
-      image: docker.io/library/bash:5.2.26 # {"$imagepolicy": "flux-system:bash"}
+      image: docker.io/library/bash:5.2.32 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
         image="$(params.IMAGE)"
