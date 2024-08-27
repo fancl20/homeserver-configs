@@ -4,7 +4,7 @@ images:
 - name: lscr.io/linuxserver/beets # {"$imagepolicy": "flux-system:beets:name"}
   newTag: '2.0.0-ls232' # {"$imagepolicy": "flux-system:beets:tag"}
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
-  newTag: '9.20' # {"$imagepolicy": "flux-system:bind9:tag"}
+  newTag: '9.21' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
   newTag: '0.6.23-ls287' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
