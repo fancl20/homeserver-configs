@@ -7,7 +7,7 @@
    },
    "spec": {
       "filterTags": {
-         "pattern": ".*-ls"
+         "pattern": ".*-ls\\d{3,}"
       },
       "imageRepositoryRef": {
          "name": "jellyfin"

@@ -10,7 +10,7 @@ app.Image('bind9')
 +
 app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
-.Policy(app.DefaultPolicy.LinuxServer())
+.Policy(app.DefaultPolicy.LinuxServer(pattern='.*-ls\\d{3,}'))
 +
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')
@@ -31,7 +31,7 @@ app.Image('fava')
 +
 app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
-.Policy(app.DefaultPolicy.LinuxServer('*-1'))
+.Policy(app.DefaultPolicy.LinuxServer('*-1', pattern='.*-ls\\d{3,}'))
 +
 app.Image('mongo')
 .Repository('docker.io/library/mongo')
