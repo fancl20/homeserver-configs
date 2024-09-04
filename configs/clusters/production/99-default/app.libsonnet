@@ -9,11 +9,12 @@
   },
 
   DefaultPolicy:: {
-    LinuxServer(range='*', filters=null):: {
+    LinuxServer(range='*', pattern='.*-ls'):: {
+      filterTags: { pattern: pattern },
       policy: {
         semver: { range: range + '-ls' },
       },
-    } + if filters != null then { filterTags: filters } else {},
+    },
     Semver(range='*'):: {
       policy: {
         semver: { range: range },
