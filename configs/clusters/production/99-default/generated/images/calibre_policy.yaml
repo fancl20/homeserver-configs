@@ -6,9 +6,6 @@
       "namespace": "flux-system"
    },
    "spec": {
-      "filterTags": {
-         "pattern": ".*-ls\\d{3,}"
-      },
       "imageRepositoryRef": {
          "name": "calibre"
       },
