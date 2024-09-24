@@ -17,7 +17,7 @@ spec:
         - $(params.ARGS)
       onError: continue
     - name: write-output
-      image: docker.io/library/bash:5.2.32 # {"$imagepolicy": "flux-system:bash"}
+      image: docker.io/library/bash:5.2.37 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
         cat "$(steps.step-crane.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
