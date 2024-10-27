@@ -26,4 +26,4 @@ images:
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '8.5.6-ls68' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
-  newTag: '202442-testing-20241016' # {"$imagepolicy": "flux-system:workspace:tag"}
+  newTag: '202443-testing-20241016' # {"$imagepolicy": "flux-system:workspace:tag"}
