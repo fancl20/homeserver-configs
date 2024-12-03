@@ -9,7 +9,7 @@ spec:
     type: string
   - name: base_tag
     type: string
-    default: testing-20241111 # {"$imagepolicy": "flux-system:debian:tag"}
+    default: testing-20241202 # {"$imagepolicy": "flux-system:debian:tag"}
   - name: fetcher_image
     default: registry.local.d20.fan/fancl20/fetcher:v0.3.0-testing-20241111 # {"$imagepolicy": "flux-system:fetcher"}
     type: string
