@@ -18,8 +18,7 @@ spec:
     serviceCIDR: 10.96.0.0/12
     provider: kuberouter
     kubeProxy:
-      disabled: false
-      mode: iptables
+      mode: nftables
   podSecurityPolicy:
     defaultPolicy: 00-k0s-privileged
   telemetry:
