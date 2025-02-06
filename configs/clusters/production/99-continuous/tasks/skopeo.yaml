@@ -12,7 +12,7 @@ spec:
     - name: EXIT_CODE
   steps:
     - name: skopeo
-      image: quay.io/skopeo/stable:v1.13.3 # {"$imagepolicy": "flux-system:skopeo"}
+      image: quay.io/skopeo/stable:v1.17.0 # {"$imagepolicy": "flux-system:skopeo"}
       args:
         - $(params.ARGS)
       onError: continue
