@@ -28,12 +28,12 @@ spec:
       value: $(params.fetcher_image)
   - name: check-tag
     taskRef:
-      name: crane
+      name: skopeo
     params:
     - name: ARGS
       value:
-      - manifest
-      - registry.local.d20.fan/fancl20/$(params.image):$(tasks.fetch-latest.results.VERSION)-$(params.base_tag)
+      - inspect
+      - docker://registry.local.d20.fan/fancl20/$(params.image):$(tasks.fetch-latest.results.VERSION)-$(params.base_tag)
   - name: build-push
     when:
     - input: $(tasks.check-tag.results.EXIT_CODE)

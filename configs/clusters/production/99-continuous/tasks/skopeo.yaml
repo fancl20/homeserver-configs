@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: crane
+  name: skopeo
   namespace: continuous
 spec:
   params:
@@ -11,8 +11,8 @@ spec:
   results:
     - name: EXIT_CODE
   steps:
-    - name: crane
-      image: gcr.io/go-containerregistry/crane:v0.15.2 # {"$imagepolicy": "flux-system:crane"}
+    - name: skopeo
+      image: quay.io/skopeo/stable:v1.13.3 # {"$imagepolicy": "flux-system:skopeo"}
       args:
         - $(params.ARGS)
       onError: continue
@@ -20,25 +20,25 @@ spec:
       image: docker.io/library/bash:5.2.37 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
-        cat "$(steps.step-crane.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
+        cat "$(steps.skopeo.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  name: crane
+  name: skopeo
   namespace: flux-system
 spec:
-  image: gcr.io/go-containerregistry/crane
+  image: quay.io/skopeo/stable
   interval: 1h
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
-  name: crane
+  name: skopeo
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: crane
+    name: skopeo
   policy:
     semver:
       range: "*"
