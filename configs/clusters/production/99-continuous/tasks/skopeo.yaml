@@ -20,7 +20,7 @@ spec:
       image: docker.io/library/bash:5.2.37 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
-        cat "$(steps.skopeo.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
+        cat "$(steps.step-skopeo.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
