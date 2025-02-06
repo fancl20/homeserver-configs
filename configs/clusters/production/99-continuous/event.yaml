@@ -117,6 +117,27 @@ spec:
         spec:
           containers:
           - name: images-build-push
-            image: curlimages/curl
+            image: curlimages/curl  # {"$imagepolicy": "flux-system:curl"}
             args: ["curl", "-X", "POST", "--data", "{}", "el-images-build-push.continuous.svc.cluster.local:8080"]
           restartPolicy: Never
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: curl
+  namespace: flux-system
+spec:
+  image: curlimages/curl
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: curl
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: curl
+  policy:
+    semver:
+      range: "*"
