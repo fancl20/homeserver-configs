@@ -116,7 +116,7 @@ spec:
         spec:
           containers:
           - name: images-build-push
-            image: quay.io/curl/curl:8.12.0 # {"$imagepolicy": "flux-system:curl"}
+            image: quay.io/curl/curl:8.12.1 # {"$imagepolicy": "flux-system:curl"}
             args: ["curl", "-X", "POST", "--data", "{}", "el-images-build-push.continuous.svc.cluster.local:8080"]
           restartPolicy: Never
 ---
