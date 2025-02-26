@@ -12,7 +12,7 @@ images:
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.15.1' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
-  newTag: 'v1.30.1-testing-20250203' # {"$imagepolicy": "flux-system:fava:tag"}
+  newTag: 'v1.30.1-testing-20250224' # {"$imagepolicy": "flux-system:fava:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
@@ -22,8 +22,8 @@ images:
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '2.8.3' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '1740081172-testing-20250203' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '1740081172-testing-20250224' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '9.0.114-ls81' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
-  newTag: '202508-testing-20250203' # {"$imagepolicy": "flux-system:workspace:tag"}
+  newTag: '202508-testing-20250224' # {"$imagepolicy": "flux-system:workspace:tag"}
