@@ -10,13 +10,18 @@ ENV PIPX_HOME=/opt/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 
 RUN apt-get install -y \
-        dumb-init openssh-server curl wget vim git jq fish build-essential python3-dev python3-venv pipx && \
-    mkdir /var/run/sshd && \
-    # Install commonly used cross projects' dependencies
-    curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
-    apt-get install -y \
-    clang cmake make pkg-config \
-    golang nodejs && \
+        dumb-init openssh-server \
+        curl wget vim git jq fish \
+        python3-dev python3-venv pipx \
+        build-essential make pkg-config clang cmake golang && \
+    mkdir /var/run/sshd
+
+# Invalidate cache
+ENV _VERSION=$VERSION
+
+# Install commonly used cross projects' dependencies
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
+    apt-get install -y nodejs && \
     # Install jsonnet
     GOBIN=/opt/jsonnet go install github.com/google/go-jsonnet/cmd/jsonnet@latest && \
     ln -s /opt/jsonnet/jsonnet /usr/local/bin/ && \
