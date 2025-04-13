@@ -1,0 +1,41 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 1h0s
+  url: https://kubernetes.github.io/ingress-nginx
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: ingress-nginx
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+  values:
+    controller:
+      extraArgs:
+        default-ssl-certificate: cert-manager/d20-fan-tls
+      config:
+        enable-real-ip: "true"
+        proxy-buffer-size: "16k"
+        proxy-body-size: "4G"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+      watchIngressWithoutClass: true
