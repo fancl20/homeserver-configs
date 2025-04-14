@@ -9,18 +9,6 @@ import tarfile
 import urllib.request
 
 
-def install_flux(dst: pathlib.Path):
-  if dst.joinpath('flux').exists():
-    return
-  with urllib.request.urlopen('https://api.github.com/repos/fluxcd/flux2/releases/latest') as r:
-    for a in json.load(r)['assets']:
-      if 'linux_amd64' in a['name']:
-        u = a['browser_download_url']
-  with urllib.request.urlopen(u) as r:
-    with tarfile.open(fileobj=r, mode='r|*') as z:
-      z.extractall(dst)
-
-
 def get_url(dst: pathlib.Path, url: str):
   with dst.open('wb') as f:
     with urllib.request.urlopen(url) as r:
