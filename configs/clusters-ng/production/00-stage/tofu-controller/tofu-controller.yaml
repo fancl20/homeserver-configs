@@ -21,6 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: tofu-controller
+      version: '0.16.0-rc.5' # remove this after 0.16.0 released
   install:
     crds: Create
     remediation:
