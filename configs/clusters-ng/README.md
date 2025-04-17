@@ -15,7 +15,15 @@ kubectl -n one-password create secret generic op-credentials --from-file=1passwo
 kubectl -n one-password create secret generic onepassword-token --from-literal=token=$(op connect token create --server homeserver --vault Cluster onepassword-operator)
 ```
 
-## Bootstrapping Flux
+## Bootstrapping
+### Flux
 ```bash
-./production/bootstrap.sh
+cd production && ./bootstrap.sh
+```
+
+## Vault
+```bash
+# Initialize vault and store vault root token
+kubectl --namespace=vault exec -it vault-0 -- /bin/sh -e -c '/bin/vault operator init'
+(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo tee /root/.vault-token > /dev/null)
 ```
