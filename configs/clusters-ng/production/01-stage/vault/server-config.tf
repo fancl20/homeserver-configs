@@ -9,7 +9,7 @@ resource "google_storage_bucket" "vault_storage" {
 resource "kubernetes_config_map" "server_config" {
   metadata {
     name      = "vault-helm-chart-value-overrides"
-    namespace = kubernetes_namespace.vault.metadata[0].name
+    namespace = data.kubernetes_namespace.vault.metadata[0].name
   }
   data = {
     "values.yaml" = yamlencode({
