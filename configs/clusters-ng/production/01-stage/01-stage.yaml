@@ -14,7 +14,7 @@ spec:
     kind: GitRepository
     name: configs
   healthChecks:
-  # vault configs
+  # vault dependencies
   - apiVersion: v1
     kind: Secret
     name: vault-storage-key
@@ -23,6 +23,15 @@ spec:
     kind: ConfigMap
     name: vault-helm-chart-value-overrides
     namespace: vault
+  # 1password dependencies
+  - apiVersion: v1
+    kind: Secret
+    name: op-credentials
+    namespace: one-password
+  - apiVersion: v1
+    kind: Secret
+    name: onepassword-token
+    namespace: one-password
   # ingress-nginx
   - apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease

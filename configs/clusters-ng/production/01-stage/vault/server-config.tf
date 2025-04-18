@@ -13,9 +13,6 @@ resource "kubernetes_config_map" "server_config" {
   }
   data = {
     "values.yaml" = yamlencode({
-      global = {
-        enable = false
-      }
       server = {
         enabled = true
         extraEnvironmentVars = {
@@ -55,6 +52,9 @@ resource "kubernetes_config_map" "server_config" {
         service = {
           enabled = true
         }
+        dataStorage = {
+          enabled = false
+        }
         ingress = {
           enabled = true
           annotations = {
@@ -67,6 +67,9 @@ resource "kubernetes_config_map" "server_config" {
             hosts = ["vault.local.d20.fan"]
           }]
         }
+      }
+      injector = {
+        enabled = false
       }
       ui = {
         enabled = true
