@@ -24,7 +24,7 @@ cd production && ./bootstrap.sh
 Initialize vault and store vault root token
 ```bash
 kubectl --namespace=vault exec -it vault-0 -- /bin/sh -e -c '/bin/vault operator init'
-(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo tee /root/.vault-token > /dev/null)
+bash -c '(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo tee ~/.vault-token > /dev/null)'
 ```
 
 ### 1Password

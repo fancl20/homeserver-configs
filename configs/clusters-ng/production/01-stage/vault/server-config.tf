@@ -18,16 +18,16 @@ resource "kubernetes_config_map" "server_config" {
         extraEnvironmentVars = {
           GOOGLE_APPLICATION_CREDENTIALS = "/etc/secrets/vault-storage/key.json"
         }
-        volumeMounts = [{
-          name      = "vault-storage"
-          mountPath = "/etc/secrets/vault-storage"
-          readOnly  = true
-        }]
         volumes = [{
           name = "vault-storage"
           secret = {
             secretName = "${kubernetes_secret.vault_storage_key.metadata[0].name}"
           }
+        }]
+        volumeMounts = [{
+          name      = "vault-storage"
+          mountPath = "/etc/secrets/vault-storage"
+          readOnly  = true
         }]
         standalone = {
           enabled = true
@@ -49,11 +49,11 @@ resource "kubernetes_config_map" "server_config" {
             }
           EOT
         }
-        service = {
-          enabled = true
-        }
         dataStorage = {
           enabled = false
+        }
+        service = {
+          enabled = true
         }
         ingress = {
           enabled = true

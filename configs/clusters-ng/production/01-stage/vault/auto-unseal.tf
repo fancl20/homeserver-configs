@@ -9,6 +9,7 @@ resource "google_project_iam_member" "vault_storage" {
   role    = each.key
   member  = "serviceAccount:${google_service_account.vault_storage.email}"
   for_each = toset([
+    "roles/cloudkms.viewer",
     "roles/cloudkms.cryptoKeyEncrypterDecrypter",
     "roles/storage.objectUser",
   ])
