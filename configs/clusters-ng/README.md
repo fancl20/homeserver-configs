@@ -34,3 +34,9 @@ bash -c '(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo 
 kubectl -n one-password create secret generic op-credentials --from-file=1password-credentials.json=./1password-credentials.json
 kubectl -n one-password create secret generic onepassword-token --from-literal=token=$(op connect token create --server homeserver --vault Cluster onepassword-operator)
 ```
+
+### Terraform
+```bash
+kubectl --namespace=vault port-forward services/vault 8200:8200 & # From stage-02
+VAULT_ADDR="http://127.0.0.1:8200" terraform apply
+```
