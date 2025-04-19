@@ -31,7 +31,7 @@ bash -c '(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo 
 ```bash
 # op connect server create homeserver --vaults Cluster
 # eval $(op signin)
-kubectl -n one-password create secret generic op-credentials --from-file=1password-credentials.json=./1password-credentials.json
+kubectl -n one-password create secret generic op-credentials --from-literal=1password-credentials.json="$(base64 ./1password-credentials.json)"
 kubectl -n one-password create secret generic onepassword-token --from-literal=token=$(op connect token create --server homeserver --vault Cluster onepassword-operator)
 ```
 
