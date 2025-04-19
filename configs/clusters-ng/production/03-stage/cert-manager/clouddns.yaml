@@ -1,0 +1,31 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: cert_manager
+    serviceAccount: cert-manager
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultDynamicSecret
+metadata:
+  name: clouddns
+  namespace: cert-manager
+spec:
+  vaultAuthRef: cert-manager
+  mount: gcp
+  path: roleset/cert-manager/key
+  destination:
+    create: true
+    name: clouddns-dns01-solver-svc-acct
+    transformation:
+      excludes:
+      - .*
+      templates:
+        service-account.json:
+          text: '{{ get .Secrets "private_key_data" | b64dec }}'

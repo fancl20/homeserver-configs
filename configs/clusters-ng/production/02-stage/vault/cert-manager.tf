@@ -2,7 +2,7 @@
 resource "vault_policy" "cert_manager" {
   name   = "kubernetes_cert_manager"
   policy = <<-EOT
-    path "gcp/roleset/cert_manager/key" {
+    path "gcp/roleset/cert-manager/key" {
       capabilities = ["create", "read", "update"]
     }
   EOT

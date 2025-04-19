@@ -31,9 +31,9 @@ spec:
       extraArgs:
         default-ssl-certificate: cert-manager/d20-fan-tls
       config:
-        enable-real-ip: "true"
-        proxy-buffer-size: "16k"
-        proxy-body-size: "4G"
+        enable-real-ip: 'true'
+        proxy-buffer-size: '16k'
+        proxy-body-size: '4G'
       resources:
         requests:
           cpu: 100m
