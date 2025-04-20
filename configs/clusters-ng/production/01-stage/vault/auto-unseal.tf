@@ -20,16 +20,10 @@ resource "google_service_account_key" "vault_storage" {
   public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
-data "kubernetes_namespace" "vault" {
-  metadata {
-    name = "vault"
-  }
-}
-
 resource "kubernetes_secret" "vault_storage_key" {
   metadata {
     name      = "vault-storage-key"
-    namespace = data.kubernetes_namespace.vault.metadata[0].name
+    namespace = "vault"
   }
   data = {
     "key.json" = base64decode(google_service_account_key.vault_storage.private_key)
