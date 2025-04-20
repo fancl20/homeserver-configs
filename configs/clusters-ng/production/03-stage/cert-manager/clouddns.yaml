@@ -1,31 +1,40 @@
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultAuth
-metadata:
-  name: cert-manager
-  namespace: cert-manager
-spec:
-  method: kubernetes
-  mount: kubernetes
-  kubernetes:
-    role: cert_manager
-    serviceAccount: cert-manager
----
-apiVersion: secrets.hashicorp.com/v1beta1
+apiVersion: generators.external-secrets.io/v1alpha1
 kind: VaultDynamicSecret
 metadata:
   name: clouddns
   namespace: cert-manager
 spec:
-  vaultAuthRef: cert-manager
-  mount: gcp
-  path: roleset/cert-manager/key
-  destination:
-    create: true
+  path: "/gcp/roleset/cert-manager/key"
+  method: "POST"
+  parameters:
+    ttl: 24h
+  provider:
+    server: http://vault.vault.svc:8200/
+    auth:
+      kubernetes:
+        mountPath: kubernetes
+        role: cert_manager
+        serviceAccountRef:
+          name: cert-manager
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: clouddns
+  namespace: cert-manager
+spec:
+  refreshInterval: 20h
+  target:
     name: clouddns-dns01-solver-svc-acct
-    transformation:
-      excludes:
-      - .*
-      templates:
-        service-account.json:
-          text: '{{ get .Secrets "private_key_data" | b64dec }}'
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        service-account.json: "{{ .private_key_data | b64dec }}"
+  dataFrom:
+  - sourceRef:
+      generatorRef:
+        apiVersion: generators.external-secrets.io/v1alpha1
+        kind: VaultDynamicSecret
+        name: clouddns
