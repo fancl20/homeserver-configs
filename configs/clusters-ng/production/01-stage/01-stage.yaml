@@ -32,11 +32,11 @@ spec:
   - apiVersion: v1
     kind: Secret
     name: op-credentials
-    namespace: one-password
+    namespace: onepassword
   - apiVersion: v1
     kind: Secret
     name: onepassword-token
-    namespace: one-password
+    namespace: onepassword
   # ingress-nginx
   - apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
