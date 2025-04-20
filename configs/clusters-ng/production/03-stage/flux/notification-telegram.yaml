@@ -2,7 +2,7 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: slack-token
+  name: telegram-token
   namespace: flux-system
 spec:
   refreshInterval: 1m
@@ -10,33 +10,37 @@ spec:
     name: onepassword
     kind: ClusterSecretStore
   target:
-    name: slack-token
+    name: telegram-token
     creationPolicy: Owner
   dataFrom:
   - extract:
-      key: Slack Token
+      key: Telegram Bot Token
       property: credential
+    rewrite:
+    - regexp:
+        source: '.*'
+        target: 'token'
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
 metadata:
-  name: slack
+  name: telegram
   namespace: flux-system
 spec:
-  type: slack
-  channel: notifications
-  address: https://slack.com/api/chat.postMessage
+  type: telegram
+  address: https://api.telegram.org
+  channel: '@fancl20_cluster'
   secretRef:
-    name: slack-token
+    name: telegram-token
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
-  name: slack
+  name: telegram
   namespace: flux-system
 spec:
   providerRef:
-    name: slack
+    name: telegram
   eventSeverity: info
   eventSources:
   - kind: GitRepository
