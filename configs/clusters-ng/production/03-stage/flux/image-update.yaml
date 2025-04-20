@@ -1,10 +1,21 @@
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
   name: configs
   namespace: flux-system
 spec:
-  itemPath: 'vaults/Cluster/items/Github Token'
+  refreshInterval: 1m
+  secretStoreRef:
+    name: onepassword
+    kind: ClusterSecretStore
+  target:
+    name: configs
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: Github Token
+      property: credential
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation

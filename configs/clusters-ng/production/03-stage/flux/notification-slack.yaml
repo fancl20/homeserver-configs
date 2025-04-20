@@ -16,36 +16,36 @@ spec:
   - extract:
       key: Slack Token
       property: credential
-#---
-#apiVersion: notification.toolkit.fluxcd.io/v1beta3
-#kind: Provider
-#metadata:
-#  name: slack
-#  namespace: flux-system
-#spec:
-#  type: slack
-#  channel: notifications
-#  address: https://slack.com/api/chat.postMessage
-#  secretRef:
-#    name: slack-token
-#---
-#apiVersion: notification.toolkit.fluxcd.io/v1beta3
-#kind: Alert
-#metadata:
-#  name: slack
-#  namespace: flux-system
-#spec:
-#  providerRef:
-#    name: slack
-#  eventSeverity: info
-#  eventSources:
-#  - kind: GitRepository
-#    name: '*'
-#  - kind: Kustomization
-#    name: '*'
-#  - kind: HelmRelease
-#    name: '*'
-#  - kind: Terraform
-#    name: '*'
-#  exclusionList:
-#  - "^Dependencies.*" # https://github.com/fluxcd/kustomize-controller/issues/492
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: slack
+  namespace: flux-system
+spec:
+  type: slack
+  channel: notifications
+  address: https://slack.com/api/chat.postMessage
+  secretRef:
+    name: slack-token
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: slack
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: info
+  eventSources:
+  - kind: GitRepository
+    name: '*'
+  - kind: Kustomization
+    name: '*'
+  - kind: HelmRelease
+    name: '*'
+  - kind: Terraform
+    name: '*'
+  exclusionList:
+  - "^Dependencies.*" # https://github.com/fluxcd/kustomize-controller/issues/492
