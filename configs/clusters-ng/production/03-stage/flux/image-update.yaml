@@ -15,11 +15,10 @@ spec:
   dataFrom:
   - extract:
       key: Github Token
-      property: credential
     rewrite:
     - regexp:
-        source: '.*'
-        target: 'github_pat'
+        source: credential
+        target: password
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation

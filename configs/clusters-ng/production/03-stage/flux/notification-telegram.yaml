@@ -18,8 +18,8 @@ spec:
       property: credential
     rewrite:
     - regexp:
-        source: '.*'
-        target: 'token'
+        source: credential
+        target: token
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
