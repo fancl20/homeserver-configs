@@ -16,15 +16,15 @@ spec:
   healthChecks:
   # Flux / Tofu Autumation
   - apiVersion: v1
-    kind: Secrets
+    kind: Secret
     name: tf-runner
     namespace: flux-system
   - apiVersion: v1
-    kind: Secrets
+    kind: Secret
     name: telegram-token
     namespace: flux-system
   # SSL Certificate
   - apiVersion: v1
-    kind: Secrets
+    kind: Secret
     name: d20-fan-tls
     namespace: cert-manager

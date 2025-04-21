@@ -19,7 +19,7 @@ spec:
     rewrite:
     - regexp:
         source: '.*'
-        target: 'token'
+        target: 'github_pat'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
