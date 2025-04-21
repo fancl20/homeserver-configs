@@ -13,11 +13,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: configs
-  #components:
-  #  - ../../components/terraform
-  #postBuild:
-  #  substitute:
-  #    layer_name: 03-stage
   healthChecks:
   # vault
   - apiVersion: apps/v1

@@ -1,0 +1,30 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 04-stage
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: 03-stage
+  interval: 15m
+  path: ./configs/clusters-ng/production/04-stage
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  healthChecks:
+  # Flux / Tofu Autumation
+  - apiVersion: v1
+    kind: Secrets
+    name: tf-runner
+    namespace: flux-system
+  - apiVersion: v1
+    kind: Secrets
+    name: telegram-token
+    namespace: flux-system
+  # SSL Certificate
+  - apiVersion: v1
+    kind: Secrets
+    name: d20-fan-tls
+    namespace: cert-manager
