@@ -17,6 +17,8 @@ metadata:
 spec:
   imageRepositoryRef:
     name: tf-runner
+  filterTags:
+    pattern: '.*-rc\.\d+$'
   policy:
     semver:
-      range: "*"
+      range: '*-rc'
