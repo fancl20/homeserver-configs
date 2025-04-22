@@ -8,6 +8,9 @@ metadata:
 spec:
   image: ghcr.io/flux-iac/tf-runner
   interval: 1h
+  exclusionList:
+    - '^.*\.sig$'
+    - '^.*-base$'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
@@ -17,8 +20,6 @@ metadata:
 spec:
   imageRepositoryRef:
     name: tf-runner
-  filterTags:
-    pattern: '.*-rc\.\d+$'
   policy:
     semver:
       range: '*-rc'
