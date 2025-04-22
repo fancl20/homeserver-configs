@@ -2,6 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 images:
 - name: ghcr.io/flux-iac/tf-runner # {"$imagepolicy": "flux-system:tf-runner:name"}
-  newTag: v0.16.0-rc.5 # {"$imagepolicy": "flux-system:tf-runner:tag"}
+  newTag: v0.16.0-rc.3-tf-1.6.0-beta2-bsl # {"$imagepolicy": "flux-system:tf-runner:tag"}
 resources:
 - terraform.yaml
