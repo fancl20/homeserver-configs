@@ -20,6 +20,9 @@ metadata:
 spec:
   imageRepositoryRef:
     name: tf-runner
+  filterTags:
+    pattern: '(?P<semver>.*)-rc\.(?P<rcver>\d+)$'
+    extract: '$semver-rc$rcver'
   policy:
     semver:
       range: '*-rc'
