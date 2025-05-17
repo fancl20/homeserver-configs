@@ -42,7 +42,7 @@ app.Base('external-dns')
 .ClusterRoleBinding()
 + {
   'secretstore.yaml': {
-    apiVersion: 'external-secrets.io/v1beta1',
+    apiVersion: 'external-secrets.io/v1',
     kind: 'SecretStore',
     metadata: {
       name: 'external-dns',
@@ -65,7 +65,7 @@ app.Base('external-dns')
     },
   },
   'externalsecret.yaml': {
-    apiVersion: 'external-secrets.io/v1beta1',
+    apiVersion: 'external-secrets.io/v1',
     kind: 'ExternalSecret',
     metadata: {
       name: 'external-dns',
