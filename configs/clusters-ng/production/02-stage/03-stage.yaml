@@ -2,13 +2,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: 04-stage
+  name: 03-stage
   namespace: flux-system
 spec:
   dependsOn:
-  - name: 03-stage
+  - name: 02-stage
   interval: 15m
-  path: ./configs/clusters-ng/production/04-stage
+  path: ./configs/clusters-ng/production/03-stage
   prune: true
   sourceRef:
     kind: GitRepository
