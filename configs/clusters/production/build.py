@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import json
 import os
@@ -18,8 +18,18 @@ def install_flux(dst: pathlib.Path):
         u = a['browser_download_url']
   with urllib.request.urlopen(u) as r:
     with tarfile.open(fileobj=r, mode='r|*') as z:
-      z.extractall(dst)
+      z.extractall(dst, filter='data')
 
+def install_jsonnet(dst: pathlib.Path):
+  if dst.joinpath('jsonnet').exists():
+    return
+  with urllib.request.urlopen('https://api.github.com/repos/google/go-jsonnet/releases/latest') as r:
+    for a in json.load(r)['assets']:
+      if 'Linux_x86_64' in a['name']:
+        u = a['browser_download_url']
+  with urllib.request.urlopen(u) as r:
+    with tarfile.open(fileobj=r, mode='r|*') as z:
+      z.extractall(dst, filter='data')
 
 def get_url(dst: pathlib.Path, url: str):
   with dst.open('wb') as f:
@@ -29,12 +39,13 @@ def get_url(dst: pathlib.Path, url: str):
 
 
 def main():
-  root = pathlib.Path('.build')
+  root = pathlib.Path('.build').absolute()
   root.mkdir(exist_ok=True)
   os.environ['PATH'] += os.pathsep + str(root)
 
   # Flux
   install_flux(root)
+  install_jsonnet(root)
   with pathlib.Path('00-stage', 'flux', 'gotk-components.yaml').open('w') as f:
     subprocess.check_call([
         'flux',
