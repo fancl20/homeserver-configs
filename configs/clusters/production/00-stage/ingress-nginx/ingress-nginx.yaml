@@ -33,6 +33,7 @@ spec:
       config:
         enable-real-ip: "true"
         proxy-buffer-size: "16k"
+        proxy-busy-buffers-size: '24k'
         proxy-body-size: "4G"
       resources:
         requests:
