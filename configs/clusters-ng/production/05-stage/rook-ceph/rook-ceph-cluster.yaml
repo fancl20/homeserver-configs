@@ -26,6 +26,14 @@ spec:
         nodes:
         - name: talos-lje-xo8
           devicePathFilter: '^/dev/disk/by-id/nvme-.*(4TB|512GB|512HBJQ).*'
+      placement:
+        all:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: DoesNotExist
     cephBlockPools: []
     cephFileSystems: []
     cephObjectStores: []
