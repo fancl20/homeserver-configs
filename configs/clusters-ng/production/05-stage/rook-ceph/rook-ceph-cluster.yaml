@@ -13,6 +13,9 @@ spec:
         kind: HelmRepository
         name: rook-ceph
   values:
+    configOverride: |
+      [global]
+      osd_crush_chooseleaf_type = 0
     toolbox:
       enabled: true
     cephClusterSpec:
