@@ -1,0 +1,31 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+  namespace: rook-ceph
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+  values:
+    toolbox:
+      enabled: true
+    cephClusterSpec:
+      mon:
+        count: 1
+      mgr:
+        count: 1
+      storage:
+        useAllNodes: false
+        useAllDevices: false
+        nodes:
+        - name: talos-lje-xo8
+          devicePathFilter: '^/dev/disk/by-id/nvme-.*(4TB|512GB|512HBJQ).*'
+    cephBlockPools: []
+    cephFileSystems: []
+    cephObjectStores: []

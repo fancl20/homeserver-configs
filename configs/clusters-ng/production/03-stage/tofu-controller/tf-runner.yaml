@@ -1,12 +1,12 @@
----
+
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: VaultDynamicSecret
 metadata:
   name: tf-gcp-token
   namespace: flux-system
 spec:
-  path: "/gcp/roleset/admin/token"
-  method: "GET"
+  path: '/gcp/roleset/admin/token'
+  method: 'GET'
   provider:
     server: http://vault.vault.svc:8200/
     auth:
@@ -22,8 +22,8 @@ metadata:
   name: tf-vault-token
   namespace: flux-system
 spec:
-  path: "/auth/token/lookup-self"
-  method: "GET"
+  path: '/auth/token/lookup-self'
+  method: 'GET'
   provider:
     server: http://vault.vault.svc:8200/
     auth:
@@ -46,8 +46,8 @@ spec:
     template:
       engineVersion: v2
       data:
-        VAULT_TOKEN: "{{ .id }}"
-        GOOGLE_OAUTH_ACCESS_TOKEN: "{{ .token }}"
+        VAULT_TOKEN: '{{ .id }}'
+        GOOGLE_OAUTH_ACCESS_TOKEN: '{{ .token }}'
   dataFrom:
   - sourceRef:
       generatorRef:
