@@ -13,6 +13,10 @@ spec:
         kind: HelmRepository
         name: rook-ceph
   values:
+    configOverride: |
+      [global]
+      bdev_enable_discard = true
+      bdev_async_discard_threads = 1
     toolbox:
       enabled: true
     cephClusterSpec:
@@ -37,8 +41,8 @@ spec:
       resources:
         osd:
           requests:
-            cpu: "500m"
-            memory: "2Gi"
+            cpu: '500m'
+            memory: '2Gi'
     cephBlockPools:
     - name: builtin-mgr
       spec:

@@ -32,15 +32,15 @@ spec:
               operator: DoesNotExist
     resources:
       limits:
-        memory: "1024Mi"
+        memory: '1024Mi'
       requests:
-        cpu: "500m"
-        memory: "1024Mi"
+        cpu: '500m'
+        memory: '1024Mi'
 ---
 apiVersion: ceph.rook.io/v1
 kind: CephFilesystemSubVolumeGroup
 metadata:
-  name: ceph-filesystem-csi # lets keep the svg crd name same as `filesystem name + csi` for the default csi svg
+  name: ceph-filesystem-csi
   namespace: rook-ceph
 spec:
   name: csi
