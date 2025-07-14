@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import json
 import os
@@ -44,12 +44,12 @@ def main():
   )
 
   ## Tekton
-  #tekton_ver = get_github_latest_release('tektoncd/operator')
-  #get_url(
-  #    pathlib.Path('04-stage', 'tekton', 'tekton-operator.yaml'),
-  #    'https://storage.googleapis.com/tekton-releases/'
-  #    f'operator/previous/v{tekton_ver}/release.yaml',
-  #)
+  tekton_ver = get_github_latest_release('tektoncd/operator')
+  get_url(
+      pathlib.Path('04-stage', 'tekton', 'tekton-operator.yaml'),
+      'https://storage.googleapis.com/tekton-releases/'
+      f'operator/previous/v{tekton_ver}/release.yaml',
+  )
 
   ## 99-default
   #subprocess.check_call([
