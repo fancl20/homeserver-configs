@@ -22,3 +22,8 @@ spec:
   - apiVersion: storage.k8s.io/v1
     kind: StorageClass
     name: rook-cephfs
+  # Tekton
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: tekton-pipelines-controller
+    namespace: tekton-pipelines
