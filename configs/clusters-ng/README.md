@@ -40,3 +40,43 @@ kubectl -n onepassword create secret generic onepassword-token --from-literal=to
 kubectl --namespace=vault port-forward services/vault 8200:8200 & # From stage-02
 VAULT_ADDR="http://127.0.0.1:8200" terraform apply
 ```
+
+### Rook Ceph
+Cleanup previous installation
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-clean
+  namespace: rook-ceph
+spec:
+  restartPolicy: Never
+  nodeName: talos-lje-xo8
+  volumes:
+  - name: rook-data-dir
+    hostPath:
+      path: /var/lib/rook
+  containers:
+  - name: disk-clean
+    image: busybox
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: rook-data-dir
+      mountPath: /node/rook-data
+    command: ["/bin/sh", "-c", "rm -rf /node/rook-data/*"]
+EOF
+kubectl --namespace=rook-ceph delete pod disk-clean
+```
+
+Prepare disks
+```
+talosctl -n talos-lje-xo8 wipe disk $(talosctl -n 192.168.1.57 get disks | grep -v '256 GB' | awk '{print $4}' | grep nvme)
+```
+
+Ceph Toolbox
+```
+kubectl --namespace=rook-ceph exec -it deploy/rook-ceph-tools -- bash
+```
+

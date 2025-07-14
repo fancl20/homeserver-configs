@@ -1,0 +1,67 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: ceph-filesystem
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: osd
+    replicated:
+      size: 3
+  dataPools:
+    - name: replicated
+      failureDomain: osd
+      replicated:
+        size: 3
+    - name: erasurecoded
+      failureDomain: osd
+      erasureCoded:
+        dataChunks: 6
+        codingChunks: 2
+  preserveFilesystemOnDelete: true
+  metadataServer:
+    activeCount: 1
+    activeStandby: false
+    placement:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: DoesNotExist
+    resources:
+      limits:
+        memory: "1024Mi"
+      requests:
+        cpu: "500m"
+        memory: "1024Mi"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystemSubVolumeGroup
+metadata:
+  name: ceph-filesystem-csi # lets keep the svg crd name same as `filesystem name + csi` for the default csi svg
+  namespace: rook-ceph
+spec:
+  name: csi
+  filesystemName: ceph-filesystem
+  pinning:
+    distributed: 1
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rook-cephfs
+provisioner: rook-ceph.cephfs.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  fsName: ceph-filesystem
+  pool: ceph-filesystem-erasurecoded
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+reclaimPolicy: Delete
+
