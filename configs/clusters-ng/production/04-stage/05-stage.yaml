@@ -25,5 +25,5 @@ spec:
   # Tekton
   - apiVersion: apps/v1
     kind: Deployment
-    name: tekton-results-api
+    name: tekton-pipelines-controller
     namespace: tekton-pipelines
