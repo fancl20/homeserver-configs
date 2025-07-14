@@ -11,3 +11,7 @@ spec:
     - taskrun
     keep: 100
     schedule: "0 8 * * *"
+  chain:
+    disabled: true
+  result:
+    disabled: true
