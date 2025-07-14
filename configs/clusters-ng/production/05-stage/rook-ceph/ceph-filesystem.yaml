@@ -10,15 +10,15 @@ spec:
     replicated:
       size: 3
   dataPools:
-    - name: replicated
-      failureDomain: osd
-      replicated:
-        size: 3
-    - name: erasurecoded
-      failureDomain: osd
-      erasureCoded:
-        dataChunks: 6
-        codingChunks: 2
+  - name: replicated
+    failureDomain: osd
+    replicated:
+      size: 3
+  - name: erasurecoded
+    failureDomain: osd
+    erasureCoded:
+      dataChunks: 6
+      codingChunks: 2
   preserveFilesystemOnDelete: true
   metadataServer:
     activeCount: 1
@@ -65,5 +65,8 @@ parameters:
   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+mountOptions:
+- uid=1000
+- gid=1000
 reclaimPolicy: Delete
 
