@@ -51,11 +51,11 @@ def main():
       f'operator/previous/v{tekton_ver}/release.yaml',
   )
 
-  ## 99-default
-  #subprocess.check_call([
-  #    sys.executable,
-  #    'generate.py',
-  #], cwd=pathlib.Path('99-default'))
+  # 99-services
+  subprocess.check_call([
+      sys.executable,
+      pathlib.Path('99-services') / 'generate.py',
+  ])
 
 
 if __name__ == '__main__':

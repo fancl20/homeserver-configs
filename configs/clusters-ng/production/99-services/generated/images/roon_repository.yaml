@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "roon",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "registry.local.d20.fan/fancl20/roon",
+      "interval": "1h"
+   }
+}
