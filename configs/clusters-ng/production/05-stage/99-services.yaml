@@ -15,6 +15,7 @@ spec:
     name: configs
   components:
   - ../../components/terraform
+  - ../../components/images
   postBuild:
     substitute:
       layer_name: 99-services
