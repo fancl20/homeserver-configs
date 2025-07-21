@@ -30,7 +30,6 @@ app.Base('bind9')
 .Config('named.conf', |||
   options {
     directory "/var/cache/bind";
-    query-source address * port *; # Exchange port between DNS servers
     auth-nxdomain no; # conform to RFC1035
     interface-interval 0; # From 9.9.5 ARM, disables interfaces scanning to prevent unwanted stop listening
     listen-on-v6 { none; }; # Listen on local interfaces only(IPV4)
