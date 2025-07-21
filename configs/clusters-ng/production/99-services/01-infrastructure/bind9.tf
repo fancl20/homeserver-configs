@@ -1,5 +1,5 @@
 resource "random_bytes" "bind9_secret" {
-  length = 256
+  length = 32
 }
 
 resource "kubernetes_secret" "bind9" {
