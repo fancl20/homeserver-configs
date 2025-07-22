@@ -6,6 +6,7 @@ app.Base('registry')
   image: images.registry,
   env: [
     { name: 'OTEL_TRACES_EXPORTER', value: 'none' },
+    { name: 'REGISTRY_LOG_LEVEL', value: 'info' },
   ],
   volumeMounts: [
     { name: 'registry', mountPath: '/var/lib/registry'},

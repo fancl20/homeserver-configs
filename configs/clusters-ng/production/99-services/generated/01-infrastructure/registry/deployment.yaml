@@ -32,6 +32,10 @@
                      {
                         "name": "OTEL_TRACES_EXPORTER",
                         "value": "none"
+                     },
+                     {
+                        "name": "REGISTRY_LOG_LEVEL",
+                        "value": "info"
                      }
                   ],
                   "image": "docker.io/library/registry",
