@@ -4,6 +4,9 @@ local images = import '../images.jsonnet';
 app.Base('registry')
 .PodContainers([{
   image: images.registry,
+  env: [
+    { name: 'OTEL_TRACES_EXPORTER', value: 'none' },
+  ],
   volumeMounts: [
     { name: 'registry', mountPath: '/var/lib/registry'},
   ],
