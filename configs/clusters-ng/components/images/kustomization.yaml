@@ -24,6 +24,6 @@ images:
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
   newTag: '1749480109-testing-20250610' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
-  newTag: '9.2.87-ls96' # {"$imagepolicy": "flux-system:unifi:tag"}
+  newTag: '9.2.87-ls97' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
   newTag: '202525-testing-20250610' # {"$imagepolicy": "flux-system:workspace:tag"}
