@@ -12,7 +12,11 @@ app.Base('registry')
     { name: 'registry', mountPath: '/var/lib/registry'},
   ],
 }])
-.PersistentVolumeClaim()
+.PersistentVolumeClaim(spec={
+  resources: {
+    requests: { storage: "32Gi" },
+  }
+})
 .Service({
   ports: [
     { name: 'http', protocol: 'TCP', port: 80, targetPort: 5000 },

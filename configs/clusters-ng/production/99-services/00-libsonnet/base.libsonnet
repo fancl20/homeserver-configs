@@ -185,7 +185,7 @@ local kustomize = import 'kustomize.libsonnet';
           accessModes: [ "ReadWriteMany" ],
           volumeMode: "Filesystem",
           resources: {
-            requests: { storage: "10Gi" },
+            requests: { storage: "8Gi" },
           },
         } + spec,
       },
