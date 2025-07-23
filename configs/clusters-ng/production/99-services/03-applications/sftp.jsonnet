@@ -7,7 +7,7 @@ app.Base('sftp')
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },
     { name: 'PUID', value: '1000' },
-    { name: 'GUID', value: '1000' },
+    { name: 'PGID', value: '1000' },
     { name: 'PASSWORD_ACCESS', value: 'true' },
     { name: 'USER_NAME', value: 'fancl20' },
   ],
