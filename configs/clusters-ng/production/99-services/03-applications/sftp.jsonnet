@@ -27,7 +27,7 @@ app.Base('sftp')
   dataFrom: [{
     extract: { key: 'Shared SFTP', property: 'public key' },
     rewrite: [
-      { regexp: { source: 'public_key', target: 'PUBLIC_KEY' } },
+      { regexp: { source: 'public key', target: 'PUBLIC_KEY' } },
     ],
   }],
 })
