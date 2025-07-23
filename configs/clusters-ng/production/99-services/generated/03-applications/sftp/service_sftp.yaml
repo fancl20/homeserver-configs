@@ -3,27 +3,21 @@
    "kind": "Service",
    "metadata": {
       "annotations": null,
-      "name": "bind9",
+      "name": "sftp",
       "namespace": "default"
    },
    "spec": {
       "allocateLoadBalancerNodePorts": false,
       "ports": [
          {
-            "name": "dns-udp",
-            "port": 53,
-            "protocol": "UDP",
-            "targetPort": 5353
-         },
-         {
-            "name": "dns-tcp",
-            "port": 53,
+            "name": "ssh",
+            "port": 22,
             "protocol": "TCP",
-            "targetPort": 5353
+            "targetPort": 2222
          }
       ],
       "selector": {
-         "app.kubernetes.io/name": "bind9"
+         "app.kubernetes.io/name": "sftp"
       },
       "type": "LoadBalancer"
    }

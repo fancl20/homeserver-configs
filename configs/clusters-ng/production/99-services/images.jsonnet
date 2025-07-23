@@ -37,6 +37,15 @@ app.Image('mongo')
 .Repository('docker.io/library/mongo')
 .Policy(app.DefaultPolicy.Semver('4.*'))
 +
+app.Image('openssh')
+.Repository('lscr.io/linuxserver/openssh-server')
+.Policy(app.DefaultPolicy.LinuxServer() {
+  filterTags: {
+    extract: '$SEMVER.$PATCH-ls$REVISION$LSVER',
+    pattern: '^(?P<SEMVER>[0-9.]+)_p(?P<PATCH>\\d+)-r(?P<REVISION>\\d+)-ls(?P<LSVER>\\d+)$',
+  },
+})
++
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')
 .Policy(app.DefaultPolicy.LinuxServer('*-r0'))

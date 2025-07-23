@@ -220,6 +220,22 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    OnePassword(secret_name=name, spec={}):: self {
+      ['onepassword_' + secret_name + '.yaml']: {
+        apiVersion: 'external-secrets.io/v1',
+        kind: 'ExternalSecret',
+        metadata: {
+          name: secret_name,
+          namespace: namespace,
+        },
+        spec: {
+          refreshInterval: '1m',
+          secretStoreRef: { name: 'onepassword', kind: 'ClusterSecretStore' },
+          target: { name: secret_name, creationPolicy: 'Owner' },
+        } + spec,
+      },
+    },
+
     Kustomize():: kustomize.Kustomize(name, namespace, self),
   },
 }
