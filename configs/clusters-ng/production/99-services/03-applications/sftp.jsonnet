@@ -19,7 +19,6 @@ app.Base('sftp')
     { name: 'data', mountPath: '/shared'},
   ],
 }])
-.RunAsUser()
 .PodVolumes([
   app.Volumes.shared_data,
 ])
