@@ -18,6 +18,7 @@ app.Base('bind9')
   { name: 'config', configMap: { name: 'bind9' } },
   { name: 'secret', secret: { secretName: 'bind9' } },
 ])
+.RunAsUser()
 .Service({
   ports: [
     { name: 'dns-udp', protocol: 'UDP', port: 53, targetPort: 5353 },

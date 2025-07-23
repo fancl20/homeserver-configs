@@ -26,6 +26,7 @@ app.Base('external-dns')
     limits: { memory: '64Mi', cpu: '200m' },
   },
 }])
+.RunAsUser()
 .ClusterRole([{
   apiGroups: [''],
   resources: ['services', 'pods'],

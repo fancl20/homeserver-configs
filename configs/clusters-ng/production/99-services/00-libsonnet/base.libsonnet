@@ -88,6 +88,23 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    RunAsUser(uid=1000, gid=1000):: self {
+      Deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              securityContext+: {
+                runAsUser: uid,
+                runAsGroup: gid,
+                fsGroup: gid,
+                fsGroupChangePolicy: "OnRootMismatch",
+              },
+            },
+          },
+        },
+      },
+    },
+
     ServiceAccount:: {
       apiVersion: 'v1',
       kind: 'ServiceAccount',

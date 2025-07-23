@@ -12,6 +12,7 @@ app.Base('registry')
     { name: 'registry', mountPath: '/var/lib/registry'},
   ],
 }])
+.RunAsUser()
 .PersistentVolumeClaim(spec={
   resources: {
     requests: { storage: "32Gi" },
