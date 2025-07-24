@@ -33,7 +33,7 @@ app.Base('sftp')
 })
 .Service({
   ports: [
-    { name: 'ssh', protocol: 'TCP', port: 2222, targetPort: 2222 },
+    { name: 'ssh', protocol: 'TCP', port: 22, targetPort: 2222 },
   ],
   type: 'LoadBalancer',
 })
