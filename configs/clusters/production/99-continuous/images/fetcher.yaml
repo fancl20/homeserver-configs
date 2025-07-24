@@ -19,7 +19,7 @@ spec:
   - name: image
     value: fetcher
   - name: fetcher_image
-    value: docker.io/library/bash:5.3.0 # {"$imagepolicy": "flux-system:bash"}
+    value: docker.io/library/bash:5.3.3 # {"$imagepolicy": "flux-system:bash"}
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository

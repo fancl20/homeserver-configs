@@ -17,7 +17,7 @@ spec:
         - $(params.ARGS)
       onError: continue
     - name: write-output
-      image: docker.io/library/bash:5.3.0 # {"$imagepolicy": "flux-system:bash"}
+      image: docker.io/library/bash:5.3.3 # {"$imagepolicy": "flux-system:bash"}
       script: |
         set -e
         cat "$(steps.step-skopeo.exitCode.path)" | tee "$(results.EXIT_CODE.path)"
