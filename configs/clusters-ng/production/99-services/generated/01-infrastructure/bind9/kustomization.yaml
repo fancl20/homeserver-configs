@@ -10,6 +10,11 @@
          "namespace": "default"
       }
    ],
+   "generatorOptions": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      }
+   },
    "kind": "Kustomization",
    "resources": [
       "deployment.yaml",

@@ -1,6 +1,5 @@
 mongosh <<EOF
-use ${MONGO_AUTHSOURCE}
-db.auth("${MONGO_INITDB_ROOT_USERNAME}", "${MONGO_INITDB_ROOT_PASSWORD}")
+use unifi
 db.createUser({
   user: "${MONGO_USER}",
   pwd: "${MONGO_PASS}",

@@ -23,7 +23,7 @@ app.Base('unifi')
   {
     name: 'mongo',
     image: images.mongo,
-    command: ['mongod', '--bind_ip', '127.0.0.1'],
+    args: ['--bind_ip', '127.0.0.1'],
     envFrom: [
       { secretRef: { name: 'unifi' } },
     ],
@@ -51,8 +51,7 @@ app.Base('unifi')
 .Kustomize()
 .Config('10-init-mongo.sh', |||
   mongosh <<EOF
-  use ${MONGO_AUTHSOURCE}
-  db.auth("${MONGO_INITDB_ROOT_USERNAME}", "${MONGO_INITDB_ROOT_PASSWORD}")
+  use unifi
   db.createUser({
     user: "${MONGO_USER}",
     pwd: "${MONGO_PASS}",
