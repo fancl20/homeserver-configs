@@ -1,0 +1,41 @@
+{
+   "apiVersion": "networking.k8s.io/v1",
+   "kind": "Ingress",
+   "metadata": {
+      "annotations": {
+         "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+      },
+      "name": "unifi",
+      "namespace": "default"
+   },
+   "spec": {
+      "rules": [
+         {
+            "host": "unifi.local.d20.fan",
+            "http": {
+               "paths": [
+                  {
+                     "backend": {
+                        "service": {
+                           "name": "unifi",
+                           "port": {
+                              "number": 443
+                           }
+                        }
+                     },
+                     "path": "/",
+                     "pathType": "Prefix"
+                  }
+               ]
+            }
+         }
+      ],
+      "tls": [
+         {
+            "hosts": [
+               "unifi.local.d20.fan"
+            ]
+         }
+      ]
+   }
+}

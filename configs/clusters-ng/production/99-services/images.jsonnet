@@ -35,7 +35,7 @@ app.Image('jellyfin')
 +
 app.Image('mongo')
 .Repository('docker.io/library/mongo')
-.Policy(app.DefaultPolicy.Semver('4.*'))
+.Policy(app.DefaultPolicy.Semver('8.*'))
 +
 app.Image('openssh')
 .Repository('lscr.io/linuxserver/openssh-server')

@@ -1,0 +1,66 @@
+local app = import '../app.libsonnet';
+local images = import '../images.jsonnet';
+
+app.Base('unifi')
+.PodContainers([
+  {
+    name: 'unifi',
+    image: images.unifi,
+    env: [
+      { name: 'TZ', value: 'Australia/Sydney' },
+      { name: 'PUID', value: '1000' },
+      { name: 'PGID', value: '1000' },
+      { name: 'MONGO_HOST', value: '127.0.0.1' },
+      { name: 'MONGO_PORT', value: '27017' },
+    ],
+    envFrom: [
+      { secretRef: { name: 'unifi' } },
+    ],
+    volumeMounts: [
+      { name: 'unifi', mountPath: '/config' },
+    ],
+  },
+  {
+    name: 'mongo',
+    image: images.mongo,
+    command: ['mongod', '--bind_ip', '127.0.0.1'],
+    envFrom: [
+      { secretRef: { name: 'unifi' } },
+    ],
+    volumeMounts: [
+      { name: 'unifi-db', mountPath: '/data/db' },
+      { name: 'config', mountPath: '/docker-entrypoint-initdb.d' },
+    ],
+  },
+])
+.PodVolumes([
+  { name: 'config', configMap: { name: 'unifi' } },
+])
+.PersistentVolumeClaim('unifi')
+.PersistentVolumeClaim('unifi-db')
+.Service({
+  ports: [
+    { name: 'webui', protocol: 'TCP', port: 443, targetPort: 8443 },
+  ],
+})
+.Ingress(port=443, metadata={
+  annotations: {
+    'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS',
+  },
+})
+.Kustomize()
+.Config('10-init-mongo.sh', |||
+  mongosh <<EOF
+  use ${MONGO_AUTHSOURCE}
+  db.auth("${MONGO_INITDB_ROOT_USERNAME}", "${MONGO_INITDB_ROOT_PASSWORD}")
+  db.createUser({
+    user: "${MONGO_USER}",
+    pwd: "${MONGO_PASS}",
+    roles: [
+      { db: "${MONGO_DBNAME}", role: "dbOwner" },
+      { db: "${MONGO_DBNAME}_stat", role: "dbOwner" },
+      { db: "${MONGO_DBNAME}_audit", role: "dbOwner" }
+    ]
+  })
+  EOF
+|||)

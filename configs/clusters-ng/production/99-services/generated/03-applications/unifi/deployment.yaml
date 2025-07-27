@@ -1,0 +1,120 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "unifi",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "unifi"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "unifi"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     },
+                     {
+                        "name": "PUID",
+                        "value": "1000"
+                     },
+                     {
+                        "name": "PGID",
+                        "value": "1000"
+                     },
+                     {
+                        "name": "MONGO_HOST",
+                        "value": "127.0.0.1"
+                     },
+                     {
+                        "name": "MONGO_PORT",
+                        "value": "27017"
+                     }
+                  ],
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "unifi"
+                        }
+                     }
+                  ],
+                  "image": "lscr.io/linuxserver/unifi-network-application",
+                  "name": "unifi",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "unifi"
+                     }
+                  ]
+               },
+               {
+                  "command": [
+                     "mongod",
+                     "--bind_ip",
+                     "127.0.0.1"
+                  ],
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "unifi"
+                        }
+                     }
+                  ],
+                  "image": "docker.io/library/mongo",
+                  "name": "mongo",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/data/db",
+                        "name": "unifi-db"
+                     },
+                     {
+                        "mountPath": "/docker-entrypoint-initdb.d",
+                        "name": "config"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "unifi",
+            "volumes": [
+               {
+                  "configMap": {
+                     "name": "unifi"
+                  },
+                  "name": "config"
+               },
+               {
+                  "name": "unifi",
+                  "persistentVolumeClaim": {
+                     "claimName": "unifi"
+                  }
+               },
+               {
+                  "name": "unifi-db",
+                  "persistentVolumeClaim": {
+                     "claimName": "unifi-db"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}
