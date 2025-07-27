@@ -14,3 +14,7 @@ provider "vault" {}
 module "infrastructure" {
   source = "./01-infrastructure"
 }
+
+module "applications" {
+  source = "./03-applications"
+}
