@@ -1,11 +1,11 @@
 resource "random_password" "unifi_db_root" {
   length = 32
-  special = true
+  special = false
 }
 
 resource "random_password" "unifi_db_unifi" {
   length = 32
-  special = true
+  special = false
 }
 
 resource "kubernetes_secret" "unifi" {
