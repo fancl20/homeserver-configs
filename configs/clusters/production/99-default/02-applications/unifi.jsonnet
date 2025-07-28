@@ -38,16 +38,6 @@ app.Base('unifi')
     template: '{{ with secret "homeserver/data/unifi" -}}{{ .Data.data.db_password }}{{- end }}',
   },
 })
-.PodAnnotations({
-  'k8s.v1.cni.cncf.io/networks': std.manifestJson([
-    {
-      name: 'macvlan',
-      ips: ['192.168.1.246/24'],
-      mac: '26:1e:94:c2:23:41',
-      gateway: ['192.168.1.1'],
-    },
-  ]),
-})
 .Service({
   ports: [
     { name: 'webui', protocol: 'TCP', port: 443, targetPort: 8443 },
