@@ -8,11 +8,11 @@ spec:
     spec:
       initContainers:
       - name: pull-cni-plugings
-        image: quay.io/skopeo/stable:v1.18.0 # {"$imagepolicy": "flux-system:multus-cni-skopeo"}
-        command: [ '/bin/sh', '-c', 'skopeo copy "docker://${CNI_PLUGINS_IMAGE}" dir:/workspace' ]
+        image: quay.io/skopeo/stable:v1.19.0 # {"$imagepolicy": "flux-system:multus-cni-skopeo"}
+        command: ['/bin/sh', '-c', 'skopeo copy "docker://${CNI_PLUGINS_IMAGE}" dir:/workspace']
         env:
         - name: CNI_PLUGINS_IMAGE
-          value:  ghcr.io/siderolabs/cni:v1.11.0 # {"$imagepolicy": "flux-system:multus-cni-plugins"}
+          value: ghcr.io/siderolabs/cni:v1.11.0 # {"$imagepolicy": "flux-system:multus-cni-plugins"}
         volumeMounts:
         - name: cniplugins
           mountPath: /workspace
