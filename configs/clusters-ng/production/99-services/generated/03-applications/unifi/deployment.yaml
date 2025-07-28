@@ -20,7 +20,9 @@
       },
       "template": {
          "metadata": {
-            "annotations": { },
+            "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"ips\": [\n            \"192.168.1.10/24\"\n        ],\n        \"name\": \"macvlan-static\"\n    }\n]"
+            },
             "labels": {
                "app.kubernetes.io/name": "unifi"
             }
