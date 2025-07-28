@@ -60,5 +60,5 @@ spec:
     name: multus-cni-python
   policy:
     semver:
-      range: "*"
+      range: "*-slim"
 
