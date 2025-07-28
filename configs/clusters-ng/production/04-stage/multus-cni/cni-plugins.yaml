@@ -1,0 +1,38 @@
+- op: add
+  path: /spec/template/spec/initContainers/0
+  value:
+    name: pull-cni-plugings
+    image: quay.io/skopeo/stable:v1.18.0
+    command: [ '/bin/sh', '-c', 'skopeo copy "docker://${CNI_PLUGINS_IMAGE}" dir:/workspace' ]
+    env:
+    - name: CNI_PLUGINS_IMAGE
+      value:  ghcr.io/siderolabs/cni:v1.11.0
+    volumeMounts:
+    - name: cniplugins
+      mountPath: /workspace
+- op: add
+  path: /spec/template/spec/initContainers/1
+  value:
+    name: install-cni-plugings
+    image: docker.io/library/python:3.13.5
+    command:
+    - '/usr/local/bin/python3'
+    - '-c'
+    - |
+      import json
+      import tarfile
+      with open('manifest.json') as f:
+        for l in json.load(f)['layers']:
+          t = tarfile.open(l['digest'].split(':')[1])
+          t.extractall('/host', filter='data')
+    workingDir: /workspace
+    volumeMounts:
+    - name: cnibin
+      mountPath: /host/opt/cni/bin
+    - name: cniplugins
+      mountPath: /workspace
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: cniplugins
+    emptyDir: {}
