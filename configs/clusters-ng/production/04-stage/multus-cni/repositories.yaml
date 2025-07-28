@@ -58,7 +58,9 @@ metadata:
 spec:
   imageRepositoryRef:
     name: multus-cni-python
+  filterTags:
+    pattern: '^.*-slim$'
   policy:
     semver:
-      range: "*-slim"
+      range: '*-slim'
 
