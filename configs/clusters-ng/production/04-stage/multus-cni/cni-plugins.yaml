@@ -17,7 +17,7 @@ spec:
         - name: cniplugins
           mountPath: /workspace
       - name: install-cni-plugings
-        image: docker.io/library/python:3.13.6-slim # {"$imagepolicy": "flux-system:multus-cni-python"}
+        image: docker.io/library/python:3.13.7-slim # {"$imagepolicy": "flux-system:multus-cni-python"}
         command:
         - '/usr/local/bin/python3'
         - '-c'
