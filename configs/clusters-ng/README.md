@@ -43,7 +43,7 @@ VAULT_ADDR="http://127.0.0.1:8200" terraform apply
 
 ### Rook Ceph
 Cleanup previous installation
-```
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -71,12 +71,21 @@ kubectl --namespace=rook-ceph delete pod disk-clean
 ```
 
 Prepare disks
-```
+```bash
 talosctl -n talos-lje-xo8 wipe disk $(talosctl -n 192.168.1.57 get disks | grep -v '256 GB' | awk '{print $4}' | grep nvme)
 ```
 
-Ceph Toolbox
+Toolbox
 ```
 kubectl --namespace=rook-ceph exec -it deploy/rook-ceph-tools -- bash
+```
+
+Replace disk
+```bash
+# remove the disk and wait until cluster return healthy
+ceph osd rm {osd-num}
+ceph osd crush remove {name}
+ceph auth del osd.{osd-num}
+# ...then install the new disk
 ```
 
