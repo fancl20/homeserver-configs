@@ -10,6 +10,7 @@ import urllib.request
 
 
 def get_url(dst: pathlib.Path, url: str):
+  print(dst)
   with dst.open('wb') as f:
     with urllib.request.urlopen(url) as r:
       for b in iter(lambda: r.read(1024), b''):
@@ -41,6 +42,14 @@ def main():
       'k8snetworkplumbingwg/multus-cni/'
       f'refs/tags/v{multus_ver}/'
       'deployments/multus-daemonset.yml',
+  )
+
+  # Argo Workflows
+  argo_workflows_ver = get_github_latest_release('argoproj/argo-workflows')
+  get_url(
+      pathlib.Path('04-stage', 'argo-workflows', 'argo-workflows.yaml'),
+      'https://github.com/argoproj/argo-workflows/'
+      f'releases/download/v{argo_workflows_ver}/install.yaml'
   )
 
   # 99-services
