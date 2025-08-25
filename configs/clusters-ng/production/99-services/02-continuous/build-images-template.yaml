@@ -10,7 +10,7 @@ spec:
       name: work
       namespace: continuous
     spec:
-      accessModes: [ 'ReadWriteOnce' ]
+      accessModes: ['ReadWriteOnce']
       resources:
         requests:
           storage: 32Gi
@@ -63,9 +63,9 @@ spec:
   - name: build-and-push
     inputs:
     parameters:
-      - name: path
-      - name: image
-      - name: base_tag
+    - name: path
+    - name: image
+    - name: base_tag
     steps:
     - - name: update
         template: update
@@ -111,8 +111,8 @@ spec:
     container:
       readinessProbe:
         exec:
-          command: [ sh, -c, 'buildctl debug workers' ]
-      image: moby/buildkit:v0.9.3-rootless # {"$imagepolicy": "flux-system:buildkit"}
+          command: [sh, -c, 'buildctl debug workers']
+      image: docker.io/moby/buildkit:v0.23.2 # {"$imagepolicy": "flux-system:buildkit"}
       volumeMounts:
       - name: work
         mountPath: /work
