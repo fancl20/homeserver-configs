@@ -74,7 +74,7 @@ app.Image('debian')
 +
 app.Image('git')
 .Repository('docker.io/alpine/git')
-.Policy(app.DefaultPolicy.Semver())
+.Policy(app.DefaultPolicy.Semver(pattern='^v'))
 +
 app.Image('python')
 .Repository('docker.io/library/python')
