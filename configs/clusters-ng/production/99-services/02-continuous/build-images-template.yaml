@@ -88,7 +88,7 @@ spec:
       parameters:
       - name: path
     container:
-      image: docker.io/library/python:3.13.7 # {"$imagepolicy": "flux-system:python"}
+      image: docker.io/library/python:3.13.7-slim # {"$imagepolicy": "flux-system:python"}
       volumeMounts:
       - mountPath: /work
         name: work
