@@ -15,7 +15,7 @@ app.Base('registry')
 .RunAsUser()
 .PersistentVolumeClaim(spec={
   resources: {
-    requests: { storage: "32Gi" },
+    requests: { storage: '32Gi' },
   }
 })
 .Service({

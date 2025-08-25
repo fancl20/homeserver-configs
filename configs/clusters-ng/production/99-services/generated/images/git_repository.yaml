@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "git",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/alpine/git:v2.26.2",
+      "interval": "1h"
+   }
+}

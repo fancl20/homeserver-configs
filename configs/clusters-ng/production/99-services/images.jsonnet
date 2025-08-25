@@ -41,8 +41,8 @@ app.Image('openssh')
 .Repository('lscr.io/linuxserver/openssh-server')
 .Policy(app.DefaultPolicy.LinuxServer() {
   filterTags: {
-    extract: '$SEMVER.$PATCH-ls$REVISION$LSVER',
     pattern: '^(?P<SEMVER>[0-9.]+)_p(?P<PATCH>\\d+)-r(?P<REVISION>\\d+)-ls(?P<LSVER>\\d+)$',
+    extract: '$SEMVER.$PATCH-ls$REVISION$LSVER',
   },
 })
 +
@@ -61,4 +61,25 @@ app.Image('roon')
 app.Image('unifi')
 .Repository('lscr.io/linuxserver/unifi-network-application')
 .Policy(app.DefaultPolicy.LinuxServer())
-
++
+app.Image('debian')
+.Repository('docker.io/library/debian')
+.Policy({
+  filterTags: {
+    pattern: '^testing-(?P<timestamp>\\d+)$',
+    extract: '$timestamp',
+  },
+  policy: { alphabetical: { order: 'asc' } },
+})
++
+app.Image('git')
+.Repository('docker.io/alpine/git:v2.26.2')
+.Policy(app.DefaultPolicy.Semver())
++
+app.Image('python')
+.Repository('docker.io/library/python')
+.Policy(app.DefaultPolicy.Semver('*-slim'))
++
+app.Image('buildkit')
+.Repository('docker.io/moby/buildkit')
+.Policy(app.DefaultPolicy.Semver('*-rootless'))

@@ -2,18 +2,18 @@ local app = import '../app.libsonnet';
 
 {
   'pvc.yaml': {
-    apiVersion: "v1",
-    kind: "PersistentVolumeClaim",
+    apiVersion: 'v1',
+    kind: 'PersistentVolumeClaim',
     metadata: {
       name: app.Volumes.shared_data.persistentVolumeClaim.claimName,
-      namespace: "default"
+      namespace: 'default'
    },
    spec: {
-      accessModes: [ "ReadWriteMany" ],
+      accessModes: [ 'ReadWriteMany' ],
       resources: {
-         "requests": { "storage": "4Ti" }
+         'requests': { 'storage': '4Ti' }
       },
-      volumeMode: "Filesystem",
+      volumeMode: 'Filesystem',
    }
   }
 }
