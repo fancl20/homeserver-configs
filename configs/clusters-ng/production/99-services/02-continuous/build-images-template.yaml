@@ -2,11 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   name: build-images
+  namespace: continuous
 spec:
   entrypoint: main
   volumeClaimTemplates:
   - metadata:
       name: work
+      namespace: continuous
     spec:
       accessModes: [ 'ReadWriteOnce' ]
       resources:
