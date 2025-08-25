@@ -14,7 +14,7 @@
       },
       "policy": {
          "semver": {
-            "range": "*"
+            "range": "*-rootless"
          }
       }
    }
