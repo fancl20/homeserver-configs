@@ -6,12 +6,15 @@
       "namespace": "flux-system"
    },
    "spec": {
+      "filterTags": {
+         "pattern": "^.*-rootless$"
+      },
       "imageRepositoryRef": {
          "name": "buildkit"
       },
       "policy": {
          "semver": {
-            "range": "*-rootless"
+            "range": "*"
          }
       }
    }

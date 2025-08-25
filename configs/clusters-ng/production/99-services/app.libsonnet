@@ -15,7 +15,8 @@
         semver: { range: range + '-ls' },
       },
     },
-    Semver(range='*'):: {
+    Semver(range='*', pattern='.*'):: {
+      filterTags: { pattern: pattern },
       policy: {
         semver: { range: range },
       },
