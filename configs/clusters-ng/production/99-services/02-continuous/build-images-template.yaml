@@ -35,7 +35,6 @@ spec:
             value: 'fancl20/{{item}}'
           - name: base_tag
             value: testing-20250811 # {"$imagepolicy": "flux-system:debian:tag"}
-        depends: clone
         withItems:
         - dae
         - fava
