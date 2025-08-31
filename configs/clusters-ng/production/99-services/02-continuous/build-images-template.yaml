@@ -61,10 +61,10 @@ spec:
       - .
   - name: build-and-push
     inputs:
-    parameters:
-    - name: path
-    - name: image
-    - name: base_tag
+      parameters:
+      - name: path
+      - name: image
+      - name: base_tag
     steps:
     - - name: update
         template: update
@@ -107,6 +107,7 @@ spec:
       parameters:
       - name: path
       - name: image
+      - name: base_tag
     container:
       readinessProbe:
         exec:
