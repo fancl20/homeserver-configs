@@ -116,13 +116,17 @@ spec:
         exec:
           command: [sh, -c, 'buildctl debug workers']
       image: docker.io/moby/buildkit:v0.24.0-rootless # {"$imagepolicy": "flux-system:buildkit"}
+      securityContext:
+        seccompProfile:
+          type: Unconfined
+        appArmorProfile:
+          type: Unconfined
+        runAsUser: 1000
+        runAsGroup: 1000
       volumeMounts:
       - name: work
         mountPath: /work
       workingDir: '/work/{{inputs.parameters.path}}'
-      env:
-      - name: BUILDKITD_FLAGS
-        value: --oci-worker-no-process-sandbox
       command:
       - buildctl-daemonless.sh
       args:
@@ -137,3 +141,4 @@ spec:
       - 'type=image,name=registry.default/{{inputs.parameters.image}},push=true'
       - --opt
       - 'build-arg:BASE_TAG={{inputs.parameters.base_tag}}'
+
