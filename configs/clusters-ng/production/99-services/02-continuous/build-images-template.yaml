@@ -80,6 +80,8 @@ spec:
             value: '{{inputs.parameters.path}}'
           - name: image
             value: '{{inputs.parameters.image}}:{{steps.update.outputs.parameters.version}}'
+          - name: fetcher
+            value: docker.io/library/python:3.13.7-slim # {"$imagepolicy": "flux-system:python"}
           - name: base_tag
             value: '{{inputs.parameters.base_tag}}'
   - name: update
@@ -96,7 +98,7 @@ spec:
       - python3
       args:
       - update.py
-      - latest
+      - version
     outputs:
       parameters:
       - name: version
@@ -107,6 +109,7 @@ spec:
       parameters:
       - name: path
       - name: image
+      - name: fetcher
       - name: base_tag
     container:
       readinessProbe:

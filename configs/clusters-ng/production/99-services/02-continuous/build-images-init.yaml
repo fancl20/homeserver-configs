@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: build-images
+  namespace: continuous
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: executor
+  namespace: continuous
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflowtaskresults
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: build-images
+  namespace: continuous
+subjects:
+- kind: ServiceAccount
+  name: build-images
+roleRef:
+  kind: Role
+  name: executor
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: build-images-init
+  namespace: continuous
+spec:
+  entrypoint: main
+  workflowTemplateRef:
+    name: build-images
+  serviceAccountName: build-images
