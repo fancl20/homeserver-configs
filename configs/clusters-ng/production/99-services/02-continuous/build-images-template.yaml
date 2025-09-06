@@ -140,5 +140,7 @@ spec:
       - --output
       - 'type=image,name=registry.default/{{inputs.parameters.image}},push=true'
       - --opt
+      - 'build-arg:FETCHER={{inputs.parameters.fetcher}}'
+      - --opt
       - 'build-arg:BASE_TAG={{inputs.parameters.base_tag}}'
 
