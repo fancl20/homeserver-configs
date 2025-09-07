@@ -141,7 +141,7 @@ spec:
       - --local
       - dockerfile=.
       - --output
-      - 'type=image,name=registry.default/{{inputs.parameters.image}},push=true'
+      - 'type=image,name=registry.default/{{inputs.parameters.image}},push=true,registry.insecure=true'
       - --opt
       - 'build-arg:FETCHER={{inputs.parameters.fetcher}}'
       - --opt
