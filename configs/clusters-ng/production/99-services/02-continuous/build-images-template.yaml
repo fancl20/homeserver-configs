@@ -127,6 +127,9 @@ spec:
       - name: work
         mountPath: /work
       workingDir: '/work/{{inputs.parameters.path}}'
+      env:
+      - name: BUILDKITD_FLAGS
+        value: --oci-worker-no-process-sandbox
       command:
       - buildctl-daemonless.sh
       args:
