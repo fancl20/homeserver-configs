@@ -34,7 +34,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "mount bpffs /sys/fs/bpf/ -t bpf\n\nsysctl -w net.ipv4.conf.net1.forwarding=1\nsysctl -w net.ipv6.conf.net1.forwarding=1\nsysctl -w net.ipv4.conf.net1.send_redirects=0\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae\n"
+                     "mount bpffs /sys/fs/bpf/ -t bpf\n\nsysctl -w net.ipv4.conf.net1.forwarding=1\nsysctl -w net.ipv6.conf.net1.forwarding=1\nsysctl -w net.ipv4.conf.net1.send_redirects=0\n\nip route replace 10.96.0.0/12 via 10.244.0.1 dev eth0 onlink # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae\n"
                   ],
                   "env": [
                      {
