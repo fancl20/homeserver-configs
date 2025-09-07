@@ -13,6 +13,7 @@ app.Base('dae')
     exec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae
   |||],
   securityContext: {
+    privileged: true,
     capabilities: { add: ['NET_ADMIN', 'BPF', 'SYS_ADMIN'] },
   },
   env: [
@@ -20,7 +21,6 @@ app.Base('dae')
   ],
   volumeMounts: [
     { name: 'config', mountPath: '/etc/dae' },
-    { name: 'proc-sys', mountPath: '/proc/sys' },
   ],
 }])
 .PodAnnotations({
@@ -31,22 +31,16 @@ app.Base('dae')
     },
   ]),
 })
-.PodVolumes([
-  {
-    name: 'config',
-    projected: {
-      defaultMode: std.parseOctal('0600'),
-      sources: [
-        { configMap: { name: 'dae' } },
-        { secret: { name: 'dae' } },
-      ],
-    },
+.PodVolumes([{
+  name: 'config',
+  projected: {
+    defaultMode: std.parseOctal('0600'),
+    sources: [
+      { configMap: { name: 'dae' } },
+      { secret: { name: 'dae' } },
+    ],
   },
-  {
-    name: 'proc-sys',
-    hostPath: { path: '/proc/sys', type: 'Directory' },
-   },
-])
+}])
 .OnePassword(spec={
   dataFrom: [{
     extract: { key: 'Dae Configs', property: 'node.dae' },

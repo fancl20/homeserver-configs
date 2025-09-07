@@ -51,16 +51,13 @@
                            "BPF",
                            "SYS_ADMIN"
                         ]
-                     }
+                     },
+                     "privileged": true
                   },
                   "volumeMounts": [
                      {
                         "mountPath": "/etc/dae",
                         "name": "config"
-                     },
-                     {
-                        "mountPath": "/proc/sys",
-                        "name": "proc-sys"
                      }
                   ]
                }
@@ -84,13 +81,6 @@
                         }
                      ]
                   }
-               },
-               {
-                  "hostPath": {
-                     "path": "/proc/sys",
-                     "type": "Directory"
-                  },
-                  "name": "proc-sys"
                }
             ]
          }
