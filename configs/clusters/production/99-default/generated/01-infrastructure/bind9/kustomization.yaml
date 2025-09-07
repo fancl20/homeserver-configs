@@ -13,7 +13,6 @@
    "kind": "Kustomization",
    "resources": [
       "deployment.yaml",
-      "service_bind9.yaml",
       "serviceaccount.yaml"
    ]
 }

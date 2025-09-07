@@ -29,14 +29,14 @@ app.Base('bind9')
     |||,
   },
 })
-.Service({
-  ports: [
-    { name: 'dns-udp', protocol: 'UDP', port: 53, targetPort: 5353 },
-    { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 5353 },
-  ],
-  type: 'LoadBalancer',
-  # loadBalancerIP: app.StaticIP.DNS,
-})
+#.Service({
+#  ports: [
+#    { name: 'dns-udp', protocol: 'UDP', port: 53, targetPort: 5353 },
+#    { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 5353 },
+#  ],
+#  type: 'LoadBalancer',
+#  loadBalancerIP: app.StaticIP.DNS,
+#})
 .Kustomize()
 .Config('named.conf', |||
   options {
