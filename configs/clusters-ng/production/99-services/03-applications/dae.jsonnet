@@ -5,10 +5,6 @@ app.Base('dae')
 .PodContainers([{
   image: images.dae,
   command: ['/bin/bash', '-ex', '-c', |||
-    # mkdir -p /etc/dae
-    # cat /config/config.dae <(echo) /vault/secrets/node.dae > /etc/dae/config.dae
-    # chmod 0600 /etc/dae/config.dae
-
     mount bpffs /sys/fs/bpf/ -t bpf
 
     ip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
@@ -24,6 +20,7 @@ app.Base('dae')
   ],
   volumeMounts: [
     { name: 'config', mountPath: '/etc/dae' },
+    { name: 'proc-sys', mountPath: '/proc/sys' },
   ],
 }])
 .PodAnnotations({
@@ -34,24 +31,22 @@ app.Base('dae')
     },
   ]),
 })
-.PodVolumes([{
-  name: 'config',
-  projected: {
-    defaultMode: std.parseOctal('0600'),
-    sources: [
-      { configMap: { name: 'dae' } },
-      { secret: { name: 'dae' } },
-    ],
+.PodVolumes([
+  {
+    name: 'config',
+    projected: {
+      defaultMode: std.parseOctal('0600'),
+      sources: [
+        { configMap: { name: 'dae' } },
+        { secret: { name: 'dae' } },
+      ],
+    },
   },
-}])
-.PodSecurityContext({
-  sysctls: [
-    { name: 'net.ipv4.conf.net1.forwarding', value: '1' },
-    { name: 'net.ipv6.conf.net1.forwarding', value: '1' },
-    { name: 'net.ipv4.conf.net1.send_redirects', value: '0' },
-    { name: 'net.ipv4.ip_forward', value: '1' },
-  ],
-})
+  {
+    name: 'proc-sys',
+    hostPath: { path: '/proc/sys', type: 'Directory' },
+   },
+])
 .OnePassword(spec={
   dataFrom: [{
     extract: { key: 'Dae Configs', property: 'node.dae' },
