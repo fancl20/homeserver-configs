@@ -17,7 +17,7 @@ app.Base('dae')
     exec /opt/dae/dae-linux-x86_64 run --disable-timestamp -c /etc/dae/config.dae
   |||],
   securityContext: {
-    capabilities: { add: ['NET_ADMIN', 'SYS_MODULE', 'SYS_ADMIN'] },
+    capabilities: { add: ['NET_ADMIN', 'BPF', 'SYS_ADMIN'] },
   },
   env: [
     { name: 'TZ', value: 'Australia/Sydney' },

@@ -48,7 +48,7 @@
                      "capabilities": {
                         "add": [
                            "NET_ADMIN",
-                           "SYS_MODULE",
+                           "BPF",
                            "SYS_ADMIN"
                         ]
                      }
