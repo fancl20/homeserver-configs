@@ -24,4 +24,4 @@ COPY --from=0 /tmp/dae/ /opt/dae
 COPY --from=0 /tmp/geodata/ /usr/local/share/dae
 
 ENTRYPOINT ["dumb-init"]
-CMD ["/opt/dae/dae-linux-x86_64"]
+CMD ["/opt/dae/dae-linux-x86_64_v3_avx2"]

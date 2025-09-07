@@ -34,7 +34,7 @@
                      "/bin/bash",
                      "-ex",
                      "-c",
-                     "# mkdir -p /etc/dae\n# cat /config/config.dae <(echo) /vault/secrets/node.dae > /etc/dae/config.dae\n# chmod 0600 /etc/dae/config.dae\n\nmount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64 run --disable-timestamp -c /etc/dae/config.dae\n"
+                     "# mkdir -p /etc/dae\n# cat /config/config.dae <(echo) /vault/secrets/node.dae > /etc/dae/config.dae\n# chmod 0600 /etc/dae/config.dae\n\nmount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae\n"
                   ],
                   "env": [
                      {

@@ -14,7 +14,7 @@ app.Base('dae')
     ip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR
     ip route replace default via 192.168.1.1 dev net1
 
-    exec /opt/dae/dae-linux-x86_64 run --disable-timestamp -c /etc/dae/config.dae
+    exec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae
   |||],
   securityContext: {
     capabilities: { add: ['NET_ADMIN', 'BPF', 'SYS_ADMIN'] },
