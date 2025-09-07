@@ -59,9 +59,6 @@ app.Base('dae')
     log_level: info
     allow_insecure: false
 
-    tcp_check_url: 'https://dns.alidns.com/'
-    udp_check_dns: 'dns.alidns.com:53'
-
     auto_config_kernel_parameter: false
     auto_config_firewall_rule: true
   }
@@ -92,14 +89,22 @@ app.Base('dae')
     general-sg {
       filter: name(SG1)
       policy: min_moving_avg
+      tcp_check_url: 'http://cp.cloudflare.com'
+      udp_check_dns: 'dns.google:53'
     }
     general-cn {
       filter: name(SG1-SG2-CN2)
       policy: min_moving_avg
+      tcp_check_http_method: GET
+      tcp_check_url: 'http://baidu.com'
+      udp_check_dns: 'dns.alidns.com:53'
     }
     game {
       filter: name(SG1-SG2-CN2-CN3)
       policy: min_moving_avg
+      tcp_check_http_method: GET
+      tcp_check_url: 'http://baidu.com'
+      udp_check_dns: 'dns.alidns.com:53'
     }
   }
   include {
