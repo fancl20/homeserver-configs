@@ -1,0 +1,108 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "dae",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "dae"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"ips\": [\n            \"192.168.1.247/24\"\n        ],\n        \"name\": \"macvlan-static\"\n    }\n]"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "dae"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/bin/bash",
+                     "-ex",
+                     "-c",
+                     "# mkdir -p /etc/dae\n# cat /config/config.dae <(echo) /vault/secrets/node.dae > /etc/dae/config.dae\n# chmod 0600 /etc/dae/config.dae\n\nmount bpffs /sys/fs/bpf/ -t bpf\n\nip route replace 10.96.0.0/12 via 10.244.0.1 # serviceCIDR\nip route replace default via 192.168.1.1 dev net1\n\nexec /opt/dae/dae-linux-x86_64 run --disable-timestamp -c /etc/dae/config.dae\n"
+                  ],
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     }
+                  ],
+                  "image": "registry.local.d20.fan/fancl20/dae",
+                  "name": "dae",
+                  "securityContext": {
+                     "capabilities": {
+                        "add": [
+                           "NET_ADMIN",
+                           "SYS_MODULE",
+                           "SYS_ADMIN"
+                        ]
+                     }
+                  },
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/etc/dae",
+                        "name": "config"
+                     }
+                  ]
+               }
+            ],
+            "securityContext": {
+               "sysctls": [
+                  {
+                     "name": "net.ipv4.conf.net1.forwarding",
+                     "value": "1"
+                  },
+                  {
+                     "name": "net.ipv6.conf.net1.forwarding",
+                     "value": "1"
+                  },
+                  {
+                     "name": "net.ipv4.conf.net1.send_redirects",
+                     "value": "0"
+                  },
+                  {
+                     "name": "net.ipv4.ip_forward",
+                     "value": "1"
+                  }
+               ]
+            },
+            "serviceAccountName": "dae",
+            "volumes": [
+               {
+                  "name": "config",
+                  "projected": {
+                     "defaultMode": 384,
+                     "sources": [
+                        {
+                           "configMap": {
+                              "name": "dae"
+                           }
+                        },
+                        {
+                           "secret": {
+                              "name": "dae"
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      }
+   }
+}
