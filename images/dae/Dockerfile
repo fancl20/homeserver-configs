@@ -1,4 +1,6 @@
-ARG FETCHER
+ARG FETCHER=scratch
+ARG BASE_TAG=latest
+
 FROM $FETCHER
 COPY . /root
 RUN apt-get install -y --no-install-recommends ca-certificates curl unzip && \
@@ -10,7 +12,6 @@ RUN apt-get install -y --no-install-recommends ca-certificates curl unzip && \
     curl -L -o /tmp/geodata/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
     curl -L -o /tmp/geodata/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat
 
-ARG BASE_TAG
 FROM docker.io/library/debian:$BASE_TAG
 RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.list.d/debian.sources && \
     echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/10nocheckvalid && \
