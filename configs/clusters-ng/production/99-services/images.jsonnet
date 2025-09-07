@@ -14,12 +14,7 @@ app.Image('calibre')
 +
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')
-.Policy(app.DefaultPolicy.Semver('*-testing-') {
-  filterTags: {
-    extract: '$SEMVER-testing-$PATCH-$TESTING',
-    pattern: '^v(?P<SEMVER>[0-9.]+)+(?:\\.p)?(?P<PATCH>\\d+)?-testing-(?P<TESTING>.+)$',
-  },
-})
+.Policy(app.DefaultPolicy.Semver('*-testing-'))
 +
 app.Image('external-dns')
 .Repository('registry.k8s.io/external-dns/external-dns')
