@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     unzip /tmp/dae.zip -d /tmp/dae/ && \
     # Update geodata
     mkdir -p /tmp/geodata && \
-    curl -L -o /tmp/geodata/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
-    curl -L -o /tmp/geodata/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat
+    curl -s --fail -L -o /tmp/geodata/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat && \
+    curl -s --fail -L -o /tmp/geodata/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat
 
 FROM docker.io/library/debian:$BASE_TAG
 RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.list.d/debian.sources && \
