@@ -4,6 +4,7 @@ import github
 import pathlib
 import sys
 
+
 def main():
   repo = 'daeuniverse/dae'
   ver_file = pathlib.Path(__file__).parent / 'VERSION'
@@ -18,6 +19,7 @@ def main():
         print(github.get_download_url(repo, ver, lambda s: 'linux-x86_64_v3_avx2.zip' in s))
     case _:
       raise(ValueError(f'invalid args {sys.argv}'))
+
 
 if __name__ == '__main__':
   main()

@@ -4,7 +4,7 @@ ARG BASE_TAG=latest
 FROM $FETCHER
 COPY . /root
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl unzip && \
-    # Install dea
+    # Install dae
     curl -s --fail -L -o /tmp/dae.zip $(python3 ./root/update.py url) && \
     unzip /tmp/dae.zip -d /tmp/dae/ && \
     # Update geodata
