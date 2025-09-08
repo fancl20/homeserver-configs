@@ -22,7 +22,7 @@ images:
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '3.0.0' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '1749480109-testing-20250610' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '205401554-testing-20250811' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '9.3.45-ls99' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: registry.local.d20.fan/fancl20/workspace # {"$imagepolicy": "flux-system:workspace:name"}
