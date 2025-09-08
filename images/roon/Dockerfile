@@ -15,7 +15,7 @@ ENV ROON_DATAROOT /data
 ENV ROON_ID_DIR /data
 
 RUN apt-get install -y --no-install-recommends \
-      ffmpeg libasound2-dev alsa-utils cifs-utils \
+      ffmpeg alsa-utils cifs-utils libicu76 \
       ca-certificates iproute2 \
     # Cleanup
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
