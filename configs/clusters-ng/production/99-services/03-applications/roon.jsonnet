@@ -29,7 +29,7 @@ app.Base('roon-server')
 .PodAnnotations({
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {
-      name: 'macvlan',
+      name: 'macvlan-static',
       ips: ['192.168.1.31/24'],
     },
   ]),

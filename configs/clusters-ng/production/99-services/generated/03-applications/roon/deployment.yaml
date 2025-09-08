@@ -21,7 +21,7 @@
       "template": {
          "metadata": {
             "annotations": {
-               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"ips\": [\n            \"192.168.1.31/24\"\n        ],\n        \"name\": \"macvlan\"\n    }\n]"
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"ips\": [\n            \"192.168.1.31/24\"\n        ],\n        \"name\": \"macvlan-static\"\n    }\n]"
             },
             "labels": {
                "app.kubernetes.io/name": "roon-server"
