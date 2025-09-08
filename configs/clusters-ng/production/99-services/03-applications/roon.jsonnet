@@ -8,7 +8,7 @@ app.Base('roon-server')
     ip route replace 10.96.0.0/12 via 10.244.0.1 dev eth0 onlink # serviceCIDR
     ip route replace default via 192.168.1.1 dev net1
 
-    exec /app/RoonServer/start.sh
+    exec /opt/roon/RoonServer/start.sh
   |||],
   securityContext: {
     capabilities: { add: ['NET_ADMIN'] },

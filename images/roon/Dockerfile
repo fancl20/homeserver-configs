@@ -22,4 +22,4 @@ RUN apt-get install -y --no-install-recommends \
 
 COPY --from=0 /tmp/roon /opt/roon
 
-ENTRYPOINT ["/app/RoonServer/start.sh"]
+CMD ["/opt/roon/RoonServer/start.sh"]
