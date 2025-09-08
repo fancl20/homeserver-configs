@@ -35,5 +35,4 @@ app.Base('sftp')
   ports: [
     { name: 'ssh', protocol: 'TCP', port: 22, targetPort: 2222 },
   ],
-  type: 'LoadBalancer',
-})
+}, external_dns=true)
