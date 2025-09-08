@@ -34,7 +34,7 @@ spec:
           - name: image
             value: 'fancl20/{{item}}'
           - name: base_tag
-            value: testing-20250811 # {"$imagepolicy": "flux-system:debian:tag"}
+            value: testing-20250908 # {"$imagepolicy": "flux-system:debian:tag"}
         withItems:
         - dae
         - fava
@@ -146,4 +146,3 @@ spec:
       - 'build-arg:FETCHER={{inputs.parameters.fetcher}}'
       - --opt
       - 'build-arg:BASE_TAG={{inputs.parameters.base_tag}}'
-
