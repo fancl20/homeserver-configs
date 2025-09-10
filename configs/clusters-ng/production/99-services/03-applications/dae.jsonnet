@@ -96,14 +96,14 @@ app.Base('dae')
       filter: name(SG1-SG2-CN2)
       policy: min_moving_avg
       tcp_check_http_method: GET
-      tcp_check_url: 'http://baidu.com'
+      tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
       udp_check_dns: 'dns.alidns.com:53'
     }
     game {
       filter: name(SG1-SG2-CN2-CN3)
       policy: min_moving_avg
       tcp_check_http_method: GET
-      tcp_check_url: 'http://baidu.com'
+      tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
       udp_check_dns: 'dns.alidns.com:53'
     }
   }
