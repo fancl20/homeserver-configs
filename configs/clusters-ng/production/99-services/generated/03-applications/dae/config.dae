@@ -9,7 +9,7 @@ global {
 }
 dns {
   upstream {
-    googledns: 'udp+tcp://dns.google.com:53'
+    googledns: 'udp+tcp://8.8.8.8:53'
   }
   routing {
     request {
