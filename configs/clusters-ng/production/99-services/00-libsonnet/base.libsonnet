@@ -88,6 +88,19 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    DNSConfig(config):: self {
+      Deployment+: {
+        spec+: {
+          template+: {
+            spec+: {
+              dnsPolicy: 'None',
+              dnsConfig+: config,
+            },
+          },
+        },
+      },
+    },
+
     RunAsUser(uid=1000, gid=1000):: self {
       Deployment+: {
         spec+: {
@@ -97,7 +110,7 @@ local kustomize = import 'kustomize.libsonnet';
                 runAsUser: uid,
                 runAsGroup: gid,
                 fsGroup: gid,
-                fsGroupChangePolicy: "OnRootMismatch",
+                fsGroupChangePolicy: 'OnRootMismatch',
               },
             },
           },
@@ -199,10 +212,10 @@ local kustomize = import 'kustomize.libsonnet';
           namespace: namespace,
         },
         spec: {
-          accessModes: [ "ReadWriteMany" ],
-          volumeMode: "Filesystem",
+          accessModes: ['ReadWriteMany'],
+          volumeMode: 'Filesystem',
           resources: {
-            requests: { storage: "8Gi" },
+            requests: { storage: '8Gi' },
           },
         } + spec,
       },

@@ -45,6 +45,9 @@ app.Base('dae')
     ],
   },
 }])
+.DNSConfig({
+  nameservers: [ '8.8.8.8', '8.8.4.4' ],
+})
 .OnePassword(spec={
   dataFrom: [{
     extract: { key: 'Dae Configs', property: 'node.dae' },
