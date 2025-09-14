@@ -29,6 +29,11 @@ app.Base('sftp')
     rewrite: [
       { regexp: { source: 'public key', target: 'PUBLIC_KEY' } },
     ],
+  }, {
+    extract: { key: 'Shared SFTP', property: 'password' },
+    rewrite: [
+      { regexp: { source: 'password', target: 'USER_PASSWORD' } },
+    ],
   }],
 })
 .Service({
