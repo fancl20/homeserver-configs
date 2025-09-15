@@ -12,6 +12,10 @@ provider "google" {
 
 provider "vault" {}
 
+module "cert_manager" {
+  source = "./cert-manager"
+}
+
 module "vault" {
   source = "./vault"
 }

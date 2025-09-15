@@ -5,6 +5,11 @@ terraform {
   }
 }
 
+provider "google" {
+  project = "home-servers-275405"
+  region  = "australia-southeast1"
+}
+
 provider "kubernetes" {}
 
 provider "random" {}
