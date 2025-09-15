@@ -24,8 +24,7 @@ app.Base('bind9')
     { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 5353 },
   ],
   type: 'LoadBalancer',
-  loadBalancerIP: app.StaticIP.DNS,
-})
+}, load_balancer_ip=app.StaticIP.DNS)
 .Kustomize()
 .Config('named.conf', |||
   options {

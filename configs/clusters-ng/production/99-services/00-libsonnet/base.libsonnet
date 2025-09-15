@@ -158,7 +158,7 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
-    Service(spec, service_name=name, external_dns=false,):: self {
+    Service(spec, service_name=name, external_dns=false, load_balancer_ip=''):: self {
       local merged = { type: if external_dns then 'LoadBalancer' else 'ClusterIP', selector: match } + spec,
       ['service_' + service_name + '.yaml']: {
         apiVersion: 'v1',
@@ -167,8 +167,10 @@ local kustomize = import 'kustomize.libsonnet';
           name: service_name,
           namespace: namespace,
           annotations: if external_dns then {
-            'external-dns.alpha.kubernetes.io/hostname': hostname,
-          },
+              'external-dns.alpha.kubernetes.io/hostname': hostname,
+            } else {} + if load_balancer_ip != '' then {
+              'metallb.io/loadBalancerIPs': load_balancer_ip,
+            } else {},
         },
         spec: merged + if merged.type == 'LoadBalancer' then { allocateLoadBalancerNodePorts: false } else {},
       },
