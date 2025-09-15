@@ -59,3 +59,32 @@ spec:
         apiVersion: generators.external-secrets.io/v1alpha1
         kind: VaultDynamicSecret
         name: tf-vault-token
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tf-runner-extra
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpointslices
+      - pods
+    verbs:
+      - get
+      - list
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tf-runner-extra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tf-runner-extra
+subjects:
+- kind: ServiceAccount
+  name: tf-runner
+  namespace: flux-system
+
