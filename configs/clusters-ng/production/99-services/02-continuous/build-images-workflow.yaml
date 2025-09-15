@@ -42,3 +42,20 @@ spec:
   workflowTemplateRef:
     name: build-images
   serviceAccountName: build-images
+---
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: build-images
+  namespace: continuous
+spec:
+  schedules:
+  - '0 3 * * *'
+  timezone: Australia/Sydney
+  concurrencyPolicy: Replace
+  workflowSpec:
+    entrypoint: main
+    workflowTemplateRef:
+      name: build-images
+    serviceAccountName: build-images
+
