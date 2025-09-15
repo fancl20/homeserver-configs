@@ -13,7 +13,7 @@ data "kubernetes_resource" "ingress_service" {
 }
 
 resource "google_dns_record_set" "registry" {
-  name = "registry.${data.google_dns_managed_zone.default.dns_name}"
+  name = "registry.local.${data.google_dns_managed_zone.default.dns_name}"
   type = "A"
   ttl  = 300
 
