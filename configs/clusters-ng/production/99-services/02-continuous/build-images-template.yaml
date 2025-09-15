@@ -141,7 +141,11 @@ spec:
       - --local
       - dockerfile=.
       - --output
-      - 'type=image,name=registry.default/{{inputs.parameters.image}},push=true,registry.insecure=true'
+      - 'type=image,name=registry.local.d20.fan/{{inputs.parameters.image}},push=true'
+      - --export-cache
+      - 'type=inline'
+      - --import-cache
+      - 'type=registry,ref=registry.local.d20.fan/{{inputs.parameters.image}}'
       - --opt
       - 'build-arg:FETCHER={{inputs.parameters.fetcher}}'
       - --opt
