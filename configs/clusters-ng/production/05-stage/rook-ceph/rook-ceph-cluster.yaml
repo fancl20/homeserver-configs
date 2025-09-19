@@ -29,7 +29,7 @@ spec:
         useAllDevices: false
         nodes:
         - name: talos-lje-xo8
-          devicePathFilter: '^/dev/disk/by-id/nvme-.*(4TB|512GB|512HBJQ).*'
+          devicePathFilter: '^/dev/disk/by-id/nvme-.*(4TB|512GB|512HBJQ|INTEL).*'
       placement:
         all:
           nodeAffinity:
