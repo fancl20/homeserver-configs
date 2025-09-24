@@ -18,7 +18,7 @@ images:
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
   newTag: '8.0.14' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
-  newTag: '10.0_p1-r7-ls204' # {"$imagepolicy": "flux-system:openssh:tag"}
+  newTag: '10.0_p1-r8-ls205' # {"$imagepolicy": "flux-system:openssh:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '5.1.2-r2-ls416' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
