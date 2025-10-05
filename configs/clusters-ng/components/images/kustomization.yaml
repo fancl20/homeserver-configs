@@ -20,7 +20,7 @@ images:
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
   newTag: '10.0_p1-r9-ls206' # {"$imagepolicy": "flux-system:openssh:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
-  newTag: '5.1.2-r2-ls417' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
+  newTag: '5.1.2-r2-ls418' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '3.0.0' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
