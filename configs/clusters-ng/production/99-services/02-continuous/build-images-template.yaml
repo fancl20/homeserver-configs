@@ -81,7 +81,7 @@ spec:
           - name: image
             value: '{{inputs.parameters.image}}:{{steps.update.outputs.parameters.version}}-{{inputs.parameters.base_tag}}'
           - name: fetcher
-            value: docker.io/library/python:3.13.7-slim # {"$imagepolicy": "flux-system:python"}
+            value: docker.io/library/python:3.14.0-slim # {"$imagepolicy": "flux-system:python"}
           - name: base_tag
             value: '{{inputs.parameters.base_tag}}'
   - name: update
@@ -89,7 +89,7 @@ spec:
       parameters:
       - name: path
     container:
-      image: docker.io/library/python:3.13.7-slim # {"$imagepolicy": "flux-system:python"}
+      image: docker.io/library/python:3.14.0-slim # {"$imagepolicy": "flux-system:python"}
       volumeMounts:
       - mountPath: /work
         name: work
