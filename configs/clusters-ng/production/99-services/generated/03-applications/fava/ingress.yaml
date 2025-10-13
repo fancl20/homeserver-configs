@@ -1,0 +1,38 @@
+{
+   "apiVersion": "networking.k8s.io/v1",
+   "kind": "Ingress",
+   "metadata": {
+      "name": "fava",
+      "namespace": "default"
+   },
+   "spec": {
+      "rules": [
+         {
+            "host": "fava.local.d20.fan",
+            "http": {
+               "paths": [
+                  {
+                     "backend": {
+                        "service": {
+                           "name": "fava",
+                           "port": {
+                              "number": 80
+                           }
+                        }
+                     },
+                     "path": "/",
+                     "pathType": "Prefix"
+                  }
+               ]
+            }
+         }
+      ],
+      "tls": [
+         {
+            "hosts": [
+               "fava.local.d20.fan"
+            ]
+         }
+      ]
+   }
+}

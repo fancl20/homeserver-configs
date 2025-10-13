@@ -40,6 +40,15 @@ local kustomize = import 'kustomize.libsonnet';
       },
     },
 
+    StatefulSet(service_name=name):: self {
+      Deployment+: {
+        kind: 'StatefulSet',
+        spec+: {
+          serviceName: service_name,
+        }
+      },
+    },
+
     PodAnnotations(annotations):: self {
       Deployment+: {
         spec+: {
