@@ -19,13 +19,13 @@ images:
   newTag: '8.0.15' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
   newTag: '10.0_p1-r9-ls208' # {"$imagepolicy": "flux-system:openssh:tag"}
-- name: docker.io/library/postgres # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '18.0' # {"$imagepolicy": "flux-system:mongo:tag"}
+- name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
+  newTag: '8.0.15' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '5.1.2-r3-ls420' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '3.0.0' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '205401554-testing-20250811' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '205501559-testing-20250929' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '9.4.19-ls104' # {"$imagepolicy": "flux-system:unifi:tag"}
