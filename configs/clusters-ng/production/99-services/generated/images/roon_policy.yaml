@@ -6,15 +6,12 @@
       "namespace": "flux-system"
    },
    "spec": {
-      "filterTags": {
-         "pattern": ".*"
-      },
       "imageRepositoryRef": {
          "name": "roon"
       },
       "policy": {
-         "semver": {
-            "range": "*-testing-"
+         "alphabetical": {
+            "order": "asc"
          }
       }
    }

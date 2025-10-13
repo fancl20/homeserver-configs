@@ -40,7 +40,7 @@
                   "name": "postgres",
                   "volumeMounts": [
                      {
-                        "mountPath": "/var/lib/postgresql/data",
+                        "mountPath": "/var/lib/postgresql",
                         "name": "coder-db"
                      }
                   ]

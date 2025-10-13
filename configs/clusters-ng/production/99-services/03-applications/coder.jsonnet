@@ -11,7 +11,7 @@ app.Base('coder-db', 'coder')
       { secretRef: { name: 'coder-db' } },
     ],
     volumeMounts: [
-      { name: 'coder-db', mountPath: '/var/lib/postgresql/data' },
+      { name: 'coder-db', mountPath: '/var/lib/postgresql' },
     ],
   },
 ])

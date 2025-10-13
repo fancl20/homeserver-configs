@@ -77,7 +77,7 @@ app.Image('registry')
 +
 app.Image('roon')
 .Repository('registry.local.d20.fan/fancl20/roon')
-.Policy(app.DefaultPolicy.Semver('*-testing-'))
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
 +
 app.Image('unifi')
 .Repository('lscr.io/linuxserver/unifi-network-application')
