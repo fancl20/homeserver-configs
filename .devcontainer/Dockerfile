@@ -1,7 +1,7 @@
 FROM debian:testing-slim
 
 RUN groupadd --gid 1000 coder && \
-    useradd --uid 1000 --gid 1000 -m coder \
+    useradd --uid 1000 --gid 1000 -m coder
 
 RUN apt-get update && apt-get install -y \
     curl wget git vim jq fish \
