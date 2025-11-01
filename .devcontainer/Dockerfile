@@ -1,5 +1,8 @@
 FROM debian:testing-slim
 
+RUN groupadd --gid 1000 coder && \
+    useradd --uid 1000 --gid 1000 -m coder \
+
 RUN apt-get update && apt-get install -y \
     curl \
     wget \
@@ -16,3 +19,5 @@ RUN python3 /tmp/install_terraform.py
 
 # Clean up
 RUN rm -rf /tmp/* /var/tmp/*
+
+USER coder

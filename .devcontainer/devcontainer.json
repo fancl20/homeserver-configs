@@ -1,5 +1,4 @@
 {
-  "name": "Cluster-ng Development Environment",
   "build": {
     "dockerfile": "Dockerfile"
   },
