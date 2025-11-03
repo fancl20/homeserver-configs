@@ -71,7 +71,12 @@
                   "name": "coder-init",
                   "restartPolicy": "Always"
                }
-            ]
+            ],
+            "resources": {
+               "requests": {
+                  "memory": "1024Mi"
+               }
+            }
          }
       }
    }

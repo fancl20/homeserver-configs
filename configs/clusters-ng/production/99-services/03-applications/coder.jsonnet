@@ -69,6 +69,9 @@ app.Base('coder-db', 'coder')
             { name: 'CODER_PG_CONNECTION_URL', valueFrom: { secretKeyRef: { name: 'coder-db', key: 'url' } } },
             { name: 'CODER_ACCESS_URL', value: 'https://' + domain },
           ],
+          resources: {
+            requests: { memory: '1024Mi' },
+          },
           ingress: {
             enable: true,
             host: domain,
