@@ -20,6 +20,11 @@ app.Base('coder-db', 'coder')
   ports: [
     { name: 'postgres', protocol: 'TCP', port: 5432, targetPort: 5432 },
   ],
+})
+.OnePassword(secret_name='coder', spec={
+  dataFrom: [
+    { extract: { key: 'Coder' } },
+  ],
 }) + {
   'namespace.yaml': {
     apiVersion: 'v1',
@@ -69,6 +74,33 @@ app.Base('coder-db', 'coder')
             host: domain,
             tls: { enable: true },
           },
+          initContainers: [{
+            name: 'coder-init',
+            image: 'ghcr.io/coder/coder:latest',
+            restartPolicy: 'Always',
+            command: [
+              '/bin/sh', '-exc', |||
+                until curl -f http://127.0.0.1:8080/healthz; do
+                  echo "Waiting for Coder to be ready..."
+                  sleep 5
+                done
+
+                echo "Initializing Coder with first user..."
+                coder login \
+                  --first-user-username fancl20 \
+                  --first-user-email "$CODER_USER_EMAIL" \
+                  --first-user-password "$CODER_USER_PASSWORD" \
+                  --use-token-as-session \
+                  http://127.0.0.1:8080/
+
+                exec sleep infinity
+              |||
+            ],
+            env: [
+              { name: 'CODER_USER_EMAIL', valueFrom: { secretKeyRef: { name: 'coder', key: 'username' } } },
+              { name: 'CODER_USER_PASSWORD', valueFrom: { secretKeyRef: { name: 'coder', key: 'password' } } },
+            ],
+          }],
         },
       },
     },
