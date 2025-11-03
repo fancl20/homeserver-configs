@@ -97,6 +97,7 @@ app.Base('dae')
     }
     general-cn {
       filter: name(SG3-CN2)
+      filter: name(SG1-SG3-CN2) [add_latency: 50ms]
       policy: min_moving_avg
       tcp_check_http_method: GET
       tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
@@ -104,6 +105,7 @@ app.Base('dae')
     }
     game {
       filter: name(SG3-CN2-CN3)
+      filter: name(SG1-SG3-CN2-CN3) [add_latency: 50ms]
       policy: min_moving_avg
       tcp_check_http_method: GET
       tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
