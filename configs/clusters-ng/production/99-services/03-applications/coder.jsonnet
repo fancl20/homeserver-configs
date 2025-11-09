@@ -133,6 +133,7 @@ app.Base('coder-db', 'coder')
                     echo "Token ttl: ${ttl} greater than 259200, continue..."
                     continue
                   fi
+                  echo "Token ttl: ${ttl} less than 259200, refreshing..."
 
                   token=$(coder token create --lifetime 7d)
                   if [[ -z ${token} ]]; then
@@ -158,7 +159,7 @@ app.Base('coder-db', 'coder')
                     -H "Content-Type: application/json" \
                     -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
                     -d "${data}" \
-                    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/coder-init-token
+                    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/coder-init-token > /dev/null
 
                   echo "Login with the new session token..."
                   export CODER_SESSION_TOKEN=${token}
