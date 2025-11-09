@@ -164,7 +164,7 @@ app.Base('coder-db', 'coder')
               { name: 'CODER_URL', value: 'http://127.0.0.1:8080/' },
               { name: 'CODER_FIRST_USER_USERNAME', value: 'fancl20' },
               { name: 'CODER_FIRST_USER_EMAIL', valueFrom: { secretKeyRef: { name: 'coder', key: 'username' } } },
-              { name: 'CODER_FIRST_USER_USERNAME', valueFrom: { secretKeyRef: { name: 'coder', key: 'password' } } },
+              { name: 'CODER_FIRST_USER_PASSWORD', valueFrom: { secretKeyRef: { name: 'coder', key: 'password' } } },
               { name: 'CODER_SESSION_TOKEN', valueFrom: { secretKeyRef: { name: 'coder-init-token', key: 'token', optional: true } } },
             ],
           }],
