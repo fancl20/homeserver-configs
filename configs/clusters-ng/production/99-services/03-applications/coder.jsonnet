@@ -44,7 +44,7 @@ app.Base('coder-db', 'coder')
     rules: [{
       apiGroups: [""],
       resources: ["secrets"],
-      verbs: ["create", "patch"],
+      verbs: ["create", "update"],
     }],
   },
 
@@ -153,12 +153,12 @@ app.Base('coder-db', 'coder')
                       "token": "'$(echo -n ${token} | base64)'"
                     }
                   }'
-                  method=$([[ -z ${CODER_SESSION_TOKEN} ]] && echo -n POST || echo -n PATCH)
+                  method=$([[ -z ${CODER_SESSION_TOKEN} ]] && echo -n POST || echo -n PUT)
                   curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
                     -d "${data}" \
-                    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets
+                    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/coder-init-token
 
                   echo "Login with the new session token..."
                   export CODER_SESSION_TOKEN=${token}
