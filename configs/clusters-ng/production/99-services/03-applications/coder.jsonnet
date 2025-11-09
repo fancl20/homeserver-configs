@@ -129,11 +129,11 @@ app.Base('coder-db', 'coder')
                 while sleep 60; do
                   expire=$(date -d $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
                   ttl=$(expr "${expire}" - $(date "+%s"))
-                  if [[ "${ttl}" -gt 604800 ]]; then
+                  if [[ "${ttl}" -gt 259200 ]]; then
                     continue
                   fi
 
-                  token=$(coder token create --lifetime 14d)
+                  token=$(coder token create --lifetime 7d)
                   if [[ -z ${token} ]]; then
                     echo "Failed to create create new token."
                     continue
