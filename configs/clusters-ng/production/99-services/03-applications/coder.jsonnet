@@ -38,7 +38,7 @@ app.Base('coder-db', 'coder')
     apiVersion: 'rbac.authorization.k8s.io/v1',
     kind: 'Role',
     metadata: {
-      name: 'coder',
+      name: 'coder-init',
       namespace: 'coder',
     },
     rules: [{
@@ -52,7 +52,7 @@ app.Base('coder-db', 'coder')
     apiVersion: 'rbac.authorization.k8s.io/v1',
     kind: 'RoleBinding',
     metadata: {
-      name: 'coder',
+      name: 'coder-init',
       namespace: 'coder',
     },
     roleRef: {
