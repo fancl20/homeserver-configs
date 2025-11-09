@@ -86,6 +86,7 @@ app.Base('coder-db', 'coder')
     metadata: {
       name: 'coder',
       namespace: 'coder',
+      annotations: { 'kustomize.toolkit.fluxcd.io/substitute': 'disabled' },
     },
     spec: {
       interval: '15m',
@@ -116,7 +117,7 @@ app.Base('coder-db', 'coder')
             restartPolicy: 'Always',
             command: [
               '/bin/sh', '-exc', |||
-                until curl -f http://127.0.0.1:8080/healthz; do
+                until curl -sf http://127.0.0.1:8080/healthz; do
                   echo "Waiting for Coder to be ready..."
                   sleep 5
                 done
@@ -127,7 +128,7 @@ app.Base('coder-db', 'coder')
                 trap "exit" TERM
                 while sleep 60; do
                   expire=$(date $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
-                  ttl=$(expr "${expire} - $(date "+%s"))
+                  ttl=$(expr "${expire}" - $(date "+%s"))
                   if [[ "${ttl}" -gt 604800 ]]; then
                     continue
                   fi
