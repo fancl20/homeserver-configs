@@ -44,7 +44,7 @@ app.Base('coder-db', 'coder')
     rules: [{
       apiGroups: [""],
       resources: ["secrets"],
-      verbs: ["create", "update"],
+      verbs: ["create", "patch"],
     }],
   },
 
@@ -117,7 +117,7 @@ app.Base('coder-db', 'coder')
             restartPolicy: 'Always',
             command: [
               '/bin/sh', '-ec', |||
-                until curl -sf http://127.0.0.1:8080/healthz; do
+                until curl -sSf http://127.0.0.1:8080/healthz; do
                   echo "Waiting for Coder to be ready..."
                   sleep 5
                 done
@@ -145,15 +145,16 @@ app.Base('coder-db', 'coder')
                     "kind": "Secret",
                     "apiVersion": "v1",
                     "metadata": {
-                      "name": coder-init-token,
-                      "namespace": coder
+                      "name": "coder-init-token",
+                      "namespace": "coder"
                     },
-                    "type": "Opaque"
+                    "type": "Opaque",
                     "data": {
-                      "token": "'${token}'",
-                    },
+                      "token": "'$(echo -n ${token} | base64)'"
+                    }
                   }'
-                  curl -sf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X POST \
+                  method=$([[ -z ${CODER_SESSION_TOKEN} ]] && echo -n POST || echo -n PATCH)
+                  curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
                     -d "${data}" \
