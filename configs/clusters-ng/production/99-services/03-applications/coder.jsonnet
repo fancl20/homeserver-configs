@@ -127,7 +127,7 @@ app.Base('coder-db', 'coder')
 
                 trap "exit" TERM
                 while sleep 60; do
-                  expire=$(date $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
+                  expire=$(date -d $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
                   ttl=$(expr "${expire}" - $(date "+%s"))
                   if [[ "${ttl}" -gt 604800 ]]; then
                     continue
