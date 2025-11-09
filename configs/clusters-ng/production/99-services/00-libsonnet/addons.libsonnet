@@ -25,4 +25,20 @@
       },
     },
   },
+
+  OnePassword(name, namespace, spec):: {
+    ['onepassword_' + name + '.yaml']: {
+      apiVersion: 'external-secrets.io/v1',
+      kind: 'ExternalSecret',
+      metadata: {
+        name: name,
+        namespace: namespace,
+      },
+      spec: {
+        refreshInterval: '1m',
+        secretStoreRef: { name: 'onepassword', kind: 'ClusterSecretStore' },
+        target: { name: name, creationPolicy: 'Owner' },
+      } + spec,
+    },
+  },
 }
