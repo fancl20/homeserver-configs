@@ -58,7 +58,7 @@ app.Base('coder-db', 'coder')
     roleRef: {
       apiGroup: 'rbac.authorization.k8s.io',
       kind: 'Role',
-      name: 'coder',
+      name: 'coder-init',
     },
     subjects: [{
       kind: 'ServiceAccount',
@@ -116,7 +116,7 @@ app.Base('coder-db', 'coder')
             image: 'ghcr.io/coder/coder:latest',
             restartPolicy: 'Always',
             command: [
-              '/bin/sh', '-exc', |||
+              '/bin/sh', '-ec', |||
                 until curl -sf http://127.0.0.1:8080/healthz; do
                   echo "Waiting for Coder to be ready..."
                   sleep 5
@@ -130,15 +130,17 @@ app.Base('coder-db', 'coder')
                   expire=$(date -d $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
                   ttl=$(expr "${expire}" - $(date "+%s"))
                   if [[ "${ttl}" -gt 259200 ]]; then
+                    echo "Token ttl: ${ttl} greater than 259200, continue..."
                     continue
                   fi
 
                   token=$(coder token create --lifetime 7d)
                   if [[ -z ${token} ]]; then
-                    echo "Failed to create create new token."
+                    echo "Failed to create new token, continue..."
                     continue
                   fi
 
+                  echo "Update secrets for the new token..."
                   data='{
                     "kind": "Secret",
                     "apiVersion": "v1",
@@ -151,13 +153,15 @@ app.Base('coder-db', 'coder')
                       "token": "'${token}'",
                     },
                   }'
-                  curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X POST \
+                  curl -sf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X POST \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
-                    -d "${data}"
+                    -d "${data}" \
                     https://kubernetes.default.svc/api/v1/namespaces/coder/secrets
 
+                  echo "Login with the new session token..."
                   export CODER_SESSION_TOKEN=${token}
+                  coder login --use-token-as-session
                 done
               |||
             ],
