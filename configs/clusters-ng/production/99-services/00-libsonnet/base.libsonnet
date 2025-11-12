@@ -17,6 +17,7 @@ local serviceaccount = import 'serviceaccount.libsonnet';
           name: namespace,
         },
       },
+      Done():: { [i.key]: i.value for i in std.objectKeysValues(self) },
     },
 
     local spec(base) = {

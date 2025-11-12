@@ -1,7 +1,7 @@
 {
   local base = self,
 
-  Kustomize():: { [i.key]: i.value for i in std.objectKeysValues(base) } {
+  Kustomize():: base.Done() {
     'kustomization.yaml': self.Kustomization,
 
     Kustomization:: {
