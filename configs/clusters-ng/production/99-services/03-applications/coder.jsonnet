@@ -89,6 +89,11 @@ app.Base('coder', 'coder', create_namespace=true).Helm('https://helm.coder.com/v
   resources: ['secrets'],
   verbs: ['create', 'update'],
 }])
+.OnePassword(spec={
+  dataFrom: [
+    { extract: { key: 'Coder' } },
+  ],
+})
 .Done()
 +
 app.Base('coder-db', 'coder').StatefulSet()
@@ -108,11 +113,6 @@ app.Base('coder-db', 'coder').StatefulSet()
 .Service({
   ports: [
     { name: 'postgres', protocol: 'TCP', port: 5432, targetPort: 5432 },
-  ],
-})
-.OnePassword(spec={
-  dataFrom: [
-    { extract: { key: 'Coder' } },
   ],
 })
 .Done()
