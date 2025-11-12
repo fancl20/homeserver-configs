@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('jellyfin')
+app.Base('jellyfin').Deployment()
 .PodContainers([{
   image: images.jellyfin,
   env: [

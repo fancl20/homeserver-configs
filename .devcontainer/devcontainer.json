@@ -1,16 +1,5 @@
 {
   "build": {
     "dockerfile": "Dockerfile"
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-python.python",
-        "redhat.vscode-yaml",
-        "hashicorp.terraform",
-        "Grafana.vscode-jsonnet",
-        "golang.go"
-      ]
-    }
   }
 }

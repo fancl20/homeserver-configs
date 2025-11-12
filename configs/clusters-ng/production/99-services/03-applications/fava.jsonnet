@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('fava')
+app.Base('fava').Deployment()
 .PodContainers([{
   image: images.fava,
   command: ['/usr/local/bin/fava', '--port', '5000', '/workspace/main.beancount'],

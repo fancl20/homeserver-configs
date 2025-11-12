@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('external-dns')
+app.Base('external-dns').Deployment()
 .PodContainers([{
   image: images['external-dns'],
   args: [
@@ -27,7 +27,7 @@ app.Base('external-dns')
   },
 }])
 .RunAsUser()
-.ClusterRole([{
+.ClusterRole(rules=[{
   apiGroups: [''],
   resources: ['services', 'pods'],
   verbs: ['get', 'watch', 'list'],
@@ -44,5 +44,3 @@ app.Base('external-dns')
   resources: ['nodes'],
   verbs: ['list', 'watch'],
 }])
-.ClusterRoleBinding()
-

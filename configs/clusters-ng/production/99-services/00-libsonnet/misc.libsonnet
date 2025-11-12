@@ -1,5 +1,7 @@
 {
-  Kustomize(name, namespace, base):: { [i.key]: i.value for i in std.objectKeysValues(base) } {
+  local base = self,
+
+  Kustomize():: { [i.key]: i.value for i in std.objectKeysValues(base) } {
     'kustomization.yaml': self.Kustomization,
 
     Kustomization:: {
@@ -13,8 +15,8 @@
       [file + '.raw']: content,
       Kustomization+: {
         configMapGenerator: [{
-          name: name,
-          namespace: namespace,
+          name: base.Name,
+          namespace: base.Namespace,
           files: [file] + if std.objectHas(k, 'configMapGenerator') then k.configMapGenerator[0].files else [],
         }],
         generatorOptions: {
@@ -26,13 +28,13 @@
     },
   },
 
-  OnePassword(name, namespace, spec):: {
+  OnePassword(name=base.Name, spec):: self {
     ['onepassword_' + name + '.yaml']: {
       apiVersion: 'external-secrets.io/v1',
       kind: 'ExternalSecret',
       metadata: {
         name: name,
-        namespace: namespace,
+        namespace: base.Namespace,
       },
       spec: {
         refreshInterval: '1m',

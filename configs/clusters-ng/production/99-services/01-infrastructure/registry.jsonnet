@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('registry')
+app.Base('registry').Deployment()
 .PodContainers([{
   image: images.registry,
   env: [
@@ -9,14 +9,14 @@ app.Base('registry')
     { name: 'REGISTRY_LOG_LEVEL', value: 'info' },
   ],
   volumeMounts: [
-    { name: 'registry', mountPath: '/var/lib/registry'},
+    { name: 'registry', mountPath: '/var/lib/registry' },
   ],
 }])
 .RunAsUser()
 .PersistentVolumeClaim(spec={
   resources: {
     requests: { storage: '32Gi' },
-  }
+  },
 })
 .Service({
   ports: [

@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('sftp')
+app.Base('sftp').Deployment()
 .PodContainers([{
   image: images.openssh,
   env: [

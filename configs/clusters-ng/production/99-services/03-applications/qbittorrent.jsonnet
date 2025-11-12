@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('qbittorrent')
+app.Base('qbittorrent').Deployment()
 .PodContainers([{
   image: images.qbittorrent,
   env: [
@@ -10,7 +10,7 @@ app.Base('qbittorrent')
     { name: 'PGID', value: '1000' },
   ],
   volumeMounts: [
-    { name: 'qbittorrent', mountPath: '/config'},
+    { name: 'qbittorrent', mountPath: '/config' },
     { name: 'data', mountPath: '/downloads', subPath: 'downloads' },
   ],
 }])
@@ -22,12 +22,12 @@ app.Base('qbittorrent')
   ports: [
     { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8080 },
   ],
-}, service_name='qbittorrent-ui')
+}, name='qbittorrent-ui')
 .Service({
   name: 'qbittorrent-p2p',
   ports: [
     { name: 'tcp', protocol: 'TCP', port: 6881, targetPort: 6881 },
     { name: 'udp', protocol: 'UDP', port: 6881, targetPort: 6881 },
   ],
-}, service_name='qbittorrent-p2p')
+}, name='qbittorrent-p2p')
 .Ingress(service='qbittorrent-ui')

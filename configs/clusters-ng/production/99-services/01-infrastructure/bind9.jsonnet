@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('bind9')
+app.Base('bind9').Deployment()
 .PodContainers([{
   image: images.bind9,
   resources: {

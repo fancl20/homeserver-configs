@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('roon-server')
+app.Base('roon-server').Deployment()
 .PodContainers([{
   image: images.roon,
   command: ['/bin/bash', '-ex', '-c', |||

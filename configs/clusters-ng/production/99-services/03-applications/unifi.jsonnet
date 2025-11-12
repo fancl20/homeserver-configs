@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('unifi')
+app.Base('unifi').Deployment()
 .PodContainers([
   {
     name: 'unifi',

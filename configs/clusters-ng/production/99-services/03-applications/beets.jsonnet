@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('beets')
+app.Base('beets').Deployment()
 .PodContainers([{
   image: images.beets,
   env: [

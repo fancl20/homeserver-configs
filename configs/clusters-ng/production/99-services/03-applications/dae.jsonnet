@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('dae')
+app.Base('dae').Deployment()
 .PodContainers([{
   image: images.dae,
   command: ['/bin/bash', '-ex', '-c', |||

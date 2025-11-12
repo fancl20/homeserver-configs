@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('calibre')
+app.Base('calibre').Deployment()
 .PodContainers([{
   image: images.calibre,
   env: [

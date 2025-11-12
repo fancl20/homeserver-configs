@@ -1,19 +1,29 @@
-local addons = import 'addons.libsonnet';
+local misc = import 'misc.libsonnet';
+local pod = import 'pod.libsonnet';
+local service = import 'service.libsonnet';
+local serviceaccount = import 'serviceaccount.libsonnet';
 
 {
-  Base(name, namespace='default'):: {
-    local match = { 'app.kubernetes.io/name': name },
-    local hostname = name + '.local.d20.fan',
+  Base(name, namespace='default', create_namespace=false):: {
+    local root = {
+      Name:: name,
+      Namespace:: namespace,
+      Match:: { 'app.kubernetes.io/name': name },
+      Hostname:: name + '.local.d20.fan',
+      [if create_namespace then 'namespace.yaml']: {
+        apiVersion: 'v1',
+        kind: 'Namespace',
+        metadata: {
+          name: namespace,
+        },
+      },
+    },
 
-    'deployment.yaml': self.Deployment,
-    'serviceaccount.yaml': self.ServiceAccount,
-
-    Deployment:: {
+    local spec(base) = {
       apiVersion: 'apps/v1',
-      kind: 'Deployment',
       metadata: {
-        name: name,
-        namespace: namespace,
+        name: base.Name,
+        namespace: base.Namespace,
       },
       spec: {
         replicas: 1,
@@ -24,227 +34,64 @@ local addons = import 'addons.libsonnet';
           },
         },
         selector: {
-          matchLabels: match,
+          matchLabels: base.Match,
         },
-        template: {
-          metadata: {
-            annotations: {},
-            labels: match,
-          },
-          spec: {
-            serviceAccountName: name,
-            containers: error 'containers required',
-            volumes: [],
-          },
-        },
+        template: base.PodTemplate,
       },
     },
 
-    StatefulSet(service_name=name):: self {
-      Deployment+: {
+
+    Deployment():: (root + pod + serviceaccount + service + misc) {
+      'deployment.yaml': spec(self) {
+        kind: 'Deployment',
+      },
+    }.ServiceAccount(),
+
+    StatefulSet(service_name=name):: (root + pod + serviceaccount + service + misc) {
+      'statefulset.yaml': spec(self) {
         kind: 'StatefulSet',
         spec+: {
           serviceName: service_name,
-        }
-      },
-    },
-
-    PodAnnotations(annotations):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            metadata+: {
-              annotations+: annotations,
-            },
-          },
         },
       },
-    },
+    }.ServiceAccount(),
 
-    PodSecurityContext(securityContext):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              securityContext+: securityContext,
-            },
-          },
-        },
-      },
-    },
+    Helm(repo, chart, values):: (root + serviceaccount + service + misc) {
+      local base = self,
 
-    PodContainers(containers):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              containers: [{ name: name } + c for c in containers],
-            },
-          },
-        },
-      },
-    },
-
-    PodVolumes(volumes):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              volumes+: volumes,
-            },
-          },
-        },
-      },
-    },
-
-    DNSConfig(config):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              dnsPolicy: 'None',
-              dnsConfig+: config,
-            },
-          },
-        },
-      },
-    },
-
-    RunAsUser(uid=1000, gid=1000):: self {
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              securityContext+: {
-                runAsUser: uid,
-                runAsGroup: gid,
-                fsGroup: gid,
-                fsGroupChangePolicy: 'OnRootMismatch',
-              },
-            },
-          },
-        },
-      },
-    },
-
-    ServiceAccount:: {
-      apiVersion: 'v1',
-      kind: 'ServiceAccount',
-      metadata: {
-        name: name,
-        namespace: namespace,
-      },
-    },
-
-    ClusterRole(rules):: self {
-      'clusterrole.yaml': {
-        apiVersion: 'rbac.authorization.k8s.io/v1',
-        kind: 'ClusterRole',
+      'helmrepository.yaml': {
+        apiVersion: 'source.toolkit.fluxcd.io/v1',
+        kind: 'HelmRepository',
         metadata: {
-          name: name,
-        },
-        rules: rules,
-      },
-    },
-
-    ClusterRoleBinding(role_ref={
-      apiGroup: 'rbac.authorization.k8s.io',
-      kind: 'ClusterRole',
-      name: name,
-    }):: self {
-      'clusterrolebinding.yaml': {
-        apiVersion: 'rbac.authorization.k8s.io/v1',
-        kind: 'ClusterRoleBinding',
-        metadata: {
-          name: name,
-        },
-        roleRef: role_ref,
-        subjects: [{
-          kind: 'ServiceAccount',
-          name: name,
-          namespace: namespace,
-        }],
-      },
-    },
-
-    Service(spec, service_name=name, external_dns=false, load_balancer_ip=''):: self {
-      local merged = { type: if external_dns then 'LoadBalancer' else 'ClusterIP', selector: match } + spec,
-      ['service_' + service_name + '.yaml']: {
-        apiVersion: 'v1',
-        kind: 'Service',
-        metadata: {
-          name: service_name,
-          namespace: namespace,
-          annotations: if external_dns then {
-              'external-dns.alpha.kubernetes.io/hostname': hostname,
-            } else {} + if load_balancer_ip != '' then {
-              'metallb.io/loadBalancerIPs': load_balancer_ip,
-            } else {},
-        },
-        spec: merged + if merged.type == 'LoadBalancer' then { allocateLoadBalancerNodePorts: false } else {},
-      },
-    },
-
-    Ingress(service=name, port=80, metadata={}):: self {
-      'ingress.yaml': {
-        apiVersion: 'networking.k8s.io/v1',
-        kind: 'Ingress',
-        metadata: {
-          name: name,
-          namespace: namespace,
-        } + metadata,
-        spec: {
-          tls: [{ hosts: [hostname] }],
-          rules: [{
-            host: hostname,
-            http: {
-              paths: [{
-                path: '/',
-                pathType: 'Prefix',
-                backend: {
-                  service: {
-                    name: service,
-                    port: { number: port },
-                  },
-                },
-              }],
-            },
-          }],
-        },
-      },
-    },
-
-    PersistentVolumeClaim(pvc_name=name, spec={}):: self {
-      ['pvc_' + pvc_name + '.yaml']: {
-        apiVersion: 'v1',
-        kind: 'PersistentVolumeClaim',
-        metadata: {
-          name: pvc_name,
-          namespace: namespace,
+          name: base.Name,
+          namespace: base.Namespace,
         },
         spec: {
-          accessModes: ['ReadWriteMany'],
-          volumeMode: 'Filesystem',
-          resources: {
-            requests: { storage: '8Gi' },
-          },
-        } + spec,
+          interval: '1h0s',
+          url: repo,
+        },
       },
-      Deployment+: {
-        spec+: {
-          template+: {
-            spec+: {
-              volumes+: [{
-                name: pvc_name,
-                persistentVolumeClaim: { claimName: pvc_name },
-              }],
+      'helmrelease.yaml': {
+        apiVersion: 'helm.toolkit.fluxcd.io/v2',
+        kind: 'HelmRelease',
+        metadata: {
+          name: base.Name,
+          namespace: base.Namespace,
+          annotations: {
+            'kustomize.toolkit.fluxcd.io/substitute': 'disabled',
+          },
+        },
+        spec: {
+          interval: '15m',
+          chart: {
+            spec: {
+              chart: chart,
+              sourceRef: { kind: 'HelmRepository', name: base.Name },
             },
           },
+          values: values,
         },
       },
     },
-
-    OnePassword(secret_name=name, spec):: self + addons.OnePassword(secret_name, namespace, spec),
-    Kustomize():: addons.Kustomize(name, namespace, self),
   },
 }
