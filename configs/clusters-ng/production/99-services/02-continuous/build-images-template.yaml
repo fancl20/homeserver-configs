@@ -115,7 +115,7 @@ spec:
       readinessProbe:
         exec:
           command: [sh, -c, 'buildctl debug workers']
-      image: docker.io/moby/buildkit:v0.26.0-rc2-rootless # {"$imagepolicy": "flux-system:buildkit"}
+      image: docker.io/moby/buildkit:v0.26.0-rootless # {"$imagepolicy": "flux-system:buildkit"}
       securityContext:
         seccompProfile:
           type: Unconfined
