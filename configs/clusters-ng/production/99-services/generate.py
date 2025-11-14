@@ -14,7 +14,7 @@ def generate(base_dir):
 
     # jsonnet only allow outputting json objects. This is a workaround for
     # generating arbitrary files by re-evaluating any ".raw" files.
-    for raw in out.glob('*.raw'):
+    for raw in out.glob('**/*.raw'):
       with raw.open() as raw_file:
         with raw.with_suffix('').open('w') as out_file:
           out_file.write(json.load(raw_file))
