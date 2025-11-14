@@ -3,8 +3,8 @@
    "configMapGenerator": [
       {
          "files": [
-            "local.d20.fan.zone",
-            "named.conf"
+            "named.conf",
+            "local.d20.fan.zone"
          ],
          "name": "bind9",
          "namespace": "default"

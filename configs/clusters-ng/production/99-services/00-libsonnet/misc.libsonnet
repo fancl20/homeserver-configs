@@ -1,29 +1,30 @@
 {
   local base = self,
 
-  Kustomize():: base.Done() {
-    'kustomization.yaml': self.Kustomization,
-
-    Kustomization:: {
+  Kustomize():: { [i.key]: i.value for i in std.objectKeysValues(base) } {
+    'kustomization.yaml': {
       apiVersion: 'kustomize.config.k8s.io/v1beta1',
       kind: 'Kustomization',
       resources: std.objectFields(base),
+
+      Files:: [],
     },
 
     Config(file, content):: self {
-      local k = super.Kustomization,
       [file + '.raw']: content,
-      Kustomization+: {
+      'kustomization.yaml'+: {
+        local files = self.Files,
         configMapGenerator: [{
           name: base.Name,
           namespace: base.Namespace,
-          files: [file] + if std.objectHas(k, 'configMapGenerator') then k.configMapGenerator[0].files else [],
+          files: files,
         }],
         generatorOptions: {
           annotations: {
             'kustomize.toolkit.fluxcd.io/substitute': 'disabled',
           },
         },
+        Files+: [file],
       },
     },
   },

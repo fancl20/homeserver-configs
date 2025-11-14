@@ -5,7 +5,7 @@ local serviceaccount = import 'serviceaccount.libsonnet';
 
 {
   Base(name, namespace='default', create_namespace=false):: {
-    local root = {
+    local root = { [i.key]: i.value for i in std.objectKeysValues(self) } {
       Name:: name,
       Namespace:: namespace,
       Match:: { 'app.kubernetes.io/name': name },
@@ -17,7 +17,7 @@ local serviceaccount = import 'serviceaccount.libsonnet';
           name: namespace,
         },
       },
-      Done():: { [i.key]: i.value for i in std.objectKeysValues(self) },
+      Nested(name):: self + $.Base(name, namespace),
     },
 
     local spec(base) = {
