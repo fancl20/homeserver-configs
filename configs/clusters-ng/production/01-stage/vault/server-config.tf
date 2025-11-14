@@ -1,5 +1,5 @@
 resource "google_storage_bucket" "vault_storage" {
-  name = "abaf57ea-fb04-4328-b2d2-1a105ce668cb"
+  name     = "abaf57ea-fb04-4328-b2d2-1a105ce668cb"
   location = "australia-southeast1"
 
   uniform_bucket_level_access = true
@@ -52,27 +52,9 @@ resource "kubernetes_config_map" "server_config" {
         dataStorage = {
           enabled = false
         }
-        service = {
-          enabled = true
-        }
-        ingress = {
-          enabled = true
-          annotations = {
-            "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
-          }
-          hosts = [{
-            host = "vault.local.d20.fan"
-          }]
-          tls = [{
-            hosts = ["vault.local.d20.fan"]
-          }]
-        }
       }
       injector = {
         enabled = false
-      }
-      ui = {
-        enabled = true
       }
     })
   }
