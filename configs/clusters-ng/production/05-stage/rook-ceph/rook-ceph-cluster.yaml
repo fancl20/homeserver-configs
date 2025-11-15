@@ -19,6 +19,14 @@ spec:
       bdev_async_discard_threads = 1
     toolbox:
       enabled: true
+    route:
+      dashboard:
+        host:
+          name: rook-ceph.local.d20.fan
+        parentRefs:
+          - name: default
+            namespace: nginx-gateway
+            sectionName: https
     cephClusterSpec:
       mon:
         count: 1
