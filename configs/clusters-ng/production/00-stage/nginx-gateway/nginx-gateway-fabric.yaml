@@ -10,6 +10,7 @@ metadata:
   name: nginx-gateway-fabric
   namespace: nginx-gateway
 spec:
+  type: "oci"
   interval: 1h0s
   url: oci://ghcr.io/nginxinc/charts
 ---

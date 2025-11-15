@@ -24,6 +24,11 @@ spec:
     kind: HelmRelease
     name: ingress-nginx
     namespace: ingress-nginx
+  # nginx-gateway-fabric
+  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    kind: HelmRelease
+    name: nginx-gateway-fabric
+    namespace: nginx-gateway
   # vault configs
   - apiVersion: v1
     kind: Secret
