@@ -48,6 +48,10 @@ app.Base('external-dns').Deployment()
   resources: ['nodes'],
   verbs: ['list', 'watch'],
 }, {
+  apiGroups: [''],
+  resources: ['namespaces'],
+  verbs: ['get', 'watch', 'list'],
+}, {
   apiGroups: ['gateway.networking.k8s.io'],
   resources: ['gateways', 'httproutes', 'tlsroutes', 'tcproutes', 'udproutes'],
   verbs: ['get', 'watch', 'list'],
