@@ -26,7 +26,7 @@ spec:
       chart: nginx-gateway-fabric
       sourceRef:
         kind: HelmRepository
-        name: nginx-gateway
+        name: nginx-gateway-fabric
   # values:
   #   nginxGateway:
   #     service:
