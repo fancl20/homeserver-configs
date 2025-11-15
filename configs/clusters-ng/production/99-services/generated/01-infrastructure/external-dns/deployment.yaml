@@ -41,9 +41,6 @@
                      "--source=service",
                      "--source=ingress",
                      "--source=gateway-httproute",
-                     "--source=gateway-tlsroute",
-                     "--source=gateway-tcproute",
-                     "--source=gateway-udproute",
                      "--domain-filter=local.d20.fan"
                   ],
                   "envFrom": [

@@ -17,9 +17,9 @@ app.Base('external-dns').Deployment()
     '--source=service',
     '--source=ingress',  // TODO: remove after ingress removed
     '--source=gateway-httproute',
-    '--source=gateway-tlsroute',
-    '--source=gateway-tcproute',
-    '--source=gateway-udproute',
+    // '--source=gateway-tlsroute',
+    // '--source=gateway-tcproute',
+    // '--source=gateway-udproute',
     '--domain-filter=local.d20.fan',
   ],
   envFrom: [
