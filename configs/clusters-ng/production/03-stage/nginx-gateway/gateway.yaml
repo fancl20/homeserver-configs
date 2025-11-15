@@ -1,11 +1,13 @@
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: wildcard-tls-gateway
+  name: default
   namespace: nginx-gateway
 spec:
+  gatewayClassName: nginx
   listeners:
-  - name: local
+  - name: https
     protocol: HTTPS
     port: 443
     hostname: '*.local.d20.fan'
