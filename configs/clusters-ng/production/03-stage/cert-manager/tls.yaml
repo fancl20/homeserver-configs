@@ -29,3 +29,17 @@ spec:
     name: clouddns
   dnsNames:
   - '*.local.d20.fan'
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: d20-fan-tls
+  namespace: cert-manager
+spec:
+  from:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    namespace: nginx-gateway
+  to:
+  - group: ""
+    kind: Secret
