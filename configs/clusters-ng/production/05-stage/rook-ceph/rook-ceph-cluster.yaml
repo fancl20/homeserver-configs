@@ -23,6 +23,7 @@ spec:
       dashboard:
         host:
           name: rook-ceph.local.d20.fan
+          pathType: PathPrefix
         parentRefs:
           - name: default
             namespace: nginx-gateway
