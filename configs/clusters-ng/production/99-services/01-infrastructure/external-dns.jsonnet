@@ -15,7 +15,11 @@ app.Base('external-dns').Deployment()
     '--rfc2136-tsig-keyname=bind9-externaldns',
     '--rfc2136-tsig-axfr',
     '--source=service',
-    '--source=ingress',
+    '--source=ingress',  // TODO: remove after ingress removed
+    '--source=gateway-httproute',
+    '--source=gateway-tlsroute',
+    '--source=gateway-tcproute',
+    '--source=gateway-udproute',
     '--domain-filter=local.d20.fan',
   ],
   envFrom: [
@@ -37,10 +41,14 @@ app.Base('external-dns').Deployment()
   verbs: ['get', 'watch', 'list'],
 }, {
   apiGroups: ['extensions', 'networking.k8s.io'],
-  resources: ['ingresses'],
+  resources: ['ingresses'],  // TODO: remove after ingress removed
   verbs: ['get', 'watch', 'list'],
 }, {
   apiGroups: [''],
   resources: ['nodes'],
   verbs: ['list', 'watch'],
+}, {
+  apiGroups: ['gateway.networking.k8s.io'],
+  resources: ['gateways', 'httproutes', 'tlsroutes', 'tcproutes', 'udproutes'],
+  verbs: ['get', 'watch', 'list'],
 }])
