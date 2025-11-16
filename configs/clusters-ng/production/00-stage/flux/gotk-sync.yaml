@@ -26,7 +26,7 @@ spec:
     name: configs
   healthChecks:
   # Metallb
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: metallb
     namespace: metallb-system
@@ -35,7 +35,7 @@ spec:
     kind: CustomResourceDefinition
     name: gateways.gateway.networking.k8s.io
   # Tofu-Controller
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: tofu-controller
     namespace: flux-system

@@ -20,7 +20,7 @@ spec:
       layer_name: 01-stage
   healthChecks:
   # ingress-nginx
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: ingress-nginx
     namespace: ingress-nginx

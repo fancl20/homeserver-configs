@@ -20,17 +20,17 @@ spec:
       layer_name: 02-stage
   healthChecks:
   # vault
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: vault
     namespace: vault
   # external-secrets
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: external-secrets
     namespace: external-secrets
   # cert-manager
-  - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+  - apiVersion: helm.toolkit.fluxcd.io/v2
     kind: HelmRelease
     name: cert-manager
     namespace: cert-manager

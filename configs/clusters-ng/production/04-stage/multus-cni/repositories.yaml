@@ -1,5 +1,5 @@
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: multus-cni
@@ -8,7 +8,7 @@ spec:
   image: ghcr.io/k8snetworkplumbingwg/multus-cni
   interval: 1h
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: multus-cni
@@ -20,7 +20,7 @@ spec:
     semver:
       range: 4.x
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: multus-cni-skopeo
@@ -29,7 +29,7 @@ spec:
   image: quay.io/skopeo/stable
   interval: 1h
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: multus-cni-skopeo
@@ -41,7 +41,7 @@ spec:
     semver:
       range: "*"
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: multus-cni-python
@@ -50,7 +50,7 @@ spec:
   image: docker.io/library/python
   interval: 1h
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: multus-cni-python
