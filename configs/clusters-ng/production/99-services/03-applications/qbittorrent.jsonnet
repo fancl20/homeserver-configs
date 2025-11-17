@@ -30,4 +30,4 @@ app.Base('qbittorrent').Deployment()
     { name: 'udp', protocol: 'UDP', port: 6881, targetPort: 6881 },
   ],
 }, name='qbittorrent-p2p')
-.Ingress(service='qbittorrent-ui')
+.HTTPRoute(service='qbittorrent-ui')

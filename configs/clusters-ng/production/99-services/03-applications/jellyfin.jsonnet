@@ -23,4 +23,4 @@ app.Base('jellyfin').Deployment()
     { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8096 },
   ],
 })
-.Ingress()
+.HTTPRoute()

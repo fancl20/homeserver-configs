@@ -58,7 +58,7 @@ app.Base('unifi').Deployment()
     { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8000 },
   ],
 })
-.Ingress()
+.HTTPRoute()
 .Kustomize()
 .Config('10-init-mongo.sh', |||
   mongosh <<EOF
@@ -82,6 +82,13 @@ app.Base('unifi').Deployment()
       location / {
         proxy_pass https://127.0.0.1:8443;
         proxy_ssl_verify off;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
       }
     }
   }

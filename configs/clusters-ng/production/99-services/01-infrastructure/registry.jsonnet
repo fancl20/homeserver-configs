@@ -23,4 +23,4 @@ app.Base('registry').Deployment()
     { name: 'http', protocol: 'TCP', port: 80, targetPort: 5000 },
   ],
 })
-.Ingress()
+.HTTPRoute()

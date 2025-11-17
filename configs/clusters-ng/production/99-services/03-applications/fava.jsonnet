@@ -19,4 +19,4 @@ app.Base('fava').Deployment()
     { name: 'ssh', protocol: 'TCP', port: 22, targetPort: 2222 },
   ],
 })
-.Ingress()
+.HTTPRoute()

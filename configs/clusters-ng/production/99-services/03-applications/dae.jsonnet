@@ -53,7 +53,7 @@ app.Base('dae').Deployment()
     extract: { key: 'Dae Configs', property: 'node.dae' },
   }],
 })
-.Ingress()
+.HTTPRoute()
 .Kustomize()
 .Config('config.dae', |||
   global {

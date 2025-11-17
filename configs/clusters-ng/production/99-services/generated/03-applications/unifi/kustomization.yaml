@@ -18,7 +18,7 @@
    "kind": "Kustomization",
    "resources": [
       "deployment.yaml",
-      "ingress.yaml",
+      "httproute.yaml",
       "pvc_unifi-db.yaml",
       "pvc_unifi.yaml",
       "service_unifi.yaml",

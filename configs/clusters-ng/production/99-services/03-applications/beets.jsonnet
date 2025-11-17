@@ -24,4 +24,4 @@ app.Base('beets').Deployment()
     { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8337 },
   ],
 })
-.Ingress()
+.HTTPRoute()

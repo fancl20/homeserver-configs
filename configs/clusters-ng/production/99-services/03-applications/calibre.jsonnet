@@ -23,4 +23,4 @@ app.Base('calibre').Deployment()
     { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8083 },
   ],
 })
-.Ingress()
+.HTTPRoute()

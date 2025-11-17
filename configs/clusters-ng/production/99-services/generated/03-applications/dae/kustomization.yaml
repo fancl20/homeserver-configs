@@ -17,7 +17,7 @@
    "kind": "Kustomization",
    "resources": [
       "deployment.yaml",
-      "ingress.yaml",
+      "httproute.yaml",
       "onepassword_dae.yaml",
       "serviceaccount.yaml"
    ]

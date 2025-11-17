@@ -20,30 +20,30 @@
     },
   },
 
-  Ingress(service=base.Name, port=80, metadata={}):: self {
-    'ingress.yaml': {
-      apiVersion: 'networking.k8s.io/v1',
-      kind: 'Ingress',
+  HTTPRoute(service=base.Name, port=80, metadata={}):: self {
+    'httproute.yaml': {
+      apiVersion: 'gateway.networking.k8s.io/v1',
+      kind: 'HTTPRoute',
       metadata: {
         name: base.Name,
         namespace: base.Namespace,
       } + metadata,
       spec: {
-        tls: [{ hosts: [base.Hostname] }],
+        hostnames: [base.Hostname],
+        parentRefs: [{
+          group: 'gateway.networking.k8s.io',
+          kind: 'Gateway',
+          name: 'default',
+          namespace: 'nginx-gateway',
+          sectionName: 'https',
+        }],
         rules: [{
-          host: base.Hostname,
-          http: {
-            paths: [{
-              path: '/',
-              pathType: 'Prefix',
-              backend: {
-                service: {
-                  name: service,
-                  port: { number: port },
-                },
-              },
-            }],
-          },
+          backendRefs: [{
+            group: '',
+            kind: 'Service',
+            name: service,
+            port: port,
+          }],
         }],
       },
     },
