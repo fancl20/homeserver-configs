@@ -50,6 +50,10 @@ app.Image('mongo')
 .Repository('docker.io/library/mongo')
 .Policy(app.DefaultPolicy.Semver('8.*'))
 +
+app.Image('nginx')
+.Repository('docker.io/library/nginx')
+.Policy(app.DefaultPolicy.Semver())
++
 app.Image('openssh')
 .Repository('lscr.io/linuxserver/openssh-server')
 .Policy(app.DefaultPolicy.LinuxServer() {

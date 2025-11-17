@@ -32,6 +32,13 @@ app.Base('unifi').Deployment()
       { name: 'config', mountPath: '/docker-entrypoint-initdb.d' },
     ],
   },
+  {
+    name: 'nginx',
+    image: images.nginx,
+    volumeMounts: [
+      { name: 'config', mountPath: '/etc/nginx' },
+    ],
+  },
 ])
 .PodVolumes([
   { name: 'config', configMap: { name: 'unifi' } },
@@ -70,4 +77,15 @@ app.Base('unifi').Deployment()
     ]
   })
   EOF
+|||)
+.Config('nginx.conf', |||
+  http {
+    server {
+      listen 8080;
+      location / {
+        proxy_pass https://127.0.0.1:8443;
+        proxy_ssl_verify off;
+      }
+    }
+  }
 |||)

@@ -3,7 +3,8 @@
    "configMapGenerator": [
       {
          "files": [
-            "10-init-mongo.sh"
+            "10-init-mongo.sh",
+            "nginx.conf"
          ],
          "name": "unifi",
          "namespace": "default"
