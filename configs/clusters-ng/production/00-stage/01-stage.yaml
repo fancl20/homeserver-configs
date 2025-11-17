@@ -19,11 +19,6 @@ spec:
     substitute:
       layer_name: 01-stage
   healthChecks:
-  # ingress-nginx
-  - apiVersion: helm.toolkit.fluxcd.io/v2
-    kind: HelmRelease
-    name: ingress-nginx
-    namespace: ingress-nginx
   # Vault Configs
   - apiVersion: v1
     kind: Secret
