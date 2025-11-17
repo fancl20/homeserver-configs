@@ -82,7 +82,7 @@ app.Base('unifi').Deployment()
   events {}
   http {
     server {
-      listen 8080;
+      listen 8000;
       location / {
         proxy_pass https://127.0.0.1:8443;
         proxy_ssl_verify off;
