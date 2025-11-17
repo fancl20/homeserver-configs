@@ -30,7 +30,7 @@ local images = import '../images.jsonnet';
 
             trap "exit" TERM
             while sleep 60; do
-              expire=$(date -d $(coder token view ${CODER_SESSION_TOKEN} -c "expires at" | tail -n 1 | cut -d"T" -f1) "+%s")
+              expire=$(date -d "$( (coder token view ${CODER_SESSION_TOKEN} -c "expires at" || date -I) | tail -n 1 | cut -d"T" -f1)" "+%s")
               ttl=$(expr "${expire}" - $(date "+%s"))
               if [[ "${ttl}" -gt 259200 ]]; then
                 echo "Token ttl: ${ttl} greater than 259200, continue..."
@@ -57,12 +57,17 @@ local images = import '../images.jsonnet';
                   "token": "'$(echo -n ${token} | base64)'"
                 }
               }'
-              method=$([[ -z ${CODER_SESSION_TOKEN} ]] && echo -n POST || echo -n PUT)
+              method="PUT"
+              url_suffix="coder-init-token"
+              if [[ -z ${CODER_SESSION_TOKEN} ]]; then
+                method="POST"
+                url_suffix=""
+              fi
               curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \
                 -H "Content-Type: application/json" \
                 -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
                 -d "${data}" \
-                https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/coder-init-token > /dev/null
+                https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/${url_suffix} > /dev/null
 
               echo "Login with the new session token..."
               export CODER_SESSION_TOKEN=${token}
