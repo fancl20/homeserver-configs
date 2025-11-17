@@ -10,8 +10,8 @@ resource "kubernetes_secret" "coder" {
   }
   data = {
     POSTGRES_USER = "coder"
-    POSTGRES_PASSWORD = random_password.unifi_db.result
-    url = "postgres://coder:${random_password.unifi_db.result}@coder-db.coder.svc.cluster.local:5432/coder?sslmode=disable"
+    POSTGRES_PASSWORD = random_password.coder_db.result
+    url = "postgres://coder:${random_password.coder_db.result}@coder-db.coder.svc.cluster.local:5432/coder?sslmode=disable"
   }
 }
 
@@ -19,13 +19,12 @@ data "google_dns_managed_zone" "default" {
   name        = "default"
 }
 
-data "kubernetes_resource" "ingress_service" {
-  api_version = "v1"
-  kind        = "Service"
-
+data "kubernetes_resource" "gateway" {
+  api_version = "gateway.networking.k8s.io/v1"
+  kind        = "Gateway"
   metadata {
-    name      = "ingress-nginx-controller"
-    namespace = "ingress-nginx"
+    name      = "default"
+    namespace = "nginx-gateway"
   }
 }
 
@@ -36,6 +35,6 @@ resource "google_dns_record_set" "coder" {
 
   managed_zone = data.google_dns_managed_zone.default.name
 
-  rrdatas = [data.kubernetes_resource.ingress_service.object.status.loadBalancer.ingress[0].ip]
+  rrdatas = [data.kubernetes_resource.gateway.object.status.addresses[0].value]
 }
 

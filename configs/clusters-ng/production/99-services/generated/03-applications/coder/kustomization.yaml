@@ -19,6 +19,7 @@
    "resources": [
       "helmrelease.yaml",
       "helmrepository.yaml",
+      "httproute.yaml",
       "namespace.yaml",
       "onepassword_coder.yaml",
       "pvc_coder-db.yaml",

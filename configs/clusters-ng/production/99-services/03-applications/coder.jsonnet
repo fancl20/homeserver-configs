@@ -12,11 +12,6 @@ local images = import '../images.jsonnet';
       resources: {
         requests: { memory: '1024Mi' },
       },
-      ingress: {
-        enable: true,
-        host: domain,
-        tls: { enable: true },
-      },
       initContainers: [{
         name: 'coder-init',
         image: 'ghcr.io/coder/coder:latest',
@@ -85,6 +80,7 @@ local images = import '../images.jsonnet';
       }],
     },
   })
+  .HTTPRoute()
   .Role(name='coder-init', rules=[{
     apiGroups: [''],
     resources: ['secrets'],

@@ -36,13 +36,6 @@
                   "value": "https://coder.local.d20.fan"
                }
             ],
-            "ingress": {
-               "enable": true,
-               "host": "coder.local.d20.fan",
-               "tls": {
-                  "enable": true
-               }
-            },
             "initContainers": [
                {
                   "command": [
