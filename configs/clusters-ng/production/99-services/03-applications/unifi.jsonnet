@@ -55,14 +55,10 @@ app.Base('unifi').Deployment()
 .PersistentVolumeClaim('unifi-db')
 .Service({
   ports: [
-    { name: 'webui', protocol: 'TCP', port: 443, targetPort: 8443 },
+    { name: 'webui', protocol: 'TCP', port: 80, targetPort: 8000 },
   ],
 })
-.Ingress(port=443, metadata={
-  annotations: {
-    'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS',
-  },
-})
+.Ingress()
 .Kustomize()
 .Config('10-init-mongo.sh', |||
   mongosh <<EOF

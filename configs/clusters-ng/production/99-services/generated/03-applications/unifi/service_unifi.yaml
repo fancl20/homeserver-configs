@@ -10,9 +10,9 @@
       "ports": [
          {
             "name": "webui",
-            "port": 443,
+            "port": 80,
             "protocol": "TCP",
-            "targetPort": 8443
+            "targetPort": 8000
          }
       ],
       "selector": {
