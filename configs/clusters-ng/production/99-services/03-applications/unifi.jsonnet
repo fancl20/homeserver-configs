@@ -79,6 +79,7 @@ app.Base('unifi').Deployment()
   EOF
 |||)
 .Config('nginx.conf', |||
+  events {}
   http {
     server {
       listen 8080;
