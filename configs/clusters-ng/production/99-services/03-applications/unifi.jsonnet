@@ -36,7 +36,7 @@ app.Base('unifi').Deployment()
     name: 'nginx',
     image: images.nginx,
     volumeMounts: [
-      { name: 'config', mountPath: '/etc/nginx' },
+      { name: 'config', mountPath: '/etc/nginx/nginx.conf', subPath: 'nginx.conf' },
     ],
   },
 ])
@@ -79,7 +79,6 @@ app.Base('unifi').Deployment()
   EOF
 |||)
 .Config('nginx.conf', |||
-  events {}
   http {
     server {
       listen 8080;

@@ -98,8 +98,9 @@
                   "name": "nginx",
                   "volumeMounts": [
                      {
-                        "mountPath": "/etc/nginx",
-                        "name": "config"
+                        "mountPath": "/etc/nginx/nginx.conf",
+                        "name": "config",
+                        "subPath": "nginx.conf"
                      }
                   ]
                }
