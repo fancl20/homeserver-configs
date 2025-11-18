@@ -10,7 +10,7 @@ metadata:
   name: nginx-gateway-fabric
   namespace: nginx-gateway
 spec:
-  type: "oci"
+  type: oci
   interval: 1h0s
   url: oci://ghcr.io/nginx/charts
 ---
@@ -27,3 +27,12 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: nginx-gateway-fabric
+  values:
+    nginx:
+      service:
+        patches:
+        - type: StrategicMerge
+          value:
+            metadata:
+              annotations:
+                metallb.io/loadBalancerIPs: '192.168.1.16'
