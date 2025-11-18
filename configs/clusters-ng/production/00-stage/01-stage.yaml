@@ -7,6 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: 00-stage
+    - name: gateway-crds
   interval: 15m
   path: ./configs/clusters-ng/production/01-stage
   prune: true
