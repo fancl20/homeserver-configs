@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "unifi.local.d20.fan"
+         "*.unifi.local.d20.fan"
       ],
       "parentRefs": [
          {

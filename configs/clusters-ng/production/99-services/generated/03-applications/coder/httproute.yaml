@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "coder.local.d20.fan"
+         "*.coder.local.d20.fan"
       ],
       "parentRefs": [
          {

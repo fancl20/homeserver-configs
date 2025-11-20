@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "fava.local.d20.fan"
+         "*.fava.local.d20.fan"
       ],
       "parentRefs": [
          {

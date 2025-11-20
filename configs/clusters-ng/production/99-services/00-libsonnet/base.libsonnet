@@ -9,7 +9,7 @@ local serviceaccount = import 'serviceaccount.libsonnet';
       Name:: name,
       Namespace:: namespace,
       Match:: { 'app.kubernetes.io/name': name },
-      Hostname:: name + '.local.d20.fan',
+      Hostname:: '*.' + name + '.local.d20.fan',
       [if create_namespace then 'namespace.yaml']: {
         apiVersion: 'v1',
         kind: 'Namespace',

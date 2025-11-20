@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "jellyfin.local.d20.fan"
+         "*.jellyfin.local.d20.fan"
       ],
       "parentRefs": [
          {

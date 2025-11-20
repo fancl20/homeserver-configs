@@ -34,6 +34,10 @@
                {
                   "name": "CODER_ACCESS_URL",
                   "value": "https://coder.local.d20.fan"
+               },
+               {
+                  "name": "CODER_WILDCARD_ACCESS_URL",
+                  "value": "*.coder.local.d20.fan"
                }
             ],
             "initContainers": [

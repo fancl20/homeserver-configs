@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "calibre.local.d20.fan"
+         "*.calibre.local.d20.fan"
       ],
       "parentRefs": [
          {

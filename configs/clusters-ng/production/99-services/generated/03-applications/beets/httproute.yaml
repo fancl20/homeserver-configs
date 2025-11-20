@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "beets.local.d20.fan"
+         "*.beets.local.d20.fan"
       ],
       "parentRefs": [
          {

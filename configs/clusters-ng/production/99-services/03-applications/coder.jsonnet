@@ -8,6 +8,7 @@ local images = import '../images.jsonnet';
       env: [
         { name: 'CODER_PG_CONNECTION_URL', valueFrom: { secretKeyRef: { name: 'coder-db', key: 'url' } } },
         { name: 'CODER_ACCESS_URL', value: 'https://' + domain },
+        { name: 'CODER_WILDCARD_ACCESS_URL', value: '*.' + domain },
       ],
       resources: {
         requests: { memory: '1024Mi' },
