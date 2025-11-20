@@ -29,6 +29,7 @@ spec:
     name: clouddns
   dnsNames:
   - '*.local.d20.fan'
+  - '*.coder.local.d20.fan'
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
