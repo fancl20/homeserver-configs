@@ -86,7 +86,7 @@ local images = import '../images.jsonnet';
       }],
     },
   })
-  .HTTPRoute()
+  .HTTPRoute(wildcard=true)
   .Role(name='coder-init', rules=[{
     apiGroups: [''],
     resources: ['secrets'],

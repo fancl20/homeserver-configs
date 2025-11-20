@@ -20,7 +20,7 @@
     },
   },
 
-  HTTPRoute(service=base.Name, port=80, metadata={}):: self {
+  HTTPRoute(service=base.Name, port=80, wildcard=false, metadata={}):: self {
     'httproute.yaml': {
       apiVersion: 'gateway.networking.k8s.io/v1',
       kind: 'HTTPRoute',
@@ -29,7 +29,7 @@
         namespace: base.Namespace,
       } + metadata,
       spec: {
-        hostnames: [base.Hostname],
+        hostnames: [base.Hostname] + if wildcard then ['*.' + base.Hostname] else [],
         parentRefs: [{
           group: 'gateway.networking.k8s.io',
           kind: 'Gateway',

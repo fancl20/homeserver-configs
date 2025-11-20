@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "*.qbittorrent.local.d20.fan"
+         "qbittorrent.local.d20.fan"
       ],
       "parentRefs": [
          {

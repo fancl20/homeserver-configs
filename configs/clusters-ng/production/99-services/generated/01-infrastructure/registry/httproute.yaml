@@ -7,7 +7,7 @@
    },
    "spec": {
       "hostnames": [
-         "*.registry.local.d20.fan"
+         "registry.local.d20.fan"
       ],
       "parentRefs": [
          {

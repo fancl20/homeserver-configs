@@ -10,8 +10,8 @@ app.Base('calibre').Deployment()
     { name: 'PGID', value: '1000' },
   ],
   volumeMounts: [
-    { name: 'calibre', mountPath: '/config'},
-    { name: 'data', mountPath: '/books', subPath: 'calibre'},
+    { name: 'calibre', mountPath: '/config' },
+    { name: 'data', mountPath: '/books', subPath: 'calibre' },
   ],
 }])
 .PodVolumes([

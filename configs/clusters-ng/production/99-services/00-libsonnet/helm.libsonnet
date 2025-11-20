@@ -11,7 +11,7 @@ local addons = import 'addons.libsonnet';
       },
       spec: {
         interval: '1h0s',
-        url: url
+        url: url,
       },
     },
 
