@@ -20,3 +20,16 @@ spec:
     allowedRoutes:
       namespaces:
         from: All
+---
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: default
+  namespace: nginx-gateway
+spec:
+  body:
+    maxSize: '4g'
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: default

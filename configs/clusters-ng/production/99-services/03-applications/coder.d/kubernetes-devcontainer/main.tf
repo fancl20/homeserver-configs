@@ -189,11 +189,11 @@ resource "kubernetes_persistent_volume_claim" "workspaces" {
       "app.kubernetes.io/name"     = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
       "app.kubernetes.io/instance" = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
       "app.kubernetes.io/part-of"  = "coder"
-      "com.coder.resource"       = "true"
-      "com.coder.workspace.id"   = data.coder_workspace.me.id
-      "com.coder.workspace.name" = data.coder_workspace.me.name
-      "com.coder.user.id"        = data.coder_workspace_owner.me.id
-      "com.coder.user.username"  = data.coder_workspace_owner.me.name
+      "com.coder.resource"         = "true"
+      "com.coder.workspace.id"     = data.coder_workspace.me.id
+      "com.coder.workspace.name"   = data.coder_workspace.me.name
+      "com.coder.user.id"          = data.coder_workspace_owner.me.id
+      "com.coder.user.username"    = data.coder_workspace_owner.me.name
     }
     annotations = {
       "com.coder.user.email" = data.coder_workspace_owner.me.email
@@ -320,14 +320,15 @@ resource "kubernetes_deployment" "main" {
 }
 
 resource "coder_agent" "main" {
-  arch           = data.coder_provisioner.me.arch
-  os             = "linux"
-  startup_script = <<-EOT
-    set -e
-
-    # Add any commands that should be executed at workspace startup (e.g install requirements, start a program, etc) here
-  EOT
-  dir            = "/workspaces"
+  arch = data.coder_provisioner.me.arch
+  os   = "linux"
+  dir  = "/workspaces"
+  display_apps {
+    vscode          = false
+    vscode_insiders = false
+    web_terminal    = true
+    ssh_helper      = false
+  }
 
   # These environment variables allow you to make Git commits right away after creating a
   # workspace. Note that they take precedence over configuration defined in ~/.gitconfig!
@@ -386,16 +387,39 @@ resource "coder_agent" "main" {
   }
 }
 
-# See https://registry.coder.com/modules/coder/code-server
-module "code-server" {
-  count  = data.coder_workspace.me.start_count
-  source = "registry.coder.com/coder/code-server/coder"
-
-  # This ensures that the latest non-breaking version of the module gets downloaded, you can also pin the module version to prevent breaking changes in production.
-  version = "~> 1.0"
-
+module "vscode-web" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/coder/vscode-web/coder"
   agent_id = coder_agent.main.id
-  order    = 1
+  extensions = [
+    "vscodevim.vim",
+    "ms-python.python",
+    "ms-python.autopep8",
+    "ms-toolsai.jupyter",
+    "hashicorp.terraform",
+    "Grafana.vscode-jsonnet",
+    "golang.go",
+    "kennylong.kubernetes-yaml-formatter",
+    "RooVeterinaryInc.roo-cline",
+  ]
+  settings = {
+    "workbench.colorTheme" : "Solarized Light",
+    "explorer.autoReveal" : false,
+    "editor.minimap.enabled" : false,
+    "editor.formatOnSave" : true,
+    "editor.tabSize" : 2,
+    "editor.guides.bracketPairs" : true,
+    "files.trimTrailingWhitespace" : true,
+    "terminal.integrated.defaultProfile.linux" : "fish"
+    "terminal.integrated.stickyScroll.enabled" : false,
+    "extensions.ignoreRecommendations" : true,
+    "[python]" : {
+      "editor.formatOnType" : true,
+      "editor.defaultFormatter" : "ms-python.autopep8"
+    },
+  }
+  accept_license = true
+
 }
 
 resource "coder_metadata" "container_info" {
@@ -414,4 +438,3 @@ resource "coder_metadata" "container_info" {
     value = var.cache_repo == "" ? "not enabled" : var.cache_repo
   }
 }
-
