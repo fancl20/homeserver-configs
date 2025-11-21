@@ -15,7 +15,7 @@
       'kustomization.yaml'+: {
         local files = self.Files,
         configMapGenerator: [{
-          name: base.Name,
+          name: base.BaseName,
           namespace: base.Namespace,
           files: files,
         }],

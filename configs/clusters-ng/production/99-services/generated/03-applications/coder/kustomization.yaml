@@ -6,7 +6,7 @@
             "kubernetes-devcontainer/README.md",
             "kubernetes-devcontainer/main.tf"
          ],
-         "name": "coder-db",
+         "name": "coder",
          "namespace": "coder"
       }
    ],

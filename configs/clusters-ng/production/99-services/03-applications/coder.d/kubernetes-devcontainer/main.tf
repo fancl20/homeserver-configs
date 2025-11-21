@@ -330,10 +330,6 @@ resource "coder_agent" "main" {
     ssh_helper      = false
   }
 
-  # These environment variables allow you to make Git commits right away after creating a
-  # workspace. Note that they take precedence over configuration defined in ~/.gitconfig!
-  # You can remove this block if you'd prefer to configure Git manually or using
-  # dotfiles. (see docs/dotfiles.md)
   env = {
     GIT_AUTHOR_NAME     = local.git_author_name
     GIT_AUTHOR_EMAIL    = local.git_author_email
@@ -388,9 +384,10 @@ resource "coder_agent" "main" {
 }
 
 module "vscode-web" {
-  count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/coder/vscode-web/coder"
-  agent_id = coder_agent.main.id
+  count           = data.coder_workspace.me.start_count
+  source          = "registry.coder.com/coder/code-server/coder"
+  agent_id        = coder_agent.main.id
+  additional_args = "--disable-workspace-trust"
   extensions = [
     "vscodevim.vim",
     "ms-python.python",
@@ -399,7 +396,6 @@ module "vscode-web" {
     "hashicorp.terraform",
     "Grafana.vscode-jsonnet",
     "golang.go",
-    "kennylong.kubernetes-yaml-formatter",
     "RooVeterinaryInc.roo-cline",
   ]
   settings = {
@@ -413,13 +409,20 @@ module "vscode-web" {
     "terminal.integrated.defaultProfile.linux" : "fish"
     "terminal.integrated.stickyScroll.enabled" : false,
     "extensions.ignoreRecommendations" : true,
+    "vim.handleKeys" : {
+      "<D-c>" : false,
+    }
     "[python]" : {
       "editor.formatOnType" : true,
       "editor.defaultFormatter" : "ms-python.autopep8"
     },
   }
-  accept_license = true
+}
 
+module "dotfiles" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/coder/dotfiles/coder"
+  agent_id = coder_agent.main.id
 }
 
 resource "coder_metadata" "container_info" {

@@ -5,9 +5,11 @@ local serviceaccount = import 'serviceaccount.libsonnet';
 
 {
   Base(name, namespace='default', create_namespace=false):: {
+    local baseName = std.get(self, 'BaseName', name),
     local root = { [i.key]: i.value for i in std.objectKeysValues(self) } {
       Name:: name,
       Namespace:: namespace,
+      BaseName:: baseName,
       Match:: { 'app.kubernetes.io/name': name },
       Hostname:: name + '.local.d20.fan',
       [if create_namespace then 'namespace.yaml']: {
