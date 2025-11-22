@@ -3,8 +3,8 @@
    "configMapGenerator": [
       {
          "files": [
-            "kubernetes-devcontainer/README.md",
-            "kubernetes-devcontainer/main.tf"
+            "kubernetes-devcontainer_README.md",
+            "kubernetes-devcontainer_main.tf"
          ],
          "name": "coder",
          "namespace": "coder"

@@ -29,9 +29,18 @@ local images = import '../images.jsonnet';
             echo "Initializing Coder with first user..."
             coder login --use-token-as-session
 
-            echo "Pushing templates to Coder..."
+            echo "Reorganizing templates and pushing to Coder..."
             if [[ -d "/config" ]]; then
-              for template_dir in /config/*/; do
+              pushd "$(mktemp -d)"
+              for file in "$(ls /config)"; do
+                dst=$(echo "$file" | sed 's/_/\//g')
+                mkdir -p "$(dirname "${dst}")"
+                mv "/config/${file}" "${dst}"
+                echo "Moved ${file} to ${dst}"
+              done
+
+              # Push all reorganized templates
+              for template_dir in *; do
                 if [[ -d "$template_dir" ]]; then
                   template_name=$(basename "$template_dir")
 
@@ -45,7 +54,8 @@ local images = import '../images.jsonnet';
                   popd
                 fi
               done
-              echo "Templates pushed successfully!"
+              echo "Templates reorganized and pushed successfully!"
+              popd
             else
               echo "No templates directory found at /config"
             fi
