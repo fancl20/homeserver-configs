@@ -45,7 +45,7 @@
                   "command": [
                      "/bin/sh",
                      "-ec",
-                     "until curl -sSf http://127.0.0.1:8080/healthz; do\n  echo \"Waiting for Coder to be ready...\"\n  sleep 5\ndone\n\necho \"Initializing Coder with first user...\"\ncoder login --use-token-as-session\n\ntrap \"exit\" TERM\nwhile sleep 60; do\n  expire=$(date -d \"$( (coder token view ${CODER_SESSION_TOKEN} -c \"expires at\" || date -I) | tail -n 1 | cut -d\"T\" -f1)\" \"+%s\")\n  ttl=$(expr \"${expire}\" - $(date \"+%s\"))\n  if [[ \"${ttl}\" -gt 259200 ]]; then\n    echo \"Token ttl: ${ttl} greater than 259200, continue...\"\n    continue\n  fi\n  echo \"Token ttl: ${ttl} less than 259200, refreshing...\"\n\n  token=$(coder token create --lifetime 7d)\n  if [[ -z ${token} ]]; then\n    echo \"Failed to create new token, continue...\"\n    continue\n  fi\n\n  echo \"Update secrets for the new token...\"\n  data='{\n    \"kind\": \"Secret\",\n    \"apiVersion\": \"v1\",\n    \"metadata\": {\n      \"name\": \"coder-init-token\",\n      \"namespace\": \"coder\"\n    },\n    \"type\": \"Opaque\",\n    \"data\": {\n      \"token\": \"'$(echo -n ${token} | base64)'\"\n    }\n  }'\n  method=\"PUT\"\n  url_suffix=\"coder-init-token\"\n  if [[ -z ${CODER_SESSION_TOKEN} ]]; then\n    method=\"POST\"\n    url_suffix=\"\"\n  fi\n  curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \\\n    -H \"Content-Type: application/json\" \\\n    -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \\\n    -d \"${data}\" \\\n    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/${url_suffix} > /dev/null\n\n  echo \"Login with the new session token...\"\n  export CODER_SESSION_TOKEN=${token}\n  coder login --use-token-as-session\ndone\n"
+                     "until curl -sSf http://127.0.0.1:8080/healthz; do\n  echo \"Waiting for Coder to be ready...\"\n  sleep 5\ndone\n\necho \"Initializing Coder with first user...\"\ncoder login --use-token-as-session\n\n# Push templates to Coder after initial authentication\necho \"Pushing templates to Coder...\"\nif [[ -d \"/etc/config\" ]]; then\n  for template_dir in /etc/config/*/; do\n    if [[ -d \"$template_dir\" ]]; then\n      template_name=$(basename \"$template_dir\")\n\n      pushd \"$template_dir\"\n      echo \"Pushing template: $template_name\"\n      if coder templates push \"$template_name\"; then\n        echo \"Successfully pushed template: $template_name\"\n      else\n        echo \"Failed to push template: $template_name\"\n      fi\n      popd\n    fi\n  done\n  echo \"Templates pushed successfully!\"\nelse\n  echo \"No templates directory found at /etc/config\"\nfi\n\ntrap \"exit\" TERM\nwhile sleep 60; do\n  expire=$(date -d \"$( (coder token view ${CODER_SESSION_TOKEN} -c \"expires at\" || date -I) | tail -n 1 | cut -d\"T\" -f1)\" \"+%s\")\n  ttl=$(expr \"${expire}\" - $(date \"+%s\"))\n  if [[ \"${ttl}\" -gt 259200 ]]; then\n    echo \"Token ttl: ${ttl} greater than 259200, continue...\"\n    continue\n  fi\n  echo \"Token ttl: ${ttl} less than 259200, refreshing...\"\n\n  token=$(coder token create --lifetime 7d)\n  if [[ -z ${token} ]]; then\n    echo \"Failed to create new token, continue...\"\n    continue\n  fi\n\n  echo \"Update secrets for the new token...\"\n  data='{\n    \"kind\": \"Secret\",\n    \"apiVersion\": \"v1\",\n    \"metadata\": {\n      \"name\": \"coder-init-token\",\n      \"namespace\": \"coder\"\n    },\n    \"type\": \"Opaque\",\n    \"data\": {\n      \"token\": \"'$(echo -n ${token} | base64)'\"\n    }\n  }'\n  method=\"PUT\"\n  url_suffix=\"coder-init-token\"\n  if [[ -z ${CODER_SESSION_TOKEN} ]]; then\n    method=\"POST\"\n    url_suffix=\"\"\n  fi\n  curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \\\n    -H \"Content-Type: application/json\" \\\n    -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \\\n    -d \"${data}\" \\\n    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/${url_suffix} > /dev/null\n\n  echo \"Login with the new session token...\"\n  export CODER_SESSION_TOKEN=${token}\n  coder login --use-token-as-session\ndone\n"
                   ],
                   "env": [
                      {
@@ -87,7 +87,13 @@
                   ],
                   "image": "ghcr.io/coder/coder:latest",
                   "name": "coder-init",
-                  "restartPolicy": "Always"
+                  "restartPolicy": "Always",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/etc/config",
+                        "name": "coder"
+                     }
+                  ]
                }
             ],
             "resources": {
@@ -95,7 +101,15 @@
                   "memory": "1024Mi"
                }
             }
-         }
+         },
+         "volumes": [
+            {
+               "configMap": {
+                  "name": "coder"
+               },
+               "name": "coder"
+            }
+         ]
       }
    }
 }

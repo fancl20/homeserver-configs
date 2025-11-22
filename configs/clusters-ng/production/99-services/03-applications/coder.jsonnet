@@ -29,6 +29,27 @@ local images = import '../images.jsonnet';
             echo "Initializing Coder with first user..."
             coder login --use-token-as-session
 
+            echo "Pushing templates to Coder..."
+            if [[ -d "/config" ]]; then
+              for template_dir in /config/*/; do
+                if [[ -d "$template_dir" ]]; then
+                  template_name=$(basename "$template_dir")
+
+                  pushd "$template_dir"
+                  echo "Pushing template: $template_name"
+                  if coder templates push "$template_name"; then
+                    echo "Successfully pushed template: $template_name"
+                  else
+                    echo "Failed to push template: $template_name"
+                  fi
+                  popd
+                fi
+              done
+              echo "Templates pushed successfully!"
+            else
+              echo "No templates directory found at /config"
+            fi
+
             trap "exit" TERM
             while sleep 60; do
               expire=$(date -d "$( (coder token view ${CODER_SESSION_TOKEN} -c "expires at" || date -I) | tail -n 1 | cut -d"T" -f1)" "+%s")
@@ -83,8 +104,17 @@ local images = import '../images.jsonnet';
           { name: 'CODER_FIRST_USER_PASSWORD', valueFrom: { secretKeyRef: { name: 'coder', key: 'password' } } },
           { name: 'CODER_SESSION_TOKEN', valueFrom: { secretKeyRef: { name: 'coder-init-token', key: 'token', optional: true } } },
         ],
+        volumeMounts: [
+          { name: 'coder', mountPath: '/config' },
+        ],
       }],
     },
+    volumes: [{
+      name: 'coder',
+      configMap: {
+        name: 'coder',
+      },
+    }],
   })
   .HTTPRoute(wildcard=true)
   .Role(name='coder-init', rules=[{

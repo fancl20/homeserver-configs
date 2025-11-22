@@ -1,13 +1,12 @@
 {
   Templates:: [],
   AddTemplates()::
-    local names = std.map(function(name) std.reverse(std.split(name, '/'))[1], self.Templates);
     std.foldl(
-      function(acc, name)
+      function(acc, tmpl)
         acc
-        .Config(name + '/README.md', 'README.md')
-        .Config(name + '/main.tf', 'main.tf'),
-      names,
+        .Config(tmpl.name + '/README.md', tmpl['README.md'])
+        .Config(tmpl.name + '/main.tf', tmpl['main.tf']),
+      self.Templates,
       self,
     ),
 }
