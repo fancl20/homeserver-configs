@@ -31,31 +31,29 @@ local images = import '../images.jsonnet';
 
             echo "Reorganizing templates and pushing to Coder..."
             if [[ -d "/config" ]]; then
-              pushd "$(mktemp -d)"
-              for file in "$(ls /config)"; do
+              cd "$(mktemp -d)"
+              for file in $(ls /config); do
                 dst=$(echo "$file" | sed 's/_/\//g')
                 mkdir -p "$(dirname "${dst}")"
-                mv "/config/${file}" "${dst}"
-                echo "Moved ${file} to ${dst}"
+                cp "/config/${file}" "${dst}"
+                echo "Copied ${file} to ${dst}"
               done
 
               # Push all reorganized templates
               for template_dir in *; do
-                if [[ -d "$template_dir" ]]; then
-                  template_name=$(basename "$template_dir")
+                if [[ -d "${template_dir}" ]]; then
+                  template_name=$(basename "${template_dir}")
 
-                  pushd "$template_dir"
-                  echo "Pushing template: $template_name"
-                  if coder templates push "$template_name"; then
-                    echo "Successfully pushed template: $template_name"
+                  echo "Pushing template: ${template_name}"
+                  if coder templates push -y -d "${template_dir}" "${template_name}"; then
+                    echo "Successfully pushed template: ${template_name}"
                   else
-                    echo "Failed to push template: $template_name"
+                    echo "Failed to push template: ${template_name}"
                   fi
-                  popd
                 fi
               done
               echo "Templates reorganized and pushed successfully!"
-              popd
+              cd /
             else
               echo "No templates directory found at /config"
             fi
