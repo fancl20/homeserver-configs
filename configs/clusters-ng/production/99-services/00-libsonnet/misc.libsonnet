@@ -6,9 +6,11 @@
       apiVersion: 'kustomize.config.k8s.io/v1beta1',
       kind: 'Kustomization',
       resources: std.objectFields(base),
+      configurations: ['namereference.yaml'],
 
       Files:: [],
     },
+    'namereference.yaml': {},
 
     Config(file, content):: self {
       [file + '.raw']: content,
@@ -25,6 +27,16 @@
           },
         },
         Files+: [file],
+      },
+    },
+
+    ConfigNameReference(fields=[]):: self {
+      'namereference.yaml'+: {
+        nameReference+: [{
+          kind: 'ConfigMap',
+          version: 'v1',
+          fieldSpecs: fields,
+        }],
       },
     },
   },

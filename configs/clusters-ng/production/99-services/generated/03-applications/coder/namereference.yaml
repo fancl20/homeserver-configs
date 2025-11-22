@@ -1,0 +1,14 @@
+{
+   "nameReference": [
+      {
+         "fieldSpecs": [
+            {
+               "kind": "HelmRelease",
+               "path": "spec/values/coder/volumes/configMap/name"
+            }
+         ],
+         "kind": "ConfigMap",
+         "version": "v1"
+      }
+   ]
+}

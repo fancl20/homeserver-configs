@@ -10,6 +10,9 @@
          "namespace": "coder"
       }
    ],
+   "configurations": [
+      "namereference.yaml"
+   ],
    "generatorOptions": {
       "annotations": {
          "kustomize.toolkit.fluxcd.io/substitute": "disabled"

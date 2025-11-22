@@ -108,13 +108,8 @@ local images = import '../images.jsonnet';
           { name: 'coder', mountPath: '/config' },
         ],
       }],
+      volumes: [{ name: 'coder', configMap: { name: 'coder' } }],
     },
-    volumes: [{
-      name: 'coder',
-      configMap: {
-        name: 'coder',
-      },
-    }],
   })
   .HTTPRoute(wildcard=true)
   .Role(name='coder-init', rules=[{
@@ -147,5 +142,8 @@ local images = import '../images.jsonnet';
     ],
   })
   .Kustomize()
+  .ConfigNameReference([
+    { path: 'spec/values/coder/volumes/configMap/name', kind: 'HelmRelease' },
+  ])
   + import 'coder.d/kubernetes-devcontainer/template.libsonnet'
 ).AddTemplates()
