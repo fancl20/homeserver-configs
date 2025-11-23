@@ -39,13 +39,19 @@ local images = import '../images.jsonnet';
                 echo "Copied ${file} to ${dst}"
               done
 
-              # Push all reorganized templates
               for template_dir in *; do
                 if [[ -d "${template_dir}" ]]; then
                   template_name=$(basename "${template_dir}")
+                  template_ver=$(cat "${template_dir}/*" | sha256sum | awk '{print $1}')
+
+                  if current=$(coder templates versions list "${template_name}" | grep Active | awk '{print $1}'); then
+                    if [[ "${current}" == "${template_ver}" ]]; then
+                      continue
+                    fi
+                  fi
 
                   echo "Pushing template: ${template_name}"
-                  if coder templates push -y -d "${template_dir}" "${template_name}"; then
+                  if coder templates push -y -d "${template_dir}" --name "${template_ver}" "${template_name}"; then
                     echo "Successfully pushed template: ${template_name}"
                   else
                     echo "Failed to push template: ${template_name}"
