@@ -29,41 +29,6 @@ local images = import '../images.jsonnet';
             echo "Initializing Coder with first user..."
             coder login --use-token-as-session
 
-            echo "Reorganizing templates and pushing to Coder..."
-            if [[ -d "/config" ]]; then
-              cd "$(mktemp -d)"
-              for file in $(ls /config); do
-                dst=$(echo "$file" | sed 's/_/\//g')
-                mkdir -p "$(dirname "${dst}")"
-                cp "/config/${file}" "${dst}"
-                echo "Copied ${file} to ${dst}"
-              done
-
-              for template_dir in *; do
-                if [[ -d "${template_dir}" ]]; then
-                  template_name=$(basename "${template_dir}")
-                  template_ver=$(cat "${template_dir}/*" | sha256sum | awk '{print $1}')
-
-                  if current=$(coder templates versions list "${template_name}" | grep Active | awk '{print $1}'); then
-                    if [[ "${current}" == "${template_ver}" ]]; then
-                      continue
-                    fi
-                  fi
-
-                  echo "Pushing template: ${template_name}"
-                  if coder templates push -y -d "${template_dir}" --name "${template_ver}" "${template_name}"; then
-                    echo "Successfully pushed template: ${template_name}"
-                  else
-                    echo "Failed to push template: ${template_name}"
-                  fi
-                fi
-              done
-              echo "Templates reorganized and pushed successfully!"
-              cd /
-            else
-              echo "No templates directory found at /config"
-            fi
-
             trap "exit" TERM
             while sleep 60; do
               expire=$(date -d "$( (coder token view ${CODER_SESSION_TOKEN} -c "expires at" || date -I) | tail -n 1 | cut -d"T" -f1)" "+%s")

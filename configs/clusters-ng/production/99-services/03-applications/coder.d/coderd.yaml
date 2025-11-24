@@ -1,0 +1,22 @@
+apiVersion: infra.contrib.fluxcd.io/v1alpha2
+kind: Terraform
+metadata:
+  name: 99-services-coderd
+  namespace: flux-system
+spec:
+  interval: 1h0s
+  path:  ./configs/clusters-ng/production/99-services/03-applications/coder.d
+  approvePlan: auto
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  runnerPodTemplate:
+    spec:
+      env:
+      - name: CODER_URL
+        value:  http://coder.coder.svc/
+      - name: CODER_SESSION_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: coder-init-token
+            key: token
