@@ -303,7 +303,7 @@ resource "kubernetes_deployment" "main" {
         volume {
           name = "secrets"
           secret {
-            secret_name = data.coder_workspace.me.id
+            secret_name = data.coder_workspace_owner.me.name
             optional    = true
           }
         }
