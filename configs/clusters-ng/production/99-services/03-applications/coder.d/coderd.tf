@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    coderd = {
+      source = "coder/coderd"
+    }
+  }
+}
+
 provider "coderd" {}
 
 resource "coderd_template" "templates" {
