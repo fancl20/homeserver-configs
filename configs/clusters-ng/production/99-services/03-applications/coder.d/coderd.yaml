@@ -63,6 +63,19 @@ roleRef:
   name: coderd
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: coderd-tf-runner
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tf-runner-role
+subjects:
+- kind: ServiceAccount
+  name: coderd
+  namespace: flux-system
+---
 apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
