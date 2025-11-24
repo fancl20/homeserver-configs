@@ -1,3 +1,4 @@
+---
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
 metadata:
@@ -10,6 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: configs
+  serviceAccountName: coderd
   runnerPodTemplate:
     spec:
       env:
@@ -20,3 +22,79 @@ spec:
           secretKeyRef:
             name: coder-init-token
             key: token
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coderd
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: coderd
+  namespace: coder
+rules:
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - selfsubjectrulesreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: coderd
+  namespace: coder
+subjects:
+- kind: ServiceAccount
+  name: coderd
+  namespace: flux-system
+roleRef:
+  kind: Role
+  name: coderd
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: coder-secret-store
+  namespace: flux-system
+spec:
+  provider:
+    kubernetes:
+      remoteNamespace: coder
+      server:
+        caProvider:
+          type: ConfigMap
+          name: kube-root-ca.crt
+          key: ca.crt
+      auth:
+        serviceAccount:
+          name: "coderd"
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: coder-init-token
+  namespace: flux-system
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: SecretStore
+    name: coder-secret-store
+  target:
+    name: coder-init-token
+  data:
+  - secretKey: token
+    remoteRef:
+      key: coder-init-token
+      property: token
