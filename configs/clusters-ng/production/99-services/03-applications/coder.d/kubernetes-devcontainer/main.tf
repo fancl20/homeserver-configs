@@ -167,6 +167,7 @@ locals {
     "ENVBUILDER_FALLBACK_IMAGE" : data.coder_parameter.fallback_image.value,
     "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
     "ENVBUILDER_PUSH_IMAGE" : var.cache_repo == "" ? "" : "true"
+    "ENVBUILDER_IGNORE_PATHS": "/etc/secrets"
   }
 }
 
@@ -432,12 +433,6 @@ module "vscode-web" {
       "autoImportSettingsPath" : "/etc/secrets/roo-code-settings.json"
     }
   }
-}
-
-module "dotfiles" {
-  count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/coder/dotfiles/coder"
-  agent_id = coder_agent.main.id
 }
 
 resource "coder_metadata" "container_info" {
