@@ -285,6 +285,10 @@ resource "kubernetes_deployment" "main" {
             name       = "workspaces"
             read_only  = false
           }
+          volume_mount {
+            mount_path = "/etc/secrets"
+            name       = "secrets"
+          }
         }
 
         volume {
@@ -292,6 +296,14 @@ resource "kubernetes_deployment" "main" {
           persistent_volume_claim {
             claim_name = kubernetes_persistent_volume_claim.workspaces.metadata.0.name
             read_only  = false
+          }
+        }
+
+        volume {
+          name = "secrets"
+          secret {
+            secret_name = data.coder_workspace.me.id
+            optional    = true
           }
         }
 
@@ -399,23 +411,26 @@ module "vscode-web" {
     "RooVeterinaryInc.roo-cline",
   ]
   settings = {
-    "workbench.colorTheme" : "Solarized Light",
-    "explorer.autoReveal" : false,
-    "editor.minimap.enabled" : false,
-    "editor.formatOnSave" : true,
-    "editor.tabSize" : 2,
-    "editor.guides.bracketPairs" : true,
-    "files.trimTrailingWhitespace" : true,
+    "workbench.colorTheme" : "Solarized Light"
+    "explorer.autoReveal" : false
+    "editor.minimap.enabled" : false
+    "editor.formatOnSave" : true
+    "editor.tabSize" : 2
+    "editor.guides.bracketPairs" : true
+    "files.trimTrailingWhitespace" : true
     "terminal.integrated.defaultProfile.linux" : "fish"
-    "terminal.integrated.stickyScroll.enabled" : false,
-    "extensions.ignoreRecommendations" : true,
+    "terminal.integrated.stickyScroll.enabled" : false
+    "extensions.ignoreRecommendations" : true
     "vim.handleKeys" : {
-      "<D-c>" : false,
+      "<D-c>" : false
     }
     "[python]" : {
-      "editor.formatOnType" : true,
+      "editor.formatOnType" : true
       "editor.defaultFormatter" : "ms-python.autopep8"
-    },
+    }
+    "roo-cline" : {
+      "autoImportSettingsPath" : "/etc/secrets/roo-code-settings.json"
+    }
   }
 }
 

@@ -96,6 +96,11 @@ app.Base('coder', 'coder', create_namespace=true).Helm('https://helm.coder.com/v
     { extract: { key: 'Coder' } },
   ],
 })
+.OnePassword(name='fancl20', spec={
+  dataFrom: [
+    { extract: { key: 'Coder Workspace' } },
+  ],
+})
 .Nested('coder-db').StatefulSet()
 .PodContainers([
   {
