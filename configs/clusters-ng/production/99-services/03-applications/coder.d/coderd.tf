@@ -10,6 +10,7 @@ provider "coderd" {}
 
 resource "coderd_template" "templates" {
   name = each.key
+  icon = "/icon/k8s.png"
   versions = [{
     directory = each.key
     active    = true

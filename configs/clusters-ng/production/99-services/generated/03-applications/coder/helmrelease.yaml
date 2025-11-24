@@ -87,28 +87,14 @@
                   ],
                   "image": "ghcr.io/coder/coder:latest",
                   "name": "coder-init",
-                  "restartPolicy": "Always",
-                  "volumeMounts": [
-                     {
-                        "mountPath": "/config",
-                        "name": "coder"
-                     }
-                  ]
+                  "restartPolicy": "Always"
                }
             ],
             "resources": {
                "requests": {
                   "memory": "1024Mi"
                }
-            },
-            "volumes": [
-               {
-                  "configMap": {
-                     "name": "coder"
-                  },
-                  "name": "coder"
-               }
-            ]
+            }
          }
       }
    }
