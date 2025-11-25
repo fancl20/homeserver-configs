@@ -30,4 +30,4 @@ images:
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
   newTag: '205601582-testing-20251117' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
-  newTag: '9.5.21-ls109' # {"$imagepolicy": "flux-system:unifi:tag"}
+  newTag: '10.0.160-ls110' # {"$imagepolicy": "flux-system:unifi:tag"}
