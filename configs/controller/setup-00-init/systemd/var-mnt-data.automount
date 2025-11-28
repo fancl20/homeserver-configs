@@ -1,8 +1,0 @@
-[Unit]
-Description=Automount External drive
-
-[Automount]
-Where=/var/mnt/data
-
-[Install]
-WantedBy=multi-user.target
