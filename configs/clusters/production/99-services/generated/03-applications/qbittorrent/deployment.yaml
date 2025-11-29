@@ -1,0 +1,78 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "qbittorrent",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "qbittorrent"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "qbittorrent"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     },
+                     {
+                        "name": "PUID",
+                        "value": "1000"
+                     },
+                     {
+                        "name": "PGID",
+                        "value": "1000"
+                     }
+                  ],
+                  "image": "lscr.io/linuxserver/qbittorrent",
+                  "name": "qbittorrent",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/config",
+                        "name": "qbittorrent"
+                     },
+                     {
+                        "mountPath": "/downloads",
+                        "name": "data",
+                        "subPath": "downloads"
+                     }
+                  ]
+               }
+            ],
+            "serviceAccountName": "qbittorrent",
+            "volumes": [
+               {
+                  "name": "data",
+                  "persistentVolumeClaim": {
+                     "claimName": "shared-data"
+                  }
+               },
+               {
+                  "name": "qbittorrent",
+                  "persistentVolumeClaim": {
+                     "claimName": "qbittorrent"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

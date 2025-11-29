@@ -1,0 +1,34 @@
+{
+   "apiVersion": "gateway.networking.k8s.io/v1",
+   "kind": "HTTPRoute",
+   "metadata": {
+      "name": "beets",
+      "namespace": "default"
+   },
+   "spec": {
+      "hostnames": [
+         "beets.local.d20.fan"
+      ],
+      "parentRefs": [
+         {
+            "group": "gateway.networking.k8s.io",
+            "kind": "Gateway",
+            "name": "default",
+            "namespace": "nginx-gateway",
+            "sectionName": "https"
+         }
+      ],
+      "rules": [
+         {
+            "backendRefs": [
+               {
+                  "group": "",
+                  "kind": "Service",
+                  "name": "beets",
+                  "port": 80
+               }
+            ]
+         }
+      ]
+   }
+}

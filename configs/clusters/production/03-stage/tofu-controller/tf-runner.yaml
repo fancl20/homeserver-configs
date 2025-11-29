@@ -1,0 +1,90 @@
+
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: VaultDynamicSecret
+metadata:
+  name: tf-gcp-token
+  namespace: flux-system
+spec:
+  path: '/gcp/roleset/admin/token'
+  method: 'GET'
+  provider:
+    server: http://vault.vault.svc:8200/
+    auth:
+      kubernetes:
+        mountPath: kubernetes
+        role: admin
+        serviceAccountRef:
+          name: tf-runner
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: VaultDynamicSecret
+metadata:
+  name: tf-vault-token
+  namespace: flux-system
+spec:
+  path: '/auth/token/lookup-self'
+  method: 'GET'
+  provider:
+    server: http://vault.vault.svc:8200/
+    auth:
+      kubernetes:
+        mountPath: kubernetes
+        role: admin
+        serviceAccountRef:
+          name: tf-runner
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: tf-runner
+  namespace: flux-system
+spec:
+  refreshInterval: 20m
+  target:
+    name: tf-runner
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        VAULT_TOKEN: '{{ .id }}'
+        GOOGLE_OAUTH_ACCESS_TOKEN: '{{ .token }}'
+  dataFrom:
+  - sourceRef:
+      generatorRef:
+        apiVersion: generators.external-secrets.io/v1alpha1
+        kind: VaultDynamicSecret
+        name: tf-gcp-token
+  - sourceRef:
+      generatorRef:
+        apiVersion: generators.external-secrets.io/v1alpha1
+        kind: VaultDynamicSecret
+        name: tf-vault-token
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tf-runner-extra
+rules:
+  - apiGroups: ['']
+    resources: ['services', 'endpointslices', 'pods']
+    verbs: ['get', 'list', 'watch']
+  - apiGroups: ['gateway.networking.k8s.io']
+    resources: ['gateways', 'httproutes', 'tlsroutes', 'tcproutes', 'udproutes']
+    verbs: ['get', 'list', 'watch']
+  - apiGroups: ['apiextensions.k8s.io']
+    resources: ['customresourcedefinitions']
+    verbs: ['get', 'list', 'watch']
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tf-runner-extra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tf-runner-extra
+subjects:
+- kind: ServiceAccount
+  name: tf-runner
+  namespace: flux-system
+

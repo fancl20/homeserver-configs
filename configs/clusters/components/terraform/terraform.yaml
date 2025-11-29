@@ -1,0 +1,23 @@
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: ${layer_name}
+  namespace: flux-system
+spec:
+  interval: 1h0s
+  path:  ./configs/clusters/production/${layer_name}
+  backendConfig:
+    disable: true
+  approvePlan: auto
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  runnerPodTemplate:
+    spec:
+      env:
+      - name: VAULT_ADDR
+        value:  http://vault.vault.svc:8200/
+      envFrom:
+      - secretRef:
+          name: tf-runner

@@ -1,0 +1,40 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 01-stage
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: 00-stage
+    - name: gateway-crds
+  interval: 15m
+  path: ./configs/clusters/production/01-stage
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  components:
+  - ../../components/terraform
+  postBuild:
+    substitute:
+      layer_name: 01-stage
+  healthChecks:
+  # Vault Configs
+  - apiVersion: v1
+    kind: Secret
+    name: vault-storage-key
+    namespace: vault
+  - apiVersion: v1
+    kind: ConfigMap
+    name: vault-helm-chart-value-overrides
+    namespace: vault
+  # 1password Configs
+  - apiVersion: v1
+    kind: Secret
+    name: op-credentials
+    namespace: onepassword
+  - apiVersion: v1
+    kind: Secret
+    name: onepassword-token
+    namespace: onepassword

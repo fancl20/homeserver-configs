@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "buildkit",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/moby/buildkit",
+      "interval": "1h"
+   }
+}

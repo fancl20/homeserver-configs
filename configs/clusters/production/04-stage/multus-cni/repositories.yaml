@@ -1,0 +1,66 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: multus-cni
+  namespace: flux-system
+spec:
+  image: ghcr.io/k8snetworkplumbingwg/multus-cni
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: multus-cni
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: multus-cni
+  policy:
+    semver:
+      range: 4.x
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: multus-cni-skopeo
+  namespace: flux-system
+spec:
+  image: quay.io/skopeo/stable
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: multus-cni-skopeo
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: multus-cni-skopeo 
+  policy:
+    semver:
+      range: "*"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: multus-cni-python
+  namespace: flux-system
+spec:
+  image: docker.io/library/python
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: multus-cni-python
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: multus-cni-python
+  filterTags:
+    pattern: '^.*-slim$'
+  policy:
+    semver:
+      range: '*-slim'
+

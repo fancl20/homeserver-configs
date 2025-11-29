@@ -1,0 +1,21 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImagePolicy",
+   "metadata": {
+      "name": "buildkit",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "filterTags": {
+         "pattern": "^.*-rootless$"
+      },
+      "imageRepositoryRef": {
+         "name": "buildkit"
+      },
+      "policy": {
+         "semver": {
+            "range": "*-rootless"
+         }
+      }
+   }
+}

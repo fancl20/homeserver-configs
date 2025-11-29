@@ -1,0 +1,35 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: default
+  namespace: nginx-gateway
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: '*.local.d20.fan'
+    tls:
+      certificateRefs:
+      - group: ""
+        kind: Secret
+        name: d20-fan-tls
+        namespace: cert-manager
+    allowedRoutes:
+      namespaces:
+        from: All
+---
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: default
+  namespace: nginx-gateway
+spec:
+  body:
+    maxSize: '4g'
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: default

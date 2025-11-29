@@ -1,0 +1,69 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "name": "registry",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "registry"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "registry"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "OTEL_TRACES_EXPORTER",
+                        "value": "none"
+                     },
+                     {
+                        "name": "REGISTRY_LOG_LEVEL",
+                        "value": "info"
+                     }
+                  ],
+                  "image": "docker.io/library/registry",
+                  "name": "registry",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/var/lib/registry",
+                        "name": "registry"
+                     }
+                  ]
+               }
+            ],
+            "securityContext": {
+               "fsGroup": 1000,
+               "fsGroupChangePolicy": "OnRootMismatch",
+               "runAsGroup": 1000,
+               "runAsUser": 1000
+            },
+            "serviceAccountName": "registry",
+            "volumes": [
+               {
+                  "name": "registry",
+                  "persistentVolumeClaim": {
+                     "claimName": "registry"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

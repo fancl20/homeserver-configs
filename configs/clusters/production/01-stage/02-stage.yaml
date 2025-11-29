@@ -1,0 +1,36 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: 02-stage
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: 01-stage
+  interval: 15m
+  path: ./configs/clusters/production/02-stage
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+  components:
+  - ../../components/terraform
+  postBuild:
+    substitute:
+      layer_name: 02-stage
+  healthChecks:
+  # vault
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    name: vault
+    namespace: vault
+  # external-secrets
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    name: external-secrets
+    namespace: external-secrets
+  # cert-manager
+  - apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    name: cert-manager
+    namespace: cert-manager

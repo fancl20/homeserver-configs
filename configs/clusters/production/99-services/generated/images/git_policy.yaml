@@ -1,0 +1,21 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImagePolicy",
+   "metadata": {
+      "name": "git",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "filterTags": {
+         "pattern": "^v"
+      },
+      "imageRepositoryRef": {
+         "name": "git"
+      },
+      "policy": {
+         "semver": {
+            "range": "*"
+         }
+      }
+   }
+}
