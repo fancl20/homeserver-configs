@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h0s
-  path:  ./configs/clusters-ng/production/${layer_name}
+  path:  ./configs/clusters/production/${layer_name}
   backendConfig:
     disable: true
   approvePlan: auto

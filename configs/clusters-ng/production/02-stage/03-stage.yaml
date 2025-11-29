@@ -8,7 +8,7 @@ spec:
   dependsOn:
   - name: 02-stage
   interval: 15m
-  path: ./configs/clusters-ng/production/03-stage
+  path: ./configs/clusters/production/03-stage
   prune: true
   sourceRef:
     kind: GitRepository

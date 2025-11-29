@@ -42,5 +42,5 @@ spec:
     push:
       branch: main
   update:
-    path: ./configs/clusters-ng
+    path: ./configs/clusters
     strategy: Setters

@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h0s
-  path:  ./configs/clusters-ng/production/99-services/03-applications/coder.d
+  path:  ./configs/clusters/production/99-services/03-applications/coder.d
   approvePlan: auto
   sourceRef:
     kind: GitRepository

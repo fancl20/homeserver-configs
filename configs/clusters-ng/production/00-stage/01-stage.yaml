@@ -9,7 +9,7 @@ spec:
     - name: 00-stage
     - name: gateway-crds
   interval: 15m
-  path: ./configs/clusters-ng/production/01-stage
+  path: ./configs/clusters/production/01-stage
   prune: true
   sourceRef:
     kind: GitRepository
