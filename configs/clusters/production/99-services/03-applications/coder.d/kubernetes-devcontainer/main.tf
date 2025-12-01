@@ -46,13 +46,12 @@ variable "namespace" {
 }
 
 variable "cache_repo" {
-  default     = "registry.default.svc/coder/cache"
   description = "Use a container registry as a cache to speed up builds."
   type        = string
 }
 
 variable "insecure_cache_repo" {
-  default     = true
+  default     = false
   description = "Enable this option if your cache registry does not serve HTTPS."
   type        = bool
 }
