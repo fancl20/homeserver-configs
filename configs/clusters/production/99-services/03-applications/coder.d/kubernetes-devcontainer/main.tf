@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "coder" {
-  url = "http://coder.coder.svc.cluster.local"
+  url = "http://coder.coder.svc"
 }
 provider "kubernetes" {
   config_path = var.use_kubeconfig == true ? "~/.kube/config" : null
@@ -46,13 +46,13 @@ variable "namespace" {
 }
 
 variable "cache_repo" {
-  default     = ""
+  default     = "registry.default.svc/coder/cache"
   description = "Use a container registry as a cache to speed up builds."
   type        = string
 }
 
 variable "insecure_cache_repo" {
-  default     = false
+  default     = true
   description = "Enable this option if your cache registry does not serve HTTPS."
   type        = bool
 }
