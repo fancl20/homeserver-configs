@@ -46,6 +46,21 @@
                         "name": "registry"
                      }
                   ]
+               },
+               {
+                  "command": [
+                     "/bin/sh",
+                     "-c",
+                     "#!/bin/bash\nset -euo pipefail\n\nKEEP_TAGS=3\n\ncleanup_old_tags() {\n  local repo_path=\"$1\"\n  local tags_dir=\"$repo_path/_manifests/tags\"\n\n  if [[ ! -d \"$tags_dir\" ]]; then\n    echo \"No tags directory found at $tags_dir\"\n    return\n  fi\n\n  echo \"Processing repository: $repo_path\"\n\n  # Get all tags and sort by modification time (newest first)\n  local tags=($(ls -t \"$tags_dir\" 2>/dev/null || true))\n\n  if [[ ${#tags[@]} -le $KEEP_TAGS ]]; then\n    echo \"  Repository has ${#tags[@]} tags (<= $KEEP_TAGS), skipping cleanup\"\n    return\n  fi\n\n  echo \"  Found ${#tags[@]} tags, keeping only $KEEP_TAGS most recent\"\n\n  # Remove old tags (keep the first KEEP_TAGS tags)\n  for ((i=$KEEP_TAGS; i<${#tags[@]}; i++)); do\n    local tag=\"${tags[$i]}\"\n    local tag_path=\"$tags_dir/$tag\"\n\n    echo \"    Removing old tag: $tag\"\n    rm -rf \"$tag_path\"\n  done\n}\n\nrun_cleanup() {\n  echo \"Starting registry cleanup at $(date)\"\n\n  for repo in /var/lib/registry/docker/registry/v2/repositories/*/*; do\n    if [[ -d \"$repo\" ]]; then\n      cleanup_old_tags \"$repo\"\n    fi\n  done\n\n  echo \"Running garbage collection...\"\n  registry garbage-collect /etc/distribution/config.yml --delete-untagged=true\n\n  echo \"Registry cleanup completed at $(date)\"\n}\n\nwhile true; do\n  run_cleanup\n  echo \"Sleeping for 7 days until next cleanup...\"\n  sleep 604800\ndone\n"
+                  ],
+                  "image": "docker.io/library/registry",
+                  "name": "cleanup",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/var/lib/registry",
+                        "name": "registry"
+                     }
+                  ]
                }
             ],
             "securityContext": {
