@@ -15,39 +15,29 @@ app.Base('registry').Deployment()
   name: 'cleanup',
   image: images.registry,
   command: ['/bin/sh', '-c', |||
-    #!/bin/bash
-    set -euo pipefail
+    #!/bin/sh
+    set -e
 
     KEEP_TAGS=3
 
     cleanup_old_tags() {
-      local repo_path="$1"
-      local tags_dir="$repo_path/_manifests/tags"
+      repo_path="$1"
+      tags_dir="$repo_path/_manifests/tags"
 
-      if [[ ! -d "$tags_dir" ]]; then
+      if [ ! -d "$tags_dir" ]; then
         echo "No tags directory found at $tags_dir"
         return
       fi
 
       echo "Processing repository: $repo_path"
 
-      # Get all tags and sort by modification time (newest first)
-      local tags=($(ls -t "$tags_dir" 2>/dev/null || true))
-
-      if [[ ${#tags[@]} -le $KEEP_TAGS ]]; then
-        echo "  Repository has ${#tags[@]} tags (<= $KEEP_TAGS), skipping cleanup"
-        return
-      fi
-
-      echo "  Found ${#tags[@]} tags, keeping only $KEEP_TAGS most recent"
-
-      # Remove old tags (keep the first KEEP_TAGS tags)
-      for ((i=$KEEP_TAGS; i<${#tags[@]}; i++)); do
-        local tag="${tags[$i]}"
-        local tag_path="$tags_dir/$tag"
-
-        echo "    Removing old tag: $tag"
-        rm -rf "$tag_path"
+      # Remove old tags using tail to skip the first KEEP_TAGS tags
+      ls -t "$tags_dir" 2>/dev/null | tail -n +$((KEEP_TAGS + 1)) | while read -r tag; do
+        if [ -n "$tag" ]; then
+          tag_path="$tags_dir/$tag"
+          echo "    Removing old tag: $tag"
+          rm -rf "$tag_path"
+        fi
       done
     }
 
@@ -55,7 +45,7 @@ app.Base('registry').Deployment()
       echo "Starting registry cleanup at $(date)"
 
       for repo in /var/lib/registry/docker/registry/v2/repositories/*/*; do
-        if [[ -d "$repo" ]]; then
+        if [ -d "$repo" ]; then
           cleanup_old_tags "$repo"
         fi
       done
