@@ -2,6 +2,9 @@
    "apiVersion": "apps/v1",
    "kind": "Deployment",
    "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
       "name": "dae",
       "namespace": "default"
    },

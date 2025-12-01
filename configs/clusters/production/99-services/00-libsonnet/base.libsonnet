@@ -27,6 +27,9 @@ local serviceaccount = import 'serviceaccount.libsonnet';
       metadata: {
         name: base.Name,
         namespace: base.Namespace,
+        annotations: {
+          'kustomize.toolkit.fluxcd.io/substitute': 'disabled',
+        },
       },
       spec: {
         replicas: 1,
