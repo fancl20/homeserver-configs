@@ -14,21 +14,6 @@ resource "coderd_template" "templates" {
   versions = [{
     directory = each.key
     active    = true
-    tf_vars = toset([
-      for v in local.template_variables[each.key] : {
-        name  = v.name
-        value = v.value
-      }
-    ])
   }]
   for_each = toset([for k, _ in fileset(path.module, "*/README.md") : dirname(k)])
-}
-
-locals {
-  template_variables = {
-    kubernetes-devcontainer = [
-      { name = "cache_repo", value = "registry.default.svc/coder/cache" },
-      { name = "insecure_cache_repo", value = "true" },
-    ]
-  }
 }

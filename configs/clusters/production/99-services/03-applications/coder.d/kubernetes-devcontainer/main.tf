@@ -17,44 +17,22 @@ provider "coder" {
   url = "http://coder.coder.svc"
 }
 provider "kubernetes" {
-  config_path = var.use_kubeconfig == true ? "~/.kube/config" : null
+  config_path = local.use_kubeconfig == true ? "~/.kube/config" : null
 }
 provider "envbuilder" {}
+
+# Variables
+locals {
+  use_kubeconfig         = false
+  namespace              = "coder"
+  cache_repo             = "registry.default.svc/coder/cache"
+  insecure_cache_repo    = true
+  cache_repo_secret_name = "disabled"
+}
 
 data "coder_provisioner" "me" {}
 data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
-
-variable "use_kubeconfig" {
-  type        = bool
-  description = <<-EOF
-  Use host kubeconfig? (true/false)
-
-  Set this to false if the Coder host is itself running as a Pod on the same
-  Kubernetes cluster as you are deploying workspaces to.
-
-  Set this to true if the Coder host is running outside the Kubernetes cluster
-  for workspaces.  A valid "~/.kube/config" must be present on the Coder host.
-  EOF
-  default     = false
-}
-
-variable "namespace" {
-  type        = string
-  default     = "coder"
-  description = "The Kubernetes namespace to create workspaces in (must exist prior to creating workspaces). If the Coder host is itself running as a Pod on the same Kubernetes cluster as you are deploying workspaces to, set this to the same namespace."
-}
-
-variable "cache_repo" {
-  description = "Use a container registry as a cache to speed up builds."
-  type        = string
-}
-
-variable "insecure_cache_repo" {
-  default     = false
-  description = "Enable this option if your cache registry does not serve HTTPS."
-  type        = bool
-}
 
 data "coder_parameter" "cpu" {
   type         = "number"
@@ -120,11 +98,11 @@ data "coder_parameter" "fallback_image" {
 }
 
 data "coder_parameter" "devcontainer_builder" {
-  description  = <<-EOF
-Image that will build the devcontainer.
-We highly recommend using a specific release as the `:latest` tag will change.
-Find the latest version of Envbuilder here: https://github.com/coder/envbuilder/pkgs/container/envbuilder
-EOF
+  description  = <<-EOT
+    Image that will build the devcontainer.
+    We highly recommend using a specific release as the `:latest` tag will change.
+    Find the latest version of Envbuilder here: https://github.com/coder/envbuilder/pkgs/container/envbuilder
+  EOT
   display_name = "Devcontainer Builder"
   mutable      = true
   name         = "devcontainer_builder"
@@ -132,22 +110,17 @@ EOF
   order        = 7
 }
 
-variable "cache_repo_secret_name" {
-  default     = ""
-  description = "Path to a docker config.json containing credentials to the provided cache repo, if required."
-  sensitive   = true
-  type        = string
-}
 
 data "kubernetes_secret" "cache_repo_dockerconfig_secret" {
-  count = var.cache_repo_secret_name == "" ? 0 : 1
+  count = local.cache_repo_secret_name == "disabled" ? 0 : 1
   metadata {
-    name      = var.cache_repo_secret_name
-    namespace = var.namespace
+    name      = local.cache_repo_secret_name
+    namespace = local.namespace
   }
 }
 
 locals {
+  # Computed locals
   deployment_name            = "coder-${lower(data.coder_workspace.me.id)}"
   devcontainer_builder_image = data.coder_parameter.devcontainer_builder.value
   git_author_name            = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
@@ -159,13 +132,13 @@ locals {
     "CODER_AGENT_URL" : data.coder_workspace.me.access_url,
     # ENVBUILDER_GIT_URL and ENVBUILDER_CACHE_REPO will be overridden by the provider
     # if the cache repo is enabled.
-    "ENVBUILDER_GIT_URL" : var.cache_repo == "" ? local.repo_url : "",
+    "ENVBUILDER_GIT_URL" : local.cache_repo == "" ? local.repo_url : "",
     # Used for when SSH is an available authentication mechanism for git providers
     "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : base64encode(try(data.coder_workspace_owner.me.ssh_private_key, "")),
     "ENVBUILDER_INIT_SCRIPT" : coder_agent.main.init_script,
     "ENVBUILDER_FALLBACK_IMAGE" : data.coder_parameter.fallback_image.value,
     "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
-    "ENVBUILDER_PUSH_IMAGE" : var.cache_repo == "" ? "" : "true"
+    "ENVBUILDER_PUSH_IMAGE" : local.cache_repo == "" ? "" : "true"
     "ENVBUILDER_IGNORE_PATHS" : "/etc/secrets,/var/run"
   }
 }
@@ -173,18 +146,18 @@ locals {
 # Check for the presence of a prebuilt image in the cache repo
 # that we can use instead.
 resource "envbuilder_cached_image" "cached" {
-  count         = var.cache_repo == "" ? 0 : data.coder_workspace.me.start_count
+  count         = local.cache_repo == "" ? 0 : data.coder_workspace.me.start_count
   builder_image = local.devcontainer_builder_image
   git_url       = local.repo_url
-  cache_repo    = var.cache_repo
+  cache_repo    = local.cache_repo
   extra_env     = local.envbuilder_env
-  insecure      = var.insecure_cache_repo
+  insecure      = local.insecure_cache_repo
 }
 
 resource "kubernetes_persistent_volume_claim" "workspaces" {
   metadata {
     name      = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
-    namespace = var.namespace
+    namespace = local.namespace
     labels = {
       "app.kubernetes.io/name"     = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
       "app.kubernetes.io/instance" = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
@@ -218,7 +191,7 @@ resource "kubernetes_deployment" "main" {
   wait_for_rollout = false
   metadata {
     name      = local.deployment_name
-    namespace = var.namespace
+    namespace = local.namespace
     labels = {
       "app.kubernetes.io/name"     = "coder-workspace"
       "app.kubernetes.io/instance" = local.deployment_name
@@ -256,14 +229,14 @@ resource "kubernetes_deployment" "main" {
 
         container {
           name              = "dev"
-          image             = var.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
+          image             = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
           image_pull_policy = "Always"
           # Set the environment using cached_image.cached.0.env if the cache repo is enabled.
           # Otherwise, use the local.envbuilder_env.
           # You could alternatively write the environment variables to a ConfigMap or Secret
           # and use that as `env_from`.
           dynamic "env" {
-            for_each = nonsensitive(var.cache_repo == "" ? local.envbuilder_env : envbuilder_cached_image.cached.0.env_map)
+            for_each = nonsensitive(local.cache_repo == "" ? local.envbuilder_env : envbuilder_cached_image.cached.0.env_map)
             content {
               name  = env.key
               value = env.value
@@ -440,7 +413,7 @@ resource "coder_metadata" "container_info" {
   resource_id = coder_agent.main.id
   item {
     key   = "workspace image"
-    value = var.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
+    value = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
   }
   item {
     key   = "git url"
@@ -448,6 +421,6 @@ resource "coder_metadata" "container_info" {
   }
   item {
     key   = "cache repo"
-    value = var.cache_repo == "" ? "not enabled" : var.cache_repo
+    value = local.cache_repo == "" ? "not enabled" : local.cache_repo
   }
 }
