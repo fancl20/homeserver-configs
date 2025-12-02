@@ -415,6 +415,12 @@ module "vscode-web" {
   }
 }
 
+module "mux" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/coder/mux/coder"
+  agent_id = coder_agent.main.id
+}
+
 resource "coder_metadata" "container_info" {
   count       = data.coder_workspace.me.start_count
   resource_id = coder_agent.main.id

@@ -5,7 +5,7 @@ RUN groupadd --gid 1000 coder && \
 
 RUN apt-get update && apt-get install -y \
     curl git vim jq fish \
-    python3 golang \
+    python3 golang nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
 COPY install_terraform.py /tmp/install_terraform.py
