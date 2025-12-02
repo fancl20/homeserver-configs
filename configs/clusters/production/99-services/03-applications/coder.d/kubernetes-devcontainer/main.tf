@@ -236,7 +236,14 @@ resource "kubernetes_deployment" "main" {
           # You could alternatively write the environment variables to a ConfigMap or Secret
           # and use that as `env_from`.
           dynamic "env" {
-            for_each = nonsensitive(local.cache_repo == "" ? local.envbuilder_env : envbuilder_cached_image.cached.0.env_map)
+            for_each = nonsensitive(
+              local.cache_repo == "" ?
+              local.envbuilder_env :
+              merge(envbuilder_cached_image.cached.0.env_map, {
+                # Workaround for https://github.com/coder/terraform-provider-envbuilder/issues/83
+                "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : local.envbuilder_env["ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64"],
+              })
+            )
             content {
               name  = env.key
               value = env.value
