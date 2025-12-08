@@ -21,7 +21,7 @@ resource "kubernetes_config_map" "server_config" {
         volumes = [{
           name = "vault-storage"
           secret = {
-            secretName = "${kubernetes_secret.vault_storage_key.metadata[0].name}"
+            secretName = "${kubernetes_secret_v1.vault_storage_key.metadata[0].name}"
           }
         }]
         volumeMounts = [{

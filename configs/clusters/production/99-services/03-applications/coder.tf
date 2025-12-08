@@ -3,7 +3,7 @@ resource "random_password" "coder_db" {
   special = false
 }
 
-resource "kubernetes_secret" "coder" {
+resource "kubernetes_secret_v1" "coder" {
   metadata {
     name      = "coder-db"
     namespace = "coder"

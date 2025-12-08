@@ -2,7 +2,7 @@ resource "random_bytes" "bind9_secret" {
   length = 32
 }
 
-resource "kubernetes_secret" "bind9" {
+resource "kubernetes_secret_v1" "bind9" {
   metadata {
     name      = "bind9"
     namespace = "default"
@@ -17,7 +17,7 @@ resource "kubernetes_secret" "bind9" {
   }
 }
 
-resource "kubernetes_secret" "external_dns" {
+resource "kubernetes_secret_v1" "external_dns" {
   metadata {
     name      = "external-dns"
     namespace = "default"

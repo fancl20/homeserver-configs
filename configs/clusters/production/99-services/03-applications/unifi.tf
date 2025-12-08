@@ -3,7 +3,7 @@ resource "random_password" "unifi_db" {
   special = false
 }
 
-resource "kubernetes_secret" "unifi" {
+resource "kubernetes_secret_v1" "unifi" {
   metadata {
     name      = "unifi"
     namespace = "default"

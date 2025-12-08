@@ -20,7 +20,7 @@ resource "google_service_account_key" "vault_storage" {
   public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
-resource "kubernetes_secret" "vault_storage_key" {
+resource "kubernetes_secret_v1" "vault_storage_key" {
   metadata {
     name      = "vault-storage-key"
     namespace = "vault"

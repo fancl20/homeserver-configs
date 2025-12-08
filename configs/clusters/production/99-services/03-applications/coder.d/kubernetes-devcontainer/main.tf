@@ -111,7 +111,7 @@ data "coder_parameter" "devcontainer_builder" {
 }
 
 
-data "kubernetes_secret" "cache_repo_dockerconfig_secret" {
+data "kubernetes_secret_v1" "cache_repo_dockerconfig_secret" {
   count = local.cache_repo_secret_name == "disabled" ? 0 : 1
   metadata {
     name      = local.cache_repo_secret_name
@@ -137,7 +137,7 @@ locals {
     "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : base64encode(try(data.coder_workspace_owner.me.ssh_private_key, "")),
     "ENVBUILDER_INIT_SCRIPT" : coder_agent.main.init_script,
     "ENVBUILDER_FALLBACK_IMAGE" : data.coder_parameter.fallback_image.value,
-    "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
+    "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret_v1.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
     "ENVBUILDER_PUSH_IMAGE" : local.cache_repo == "" ? "" : "true"
     "ENVBUILDER_IGNORE_PATHS" : "/etc/secrets,/var/run"
   }
@@ -154,7 +154,7 @@ resource "envbuilder_cached_image" "cached" {
   insecure      = local.insecure_cache_repo
 }
 
-resource "kubernetes_persistent_volume_claim" "workspaces" {
+resource "kubernetes_persistent_volume_claim_v1" "workspaces" {
   metadata {
     name      = "coder-${lower(data.coder_workspace.me.id)}-workspaces"
     namespace = local.namespace
@@ -183,10 +183,10 @@ resource "kubernetes_persistent_volume_claim" "workspaces" {
   }
 }
 
-resource "kubernetes_deployment" "main" {
+resource "kubernetes_deployment_v1" "main" {
   count = data.coder_workspace.me.start_count
   depends_on = [
-    kubernetes_persistent_volume_claim.workspaces
+    kubernetes_persistent_volume_claim_v1.workspaces
   ]
   wait_for_rollout = false
   metadata {
@@ -274,7 +274,7 @@ resource "kubernetes_deployment" "main" {
         volume {
           name = "workspaces"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.workspaces.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.workspaces.metadata.0.name
             read_only  = false
           }
         }
