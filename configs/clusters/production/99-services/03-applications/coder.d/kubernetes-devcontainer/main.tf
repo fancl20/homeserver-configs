@@ -127,20 +127,25 @@ locals {
   git_author_email           = data.coder_workspace_owner.me.email
   repo_url                   = data.coder_parameter.repo.value
   # The envbuilder provider requires a key-value map of environment variables.
-  envbuilder_env = {
+  # Base environment variables used for envbuilder_cached_image (without ENVBUILDER_GIT_URL)
+  envbuilder_env_base = {
     "CODER_AGENT_TOKEN" : coder_agent.main.token,
     "CODER_AGENT_URL" : data.coder_workspace.me.access_url,
-    # ENVBUILDER_GIT_URL and ENVBUILDER_CACHE_REPO will be overridden by the provider
-    # if the cache repo is enabled.
-    "ENVBUILDER_GIT_URL" : local.cache_repo == "" ? local.repo_url : "",
     # Used for when SSH is an available authentication mechanism for git providers
     "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : base64encode(try(data.coder_workspace_owner.me.ssh_private_key, "")),
     "ENVBUILDER_INIT_SCRIPT" : coder_agent.main.init_script,
     "ENVBUILDER_FALLBACK_IMAGE" : data.coder_parameter.fallback_image.value,
     "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret_v1.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
-    "ENVBUILDER_PUSH_IMAGE" : local.cache_repo == "" ? "" : "true"
+    "ENVBUILDER_PUSH_IMAGE" : local.cache_repo == "" ? "" : "true",
     "ENVBUILDER_IGNORE_PATHS" : "/etc/secrets,/var/run"
   }
+
+  # Complete environment variables for direct deployment (when cache is disabled)
+  # ENVBUILDER_GIT_URL must be set explicitly when cache is disabled.
+  # When cache is enabled, envbuilder_cached_image provider forbids overriding ENVBUILDER_GIT_URL in extra_env.
+  envbuilder_env_with_git = merge(local.envbuilder_env_base, {
+    "ENVBUILDER_GIT_URL" : local.repo_url
+  })
 }
 
 # Check for the presence of a prebuilt image in the cache repo
@@ -150,7 +155,7 @@ resource "envbuilder_cached_image" "cached" {
   builder_image = local.devcontainer_builder_image
   git_url       = local.repo_url
   cache_repo    = local.cache_repo
-  extra_env     = local.envbuilder_env
+  extra_env     = local.envbuilder_env_base
   insecure      = local.insecure_cache_repo
 }
 
@@ -232,16 +237,16 @@ resource "kubernetes_deployment_v1" "main" {
           image             = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
           image_pull_policy = "Always"
           # Set the environment using cached_image.cached.0.env if the cache repo is enabled.
-          # Otherwise, use the local.envbuilder_env.
+          # Otherwise, use the local.envbuilder_env_with_git (includes ENVBUILDER_GIT_URL).
           # You could alternatively write the environment variables to a ConfigMap or Secret
           # and use that as `env_from`.
           dynamic "env" {
             for_each = nonsensitive(
               local.cache_repo == "" ?
-              local.envbuilder_env :
+              local.envbuilder_env_with_git :
               merge(envbuilder_cached_image.cached.0.env_map, {
                 # Workaround for https://github.com/coder/terraform-provider-envbuilder/issues/83
-                "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : local.envbuilder_env["ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64"],
+                "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : local.envbuilder_env_base["ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64"],
               })
             )
             content {
