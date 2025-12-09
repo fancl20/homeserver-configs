@@ -1,0 +1,79 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "youtrack",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "youtrack"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "youtrack"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     }
+                  ],
+                  "image": "docker.io/jetbrains/youtrack",
+                  "name": "youtrack",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/opt/youtrack/data",
+                        "name": "youtrack",
+                        "subPath": "data"
+                     },
+                     {
+                        "mountPath": "/opt/youtrack/conf",
+                        "name": "youtrack",
+                        "subPath": "conf"
+                     },
+                     {
+                        "mountPath": "/opt/youtrack/backups",
+                        "name": "youtrack",
+                        "subPath": "backups"
+                     }
+                  ]
+               }
+            ],
+            "securityContext": {
+               "fsGroup": 13001,
+               "fsGroupChangePolicy": "OnRootMismatch",
+               "runAsGroup": 13001,
+               "runAsUser": 13001
+            },
+            "serviceAccountName": "youtrack",
+            "volumes": [
+               {
+                  "name": "youtrack",
+                  "persistentVolumeClaim": {
+                     "claimName": "youtrack"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

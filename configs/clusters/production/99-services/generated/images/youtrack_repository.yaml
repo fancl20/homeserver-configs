@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "youtrack",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/jetbrains/youtrack",
+      "interval": "1h"
+   }
+}

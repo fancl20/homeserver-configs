@@ -86,3 +86,7 @@ app.Image('roon')
 app.Image('unifi')
 .Repository('lscr.io/linuxserver/unifi-network-application')
 .Policy(app.DefaultPolicy.LinuxServer())
++
+app.Image('youtrack')
+.Repository('docker.io/jetbrains/youtrack')
+.Policy(app.DefaultPolicy.Semver())
