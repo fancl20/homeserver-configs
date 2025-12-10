@@ -8,7 +8,7 @@ spec:
     spec:
       initContainers:
       - name: pull-cni-plugings
-        image: quay.io/skopeo/stable:v1.20.0 # {"$imagepolicy": "flux-system:multus-cni-skopeo"}
+        image: quay.io/skopeo/stable:v1.21.0 # {"$imagepolicy": "flux-system:multus-cni-skopeo"}
         command: ['/bin/sh', '-c', 'skopeo copy "docker://${CNI_PLUGINS_IMAGE}" dir:/workspace']
         env:
         - name: CNI_PLUGINS_IMAGE
