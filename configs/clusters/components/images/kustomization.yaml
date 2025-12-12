@@ -32,4 +32,4 @@ images:
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '10.0.162-ls110' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: docker.io/jetbrains/youtrack # {"$imagepolicy": "flux-system:youtrack:name"}
-  newTag: '2025.3.110568' # {"$imagepolicy": "flux-system:youtrack:tag"}
+  newTag: '2025.3.112453' # {"$imagepolicy": "flux-system:youtrack:tag"}
