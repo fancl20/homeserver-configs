@@ -48,7 +48,7 @@ spec:
       volumeMounts:
       - mountPath: /work
         name: work
-      image: docker.io/alpine/git:v2.49.1 # {"$imagepolicy": "flux-system:git"}
+      image: docker.io/alpine/git:v2.52.0 # {"$imagepolicy": "flux-system:git"}
       workingDir: /work
       args:
       - clone
