@@ -16,13 +16,13 @@ images:
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '8.2.2' # {"$imagepolicy": "flux-system:mongo:tag"}
+  newTag: '8.2.3' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: docker.io/library/nginx # {"$imagepolicy": "flux-system:nginx:name"}
   newTag: '1.29.4' # {"$imagepolicy": "flux-system:nginx:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
   newTag: '10.0_p1-r9-ls210' # {"$imagepolicy": "flux-system:openssh:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '8.2.2' # {"$imagepolicy": "flux-system:mongo:tag"}
+  newTag: '8.2.3' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '5.1.4-r1-ls431' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
