@@ -62,6 +62,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "bind9",
             "volumes": [
                {

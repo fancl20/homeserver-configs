@@ -7,6 +7,7 @@
       labels: base.Match,
     },
     spec: {
+      enableServiceLinks: false,
       serviceAccountName: base.Name,
       containers: error 'containers required',
       volumes: [],

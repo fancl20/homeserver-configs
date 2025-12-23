@@ -59,6 +59,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "jellyfin",
             "volumes": [
                {

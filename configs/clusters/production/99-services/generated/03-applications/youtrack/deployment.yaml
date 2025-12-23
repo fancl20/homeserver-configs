@@ -58,6 +58,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "initContainers": [
                {
                   "command": [

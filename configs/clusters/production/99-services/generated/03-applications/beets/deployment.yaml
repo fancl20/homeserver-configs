@@ -65,6 +65,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "beets",
             "volumes": [
                {

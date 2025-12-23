@@ -73,6 +73,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "roon-server",
             "volumes": [
                {

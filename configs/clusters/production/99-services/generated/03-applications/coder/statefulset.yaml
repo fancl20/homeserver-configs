@@ -49,6 +49,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "coder-db",
             "volumes": [
                {

@@ -60,6 +60,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "qbittorrent",
             "volumes": [
                {

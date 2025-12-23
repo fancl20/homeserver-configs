@@ -74,6 +74,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "sftp",
             "volumes": [
                {

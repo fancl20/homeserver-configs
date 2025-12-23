@@ -108,6 +108,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "unifi",
             "volumes": [
                {

@@ -34,7 +34,7 @@
                   "env": [
                      {
                         "name": "PAPERLESS_REDIS",
-                        "value": "redis://localhost:6379"
+                        "value": "redis://127.0.0.1:6379"
                      },
                      {
                         "name": "PAPERLESS_URL",
@@ -90,6 +90,7 @@
                   ]
                }
             ],
+            "enableServiceLinks": false,
             "serviceAccountName": "paperless",
             "volumes": [
                {

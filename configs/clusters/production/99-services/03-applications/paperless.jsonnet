@@ -5,7 +5,7 @@ app.Base('paperless').Deployment()
 .PodContainers([{
   image: images['paperless-ngx'],
   env: [
-    { name: 'PAPERLESS_REDIS', value: 'redis://localhost:6379' },
+    { name: 'PAPERLESS_REDIS', value: 'redis://127.0.0.1:6379' },
     { name: 'PAPERLESS_URL', value: 'https://paperless.local.d20.fan' },
     { name: 'PAPERLESS_TIME_ZONE', value: 'Australia/Sydney' },
     { name: 'USERMAP_UID', value: '1000' },
