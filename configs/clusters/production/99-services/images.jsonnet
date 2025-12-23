@@ -67,10 +67,6 @@ app.Image('postgres')
 .Repository('docker.io/library/postgres')
 .Policy(app.DefaultPolicy.Semver())
 +
-app.Image('python')
-.Repository('docker.io/library/python')
-.Policy(app.DefaultPolicy.Semver('*-slim', pattern='^.*-slim$'))
-+
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')
 .Policy(app.DefaultPolicy.LinuxServer('*-r0'))

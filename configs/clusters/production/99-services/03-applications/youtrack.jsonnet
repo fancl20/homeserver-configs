@@ -2,6 +2,19 @@ local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
 app.Base('youtrack').Deployment()
+.PodInitContainers([{
+  name: 'init',
+  image: images.youtrack,
+  command: ['/bin/bash', '-ex', '-c', |||
+    CONFIG=/opt/youtrack/conf/youtrack.jvmoptions
+    if [[ ! -e "${CONFIG}" ]] && [[ -e "${CONFIG}.dist" ]]; then
+      echo '-Ddisable.configuration.wizard.on.upgrade=true' | cat "${CONFIG}.dist" - > "${CONFIG}"
+    fi
+  |||],
+  volumeMounts: [
+    { name: 'youtrack', mountPath: '/opt/youtrack/conf', subPath: 'conf' },
+  ],
+}])
 .PodContainers([{
   image: images.youtrack,
   env: [

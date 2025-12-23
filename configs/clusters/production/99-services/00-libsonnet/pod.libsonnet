@@ -29,6 +29,14 @@
     },
   },
 
+  PodInitContainers(containers):: self {
+    PodTemplate+: {
+      spec+: {
+        initContainers: [{ name: base.Name } + c for c in containers],
+      },
+    },
+  },
+
   PodContainers(containers):: self {
     PodTemplate+: {
       spec+: {

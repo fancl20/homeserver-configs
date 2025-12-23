@@ -58,6 +58,25 @@
                   ]
                }
             ],
+            "initContainers": [
+               {
+                  "command": [
+                     "/bin/bash",
+                     "-ex",
+                     "-c",
+                     "CONFIG=/opt/youtrack/conf/youtrack.jvmoptions\nif [[ ! -e \"${CONFIG}\" ]] && [[ -e \"${CONFIG}.dist\" ]]; then\n  echo '-Ddisable.configuration.wizard.on.upgrade=true' | cat \"${CONFIG}.dist\" - > \"${CONFIG}\"\nfi\n"
+                  ],
+                  "image": "docker.io/jetbrains/youtrack",
+                  "name": "init",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/opt/youtrack/conf",
+                        "name": "youtrack",
+                        "subPath": "conf"
+                     }
+                  ]
+               }
+            ],
             "securityContext": {
                "fsGroup": 13001,
                "fsGroupChangePolicy": "OnRootMismatch",

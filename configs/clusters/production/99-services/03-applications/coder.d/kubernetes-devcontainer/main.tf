@@ -421,9 +421,11 @@ module "vscode-web" {
 }
 
 module "mux" {
-  count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/coder/mux/coder"
-  agent_id = coder_agent.main.id
+  count     = data.coder_workspace.me.start_count
+  source    = "registry.coder.com/coder/mux/coder"
+  agent_id  = coder_agent.main.id
+  subdomain = true
+  open_in   = "tab"
 }
 
 resource "coder_metadata" "container_info" {
