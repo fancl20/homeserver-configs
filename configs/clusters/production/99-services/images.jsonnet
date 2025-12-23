@@ -63,6 +63,10 @@ app.Image('openssh')
   },
 })
 +
+app.Image('paperless-ngx')
+.Repository('ghcr.io/paperless-ngx/paperless-ngx')
+.Policy(app.DefaultPolicy.Semver())
++
 app.Image('postgres')
 .Repository('docker.io/library/postgres')
 .Policy(app.DefaultPolicy.Semver())
@@ -70,6 +74,10 @@ app.Image('postgres')
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')
 .Policy(app.DefaultPolicy.LinuxServer('*-r0'))
++
+app.Image('redis')
+.Repository('docker.io/library/redis')
+.Policy(app.DefaultPolicy.Semver())
 +
 app.Image('registry')
 .Repository('docker.io/library/registry')
