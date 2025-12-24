@@ -43,25 +43,17 @@
                }
             ]
          },
+         "features": {
+            "enableCSI": true
+         },
          "initContainers": [
             {
-               "image": "velero/velero-plugin-for-aws:v1.10.0",
+               "image": "docker.io/velero/velero-plugin-for-aws",
                "imagePullPolicy": "IfNotPresent",
                "name": "velero-plugin-for-aws",
                "volumeMounts": [
                   {
-                     "mountPath": "/plugins",
-                     "name": "plugins"
-                  }
-               ]
-            },
-            {
-               "image": "velero/velero-plugin-for-csi:v0.8.0",
-               "imagePullPolicy": "IfNotPresent",
-               "name": "velero-plugin-for-csi",
-               "volumeMounts": [
-                  {
-                     "mountPath": "/plugins",
+                     "mountPath": "/target",
                      "name": "plugins"
                   }
                ]

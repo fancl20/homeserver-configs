@@ -1,4 +1,5 @@
 local app = import '../app.libsonnet';
+local images = import '../images.jsonnet';
 
 app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.github.io/helm-charts', 'velero', {
   kubectl: {
@@ -27,19 +28,15 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
   },
   initContainers: [{
     name: 'velero-plugin-for-aws',
-    image: 'velero/velero-plugin-for-aws:v1.10.0',
+    image: images['velero-plugin-aws'],
     imagePullPolicy: 'IfNotPresent',
     volumeMounts: [
-      { name: 'plugins', mountPath: '/plugins' },
-    ],
-  }, {
-    name: 'velero-plugin-for-csi',
-    image: 'velero/velero-plugin-for-csi:v0.8.0',
-    imagePullPolicy: 'IfNotPresent',
-    volumeMounts: [
-      { name: 'plugins', mountPath: '/plugins' },
+      { name: 'plugins', mountPath: '/target' },
     ],
   }],
+  features: {
+    enableCSI: true,
+  },
   schedules: {
     daily: {
       schedule: 'CRON_TZ=Australia/Sydney 0 4 * * *',
