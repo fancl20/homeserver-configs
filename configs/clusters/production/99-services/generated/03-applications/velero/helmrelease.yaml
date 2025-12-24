@@ -67,6 +67,11 @@
                ]
             }
          ],
+         "kubectl": {
+            "image": {
+               "repository": "public.ecr.aws/bitnami/kubectl"
+            }
+         },
          "schedules": {
             "daily": {
                "schedule": "CRON_TZ=Australia/Sydney 0 4 * * *",
