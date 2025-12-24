@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "velero-plugin-csi",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/velero/velero-plugin-for-csi",
+      "interval": "1h"
+   }
+}

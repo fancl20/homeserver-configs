@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "velero-plugin-aws",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/velero/velero-plugin-for-aws",
+      "interval": "1h"
+   }
+}

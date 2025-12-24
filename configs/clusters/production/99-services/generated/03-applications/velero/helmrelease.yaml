@@ -1,0 +1,89 @@
+{
+   "apiVersion": "helm.toolkit.fluxcd.io/v2",
+   "kind": "HelmRelease",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "velero",
+      "namespace": "velero"
+   },
+   "spec": {
+      "chart": {
+         "spec": {
+            "chart": "velero",
+            "sourceRef": {
+               "kind": "HelmRepository",
+               "name": "velero"
+            }
+         }
+      },
+      "interval": "15m",
+      "values": {
+         "configuration": {
+            "backupStorageLocation": [
+               {
+                  "bucket": "fancl20-backups",
+                  "config": {
+                     "region": "ap-southeast-2",
+                     "s3Url": "https://s3.ap-southeast-2.wasabisys.com"
+                  },
+                  "credential": {
+                     "key": "credentials",
+                     "name": "velero"
+                  },
+                  "name": "wasabi",
+                  "provider": "aws"
+               }
+            ],
+            "volumeSnapshotLocation": [
+               {
+                  "name": "rook-cephfs",
+                  "provider": "csi"
+               }
+            ]
+         },
+         "initContainers": [
+            {
+               "image": "velero/velero-plugin-for-aws:v1.10.0",
+               "imagePullPolicy": "IfNotPresent",
+               "name": "velero-plugin-for-aws",
+               "volumeMounts": [
+                  {
+                     "mountPath": "/plugins",
+                     "name": "plugins"
+                  }
+               ]
+            },
+            {
+               "image": "velero/velero-plugin-for-csi:v0.8.0",
+               "imagePullPolicy": "IfNotPresent",
+               "name": "velero-plugin-for-csi",
+               "volumeMounts": [
+                  {
+                     "mountPath": "/plugins",
+                     "name": "plugins"
+                  }
+               ]
+            }
+         ],
+         "schedules": {
+            "daily": {
+               "schedule": "CRON_TZ=Australia/Sydney 0 4 * * *",
+               "template": {
+                  "includedNamespaces": [
+                     "default",
+                     "coder"
+                  ],
+                  "snapshotVolumes": true,
+                  "storageLocation": "wasabi",
+                  "ttl": "720h0m0s",
+                  "volumeSnapshotLocations": [
+                     "rook-cephfs"
+                  ]
+               }
+            }
+         }
+      }
+   }
+}

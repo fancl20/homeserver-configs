@@ -91,6 +91,14 @@ app.Image('unifi')
 .Repository('lscr.io/linuxserver/unifi-network-application')
 .Policy(app.DefaultPolicy.LinuxServer())
 +
+app.Image('velero-plugin-aws')
+.Repository('docker.io/velero/velero-plugin-for-aws')
+.Policy(app.DefaultPolicy.Semver())
++
+app.Image('velero-plugin-csi')
+.Repository('docker.io/velero/velero-plugin-for-csi')
+.Policy(app.DefaultPolicy.Semver())
++
 app.Image('youtrack')
 .Repository('docker.io/jetbrains/youtrack')
 .Policy(app.DefaultPolicy.Semver())
