@@ -32,6 +32,7 @@
                      "key": "credentials",
                      "name": "velero"
                   },
+                  "default": true,
                   "name": "wasabi",
                   "provider": "aws"
                }

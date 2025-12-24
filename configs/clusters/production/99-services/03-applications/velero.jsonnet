@@ -12,6 +12,7 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       name: 'wasabi',
       provider: 'aws',
       bucket: 'fancl20-backups',
+      default: true,
       config: {
         region: 'ap-southeast-2',
         s3Url: 'https://s3.ap-southeast-2.wasabisys.com',
