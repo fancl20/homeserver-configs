@@ -37,15 +37,13 @@
                   "provider": "aws"
                }
             ],
+            "features": "EnableCSI",
             "volumeSnapshotLocation": [
                {
                   "name": "rook-cephfs",
                   "provider": "csi"
                }
             ]
-         },
-         "features": {
-            "enableCSI": true
          },
          "initContainers": [
             {

@@ -26,6 +26,7 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       name: 'rook-cephfs',
       provider: 'csi',
     }],
+    features: 'EnableCSI',
   },
   initContainers: [{
     name: 'velero-plugin-for-aws',
@@ -35,9 +36,6 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       { name: 'plugins', mountPath: '/target' },
     ],
   }],
-  features: {
-    enableCSI: true,
-  },
   schedules: {
     daily: {
       schedule: 'CRON_TZ=Australia/Sydney 0 4 * * *',
