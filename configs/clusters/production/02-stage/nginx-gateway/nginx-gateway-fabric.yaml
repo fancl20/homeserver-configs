@@ -28,6 +28,9 @@ spec:
         kind: HelmRepository
         name: nginx-gateway-fabric
   values:
+    nginxGateway:
+      snippetsFilters:
+        enable: true
     nginx:
       service:
         patches:

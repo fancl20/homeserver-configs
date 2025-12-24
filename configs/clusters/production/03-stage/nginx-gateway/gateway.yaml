@@ -22,6 +22,16 @@ spec:
         from: All
 ---
 apiVersion: gateway.nginx.org/v1alpha1
+kind: SnippetsFilter
+metadata:
+  name: default
+  namespace: nginx-gateway
+spec:
+  snippets:
+  - context: http
+    value: 'proxy_cache off;'
+---
+apiVersion: gateway.nginx.org/v1alpha1
 kind: ClientSettingsPolicy
 metadata:
   name: default
