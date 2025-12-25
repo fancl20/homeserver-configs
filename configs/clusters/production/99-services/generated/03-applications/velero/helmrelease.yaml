@@ -68,8 +68,7 @@
                "schedule": "CRON_TZ=Australia/Sydney 0 4 * * *",
                "template": {
                   "includedNamespaces": [
-                     "default",
-                     "coder"
+                     "default"
                   ],
                   "snapshotVolumes": true,
                   "storageLocation": "wasabi",

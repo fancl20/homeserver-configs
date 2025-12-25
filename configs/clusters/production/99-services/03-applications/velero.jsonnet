@@ -40,7 +40,7 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
     daily: {
       schedule: 'CRON_TZ=Australia/Sydney 0 4 * * *',
       template: {
-        includedNamespaces: ['default', 'coder'],
+        includedNamespaces: ['default'],
         snapshotVolumes: true,
         storageLocation: 'wasabi',
         volumeSnapshotLocations: ['rook-cephfs'],
