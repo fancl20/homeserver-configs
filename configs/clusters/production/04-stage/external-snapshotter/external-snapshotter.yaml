@@ -13,12 +13,12 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: external-snapshotter
+  name: external-snapshotter-crds
   namespace: flux-system
 spec:
   interval: 15m
   path: ./client/config/crd
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: external-snapshotter
@@ -26,7 +26,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: snapshot-controller
+  name: external-snapshotter-controller
   namespace: flux-system
 spec:
   interval: 10m
@@ -36,4 +36,4 @@ spec:
     kind: GitRepository
     name: external-snapshotter
   dependsOn:
-    - name: external-snapshotter
+    - name: external-snapshotter-crds
