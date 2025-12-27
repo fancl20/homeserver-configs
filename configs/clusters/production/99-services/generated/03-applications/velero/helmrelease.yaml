@@ -45,6 +45,7 @@
                }
             ]
          },
+         "deployNodeAgent": true,
          "initContainers": [
             {
                "image": "docker.io/velero/velero-plugin-for-aws",
@@ -70,6 +71,7 @@
                   "includedNamespaces": [
                      "default"
                   ],
+                  "snapshotMoveData": true,
                   "snapshotVolumes": true,
                   "storageLocation": "wasabi",
                   "ttl": "720h0m0s",

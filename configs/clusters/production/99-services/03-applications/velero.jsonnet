@@ -26,7 +26,6 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       name: 'rook-cephfs',
       provider: 'csi',
     }],
-    defaultSnapshotMoveData: true,
     features: 'EnableCSI',
   },
   initContainers: [{
@@ -44,6 +43,7 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       template: {
         includedNamespaces: ['default'],
         snapshotVolumes: true,
+        snapshotMoveData: true,
         storageLocation: 'wasabi',
         volumeSnapshotLocations: ['rook-cephfs'],
         ttl: '720h0m0s',
