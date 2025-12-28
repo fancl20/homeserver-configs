@@ -20,6 +20,13 @@
       },
       "interval": "15m",
       "values": {
+         "configMaps": {
+            "node-agent-config": {
+               "data": {
+                  "config.json": "{\n    \"backupPVC\": {\n        \"rook-cephfs\": {\n            \"readOnly\": true\n        }\n    }\n}"
+               }
+            }
+         },
          "configuration": {
             "backupStorageLocation": [
                {
@@ -37,7 +44,6 @@
                   "provider": "aws"
                }
             ],
-            "dataMoverPrepareTimeout": "4h",
             "defaultItemOperationTimeout": "8h",
             "features": "EnableCSI",
             "volumeSnapshotLocation": [
@@ -65,6 +71,11 @@
             "image": {
                "repository": "public.ecr.aws/bitnami/kubectl"
             }
+         },
+         "nodeAgent": {
+            "extraArgs": [
+               "--node-agent-configmap=velero-node-agent-config"
+            ]
          },
          "schedules": {
             "daily": {

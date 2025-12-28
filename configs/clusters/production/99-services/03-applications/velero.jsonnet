@@ -26,7 +26,6 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
     }],
     features: 'EnableCSI',
     defaultItemOperationTimeout: '8h',
-    dataMoverPrepareTimeout: '4h',
   },
   initContainers: [{
     name: 'velero-plugin-for-aws',
@@ -37,6 +36,9 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
     ],
   }],
   deployNodeAgent: true,
+  nodeAgent: {
+    extraArgs: ['--node-agent-configmap=velero-node-agent-config'],
+  },
   schedules: {
     daily: {
       schedule: 'CRON_TZ=Australia/Sydney 0 4 * * *',
@@ -47,6 +49,19 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
         storageLocation: 'wasabi',
         volumeSnapshotLocations: ['rook-cephfs'],
         ttl: '720h0m0s',
+      },
+    },
+  },
+  configMaps: {
+    'node-agent-config': {
+      data: {
+        'config.json': std.manifestJson({
+          backupPVC: {
+            'rook-cephfs': {
+              readOnly: true,
+            },
+          },
+        }),
       },
     },
   },
