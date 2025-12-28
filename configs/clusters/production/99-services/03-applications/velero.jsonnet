@@ -3,9 +3,7 @@ local images = import '../images.jsonnet';
 
 app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.github.io/helm-charts', 'velero', {
   kubectl: {
-    image: {
-      repository: 'public.ecr.aws/bitnami/kubectl',  // https://github.com/vmware-tanzu/helm-charts/issues/698
-    },
+    image: { repository: 'public.ecr.aws/bitnami/kubectl' },  // https://github.com/vmware-tanzu/helm-charts/issues/698
   },
   configuration: {
     backupStorageLocation: [{

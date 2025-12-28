@@ -48,6 +48,9 @@ spec:
                 - key: node-role.kubernetes.io/control-plane
                   operator: DoesNotExist
       resources:
+        mgr:
+          limits:
+            memory: '4Gi'
         osd:
           requests:
             cpu: '500m'
