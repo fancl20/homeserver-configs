@@ -25,6 +25,8 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
       provider: 'csi',
     }],
     features: 'EnableCSI',
+    defaultItemOperationTimeout: '8h',
+    dataMoverPrepareTimeout: '4h',
   },
   initContainers: [{
     name: 'velero-plugin-for-aws',

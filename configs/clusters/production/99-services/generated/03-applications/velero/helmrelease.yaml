@@ -37,6 +37,8 @@
                   "provider": "aws"
                }
             ],
+            "dataMoverPrepareTimeout": "4h",
+            "defaultItemOperationTimeout": "8h",
             "features": "EnableCSI",
             "volumeSnapshotLocation": [
                {
