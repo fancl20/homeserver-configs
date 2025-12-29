@@ -73,6 +73,7 @@
             }
          },
          "nodeAgent": {
+            "disableHostPath": true,
             "extraArgs": [
                "--node-agent-configmap=velero-node-agent-config"
             ]
