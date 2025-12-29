@@ -23,7 +23,7 @@
          "configMaps": {
             "node-agent-config": {
                "data": {
-                  "config.json": "{\n    \"backupPVC\": {\n        \"rook-cephfs\": {\n            \"readOnly\": true\n        }\n    }\n}"
+                  "config.json": "{\n    \"backupPVC\": {\n        \"rook-cephfs\": {\n            \"readOnly\": true\n        }\n    },\n    \"loadConcurrency\": {\n        \"globalConfig\": 2\n    }\n}"
                }
             }
          },

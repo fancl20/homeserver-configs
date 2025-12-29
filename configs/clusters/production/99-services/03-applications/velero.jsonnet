@@ -61,6 +61,9 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
               readOnly: true,
             },
           },
+          loadConcurrency: {
+            globalConfig: 2,
+          },
         }),
       },
     },
