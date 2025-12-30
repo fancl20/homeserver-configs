@@ -37,7 +37,7 @@ app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.g
   }],
   deployNodeAgent: true,
   nodeAgent: {
-    disableHostPath: true,
+    // disableHostPath: true,
     extraArgs: ['--node-agent-configmap=velero-node-agent-config'],
   },
   schedules: {
