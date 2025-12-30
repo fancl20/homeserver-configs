@@ -8,7 +8,7 @@ images:
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
   newTag: '0.6.25-ls363' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
-  newTag: '1.0.0-testing-20251208' # {"$imagepolicy": "flux-system:dae:tag"}
+  newTag: '1.0.0-testing-20251229' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.20.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
@@ -32,7 +32,7 @@ images:
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '3.0.0' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '205701598-testing-20251208' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '205701598-testing-20251229' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '10.0.162-ls111' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: docker.io/velero/velero-plugin-for-aws # {"$imagepolicy": "flux-system:velero-plugin-aws:name"}
