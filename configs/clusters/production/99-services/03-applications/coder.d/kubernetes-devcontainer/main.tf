@@ -407,6 +407,7 @@ module "vscode-web" {
     "terminal.integrated.defaultProfile.linux" : "fish"
     "terminal.integrated.stickyScroll.enabled" : false
     "extensions.ignoreRecommendations" : true
+    "chat.disableAIFeatures" : true
     "vim.handleKeys" : {
       "<D-c>" : false
     }
