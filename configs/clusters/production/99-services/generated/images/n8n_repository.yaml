@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "n8n",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "docker.io/n8nio/n8n",
+      "interval": "1h"
+   }
+}

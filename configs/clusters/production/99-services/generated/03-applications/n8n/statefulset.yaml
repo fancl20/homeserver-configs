@@ -1,0 +1,127 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "StatefulSet",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "n8n",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "n8n"
+         }
+      },
+      "serviceName": "n8n",
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "n8n"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "args": [
+                     "-c",
+                     "sleep 5; n8n start"
+                  ],
+                  "command": [
+                     "/bin/sh"
+                  ],
+                  "env": [
+                     {
+                        "name": "DB_TYPE",
+                        "value": "postgresdb"
+                     },
+                     {
+                        "name": "DB_POSTGRESDB_HOST",
+                        "value": "127.0.0.1"
+                     },
+                     {
+                        "name": "DB_POSTGRESDB_PORT",
+                        "value": "5432"
+                     },
+                     {
+                        "name": "DB_POSTGRESDB_DATABASE",
+                        "value": "n8n"
+                     },
+                     {
+                        "name": "N8N_PROTOCOL",
+                        "value": "http"
+                     },
+                     {
+                        "name": "N8N_PORT",
+                        "value": "5678"
+                     }
+                  ],
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "n8n"
+                        }
+                     }
+                  ],
+                  "image": "docker.io/n8nio/n8n",
+                  "name": "n8n",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/home/node/.n8n",
+                        "name": "n8n",
+                        "subPath": "n8n"
+                     }
+                  ]
+               },
+               {
+                  "env": [
+                     {
+                        "name": "PGDATA",
+                        "value": "/var/lib/postgresql/data/pgdata"
+                     },
+                     {
+                        "name": "POSTGRES_DB",
+                        "value": "n8n"
+                     }
+                  ],
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "n8n"
+                        }
+                     }
+                  ],
+                  "image": "docker.io/library/postgres",
+                  "name": "postgres",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/var/lib/postgresql/data",
+                        "name": "n8n",
+                        "subPath": "db"
+                     }
+                  ]
+               }
+            ],
+            "enableServiceLinks": false,
+            "serviceAccountName": "n8n",
+            "volumes": [
+               {
+                  "name": "n8n",
+                  "persistentVolumeClaim": {
+                     "claimName": "n8n"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}
