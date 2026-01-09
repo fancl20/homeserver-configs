@@ -37,6 +37,7 @@ app.Base('n8n').StatefulSet()
     ],
   },
 ])
+.RunAsUser()
 .PersistentVolumeClaim()
 .Service({
   ports: [
