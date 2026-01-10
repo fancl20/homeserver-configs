@@ -10,7 +10,7 @@
       "ports": [
          {
             "name": "webui",
-            "port": 5678,
+            "port": 80,
             "protocol": "TCP",
             "targetPort": 5678
          }
