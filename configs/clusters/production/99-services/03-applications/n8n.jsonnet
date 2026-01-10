@@ -8,6 +8,8 @@ app.Base('n8n').Deployment()
     env: [
       { name: 'N8N_PROTOCOL', value: 'http' },
       { name: 'N8N_PORT', value: '5678' },
+      { name: 'N8N_EDITOR_BASE_URL', value: 'https://n8n.local.d20.fan/' },
+      { name: 'VUE_APP_URL_BASE_API', value: 'https://n8n.local.d20.fan/' },
     ],
     volumeMounts: [
       { name: 'n8n', mountPath: '/home/node/.n8n' },
