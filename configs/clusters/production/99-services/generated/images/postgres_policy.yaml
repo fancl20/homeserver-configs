@@ -6,15 +6,12 @@
       "namespace": "flux-system"
    },
    "spec": {
-      "filterTags": {
-         "pattern": ".*"
-      },
       "imageRepositoryRef": {
          "name": "postgres"
       },
       "policy": {
-         "semver": {
-            "range": "*"
+         "numerical": {
+            "order": "asc"
          }
       }
    }
