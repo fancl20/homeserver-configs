@@ -2,6 +2,16 @@ local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
 app.Base('n8n').StatefulSet()
+.PodInitContainers([
+  {
+    name: 'volume-permissions',
+    image: images.debian,
+    command: ['sh', '-c', 'chown 1000:1000 /data'],
+    volumeMounts: [
+      { name: 'n8n', mountPath: '/data' },
+    ],
+  },
+])
 .PodContainers([
   {
     image: images.n8n,
@@ -25,19 +35,14 @@ app.Base('n8n').StatefulSet()
   {
     name: 'postgres',
     image: images.postgres,
-    env: [
-      { name: 'PGDATA', value: '/var/lib/postgresql/data/pgdata' },
-      { name: 'POSTGRES_DB', value: 'n8n' },
-    ],
     envFrom: [
       { secretRef: { name: 'n8n' } },
     ],
     volumeMounts: [
-      { name: 'n8n', mountPath: '/var/lib/postgresql/data', subPath: 'db' },
+      { name: 'n8n', mountPath: '/var/lib/postgresql', subPath: 'db' },
     ],
   },
 ])
-.RunAsUser()
 .PersistentVolumeClaim()
 .Service({
   ports: [

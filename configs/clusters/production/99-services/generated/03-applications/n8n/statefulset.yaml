@@ -83,16 +83,6 @@
                   ]
                },
                {
-                  "env": [
-                     {
-                        "name": "PGDATA",
-                        "value": "/var/lib/postgresql/data/pgdata"
-                     },
-                     {
-                        "name": "POSTGRES_DB",
-                        "value": "n8n"
-                     }
-                  ],
                   "envFrom": [
                      {
                         "secretRef": {
@@ -104,7 +94,7 @@
                   "name": "postgres",
                   "volumeMounts": [
                      {
-                        "mountPath": "/var/lib/postgresql/data",
+                        "mountPath": "/var/lib/postgresql",
                         "name": "n8n",
                         "subPath": "db"
                      }
@@ -112,12 +102,23 @@
                }
             ],
             "enableServiceLinks": false,
-            "securityContext": {
-               "fsGroup": 1000,
-               "fsGroupChangePolicy": "OnRootMismatch",
-               "runAsGroup": 1000,
-               "runAsUser": 1000
-            },
+            "initContainers": [
+               {
+                  "command": [
+                     "sh",
+                     "-c",
+                     "chown 1000:1000 /data"
+                  ],
+                  "image": "docker.io/library/debian",
+                  "name": "volume-permissions",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/data",
+                        "name": "n8n"
+                     }
+                  ]
+               }
+            ],
             "serviceAccountName": "n8n",
             "volumes": [
                {

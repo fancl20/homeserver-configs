@@ -5,10 +5,12 @@ images:
   newTag: '2.5.1-ls305' # {"$imagepolicy": "flux-system:beets:tag"}
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
   newTag: '9.21' # {"$imagepolicy": "flux-system:bind9:tag"}
-- name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibreb:name"}
+- name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibre:name"}
   newTag: '0.6.25-ls364' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: '1.0.0-testing-20251229' # {"$imagepolicy": "flux-system:dae:tag"}
+- name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
+  newTag: 'testing-20251229' # {"$imagepolicy": "flux-system:debian:tag"}
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.20.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/fava # {"$imagepolicy": "flux-system:fava:name"}
@@ -21,10 +23,10 @@ images:
   newTag: '1.29.4' # {"$imagepolicy": "flux-system:nginx:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
   newTag: '10.2_p1-r0-ls213' # {"$imagepolicy": "flux-system:openssh:tag"}
-- name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '8.2.3' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: ghcr.io/paperless-ngx/paperless-ngx # {"$imagepolicy": "flux-system:paperless-ngx:name"}
   newTag: '2.20.3' # {"$imagepolicy": "flux-system:paperless-ngx:tag"}
+- name: docker.io/library/postgres # {"$imagepolicy": "flux-system:postgres:name"}
+  newTag: '15.15' # {"$imagepolicy": "flux-system:postgres:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '5.1.4-r1-ls435' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/redis # {"$imagepolicy": "flux-system:redis:name"}
