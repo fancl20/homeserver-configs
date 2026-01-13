@@ -126,6 +126,9 @@ locals {
   git_author_name            = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email           = data.coder_workspace_owner.me.email
   repo_url                   = data.coder_parameter.repo.value
+  # Extract the checkout directory name from the git URL
+  # Supports both SSH (git@github.com:user/repo.git) and HTTPS (https://github.com/user/repo.git) formats
+  checkout_dir = local.repo_url != "" ? "/workspaces/${regex("(:|/)([^/]+/)?([^/\\.]+)(\\.git)?$", local.repo_url)[2]}" : ""
   # The envbuilder provider requires a key-value map of environment variables.
   # Base environment variables used for envbuilder_cached_image (without ENVBUILDER_GIT_URL)
   envbuilder_env_base = {
@@ -385,6 +388,7 @@ module "vscode-web" {
   source          = "registry.coder.com/coder/code-server/coder"
   agent_id        = coder_agent.main.id
   additional_args = "--disable-workspace-trust"
+  folder          = local.checkout_dir
   extensions = [
     "vscodevim.vim",
     "ms-python.python",
@@ -422,11 +426,12 @@ module "vscode-web" {
 }
 
 module "mux" {
-  count     = data.coder_workspace.me.start_count
-  source    = "registry.coder.com/coder/mux/coder"
-  agent_id  = coder_agent.main.id
-  subdomain = true
-  open_in   = "tab"
+  count       = data.coder_workspace.me.start_count
+  source      = "registry.coder.com/coder/mux/coder"
+  agent_id    = coder_agent.main.id
+  subdomain   = true
+  open_in     = "tab"
+  add-project = local.checkout_dir
 }
 
 resource "coder_metadata" "container_info" {
