@@ -399,6 +399,7 @@ module "vscode-web" {
     "golang.go",
     "RooVeterinaryInc.roo-cline",
     "Lencerf.beancount",
+    "dongfg.vscode-beancount-formatter",
   ]
   settings = {
     "workbench.colorTheme" : "Solarized Light"
