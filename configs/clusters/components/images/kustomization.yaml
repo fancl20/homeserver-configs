@@ -38,7 +38,7 @@ images:
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '10.0.162-ls112' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: docker.io/velero/velero-plugin-for-aws # {"$imagepolicy": "flux-system:velero-plugin-aws:name"}
-  newTag: 'v1.13.1' # {"$imagepolicy": "flux-system:velero-plugin-aws:tag"}
+  newTag: 'v1.13.2' # {"$imagepolicy": "flux-system:velero-plugin-aws:tag"}
 - name: docker.io/jetbrains/youtrack # {"$imagepolicy": "flux-system:youtrack:name"}
   newTag: '2025.3.116116' # {"$imagepolicy": "flux-system:youtrack:tag"}
 - name: docker.io/n8nio/n8n # {"$imagepolicy": "flux-system:n8n:name"}
