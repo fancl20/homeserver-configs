@@ -6,6 +6,9 @@
       "namespace": "flux-system"
    },
    "spec": {
+      "filterTags": {
+         "pattern": "^[0-9]+\\.[0-9]+$"
+      },
       "imageRepositoryRef": {
          "name": "postgres"
       },

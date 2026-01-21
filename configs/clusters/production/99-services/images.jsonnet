@@ -69,7 +69,10 @@ app.Image('paperless-ngx')
 +
 app.Image('postgres')
 .Repository('docker.io/library/postgres')
-.Policy({ policy: { numerical: { order: 'asc' } } })
+.Policy({
+  filterTags: { pattern: '^[0-9]+\\.[0-9]+$' },
+  policy: { numerical: { order: 'asc' } },
+})
 +
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')
@@ -85,10 +88,7 @@ app.Image('registry')
 +
 app.Image('roon')
 .Repository('registry.local.d20.fan/fancl20/roon')
-.Policy({
-  filterTags: { pattern: '^[0-9]+\\.[0-9]+$' },
-  policy: { alphabetical: { order: 'asc' } }
-})
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
 +
 app.Image('unifi')
 .Repository('lscr.io/linuxserver/unifi-network-application')
