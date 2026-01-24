@@ -398,6 +398,7 @@ module "vscode-web" {
     "Grafana.vscode-jsonnet",
     "golang.go",
     "RooVeterinaryInc.roo-cline",
+    "bufbuild.vscode-buf",
     "Lencerf.beancount",
     "dongfg.vscode-beancount-formatter",
   ]
