@@ -40,6 +40,6 @@ images:
 - name: docker.io/velero/velero-plugin-for-aws # {"$imagepolicy": "flux-system:velero-plugin-aws:name"}
   newTag: 'v1.13.2' # {"$imagepolicy": "flux-system:velero-plugin-aws:tag"}
 - name: docker.io/jetbrains/youtrack # {"$imagepolicy": "flux-system:youtrack:name"}
-  newTag: '2025.3.118670' # {"$imagepolicy": "flux-system:youtrack:tag"}
+  newTag: '2025.3.119033' # {"$imagepolicy": "flux-system:youtrack:tag"}
 - name: docker.io/n8nio/n8n # {"$imagepolicy": "flux-system:n8n:name"}
   newTag: '2.5.2' # {"$imagepolicy": "flux-system:n8n:tag"}
