@@ -42,4 +42,4 @@ images:
 - name: docker.io/jetbrains/youtrack # {"$imagepolicy": "flux-system:youtrack:name"}
   newTag: '2025.3.119033' # {"$imagepolicy": "flux-system:youtrack:tag"}
 - name: docker.io/n8nio/n8n # {"$imagepolicy": "flux-system:n8n:name"}
-  newTag: '2.6.1' # {"$imagepolicy": "flux-system:n8n:tag"}
+  newTag: '2.6.2' # {"$imagepolicy": "flux-system:n8n:tag"}
