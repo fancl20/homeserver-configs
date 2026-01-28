@@ -18,7 +18,7 @@ images:
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '8.2.3' # {"$imagepolicy": "flux-system:mongo:tag"}
+  newTag: '8.2.4' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: docker.io/library/nginx # {"$imagepolicy": "flux-system:nginx:name"}
   newTag: '1.29.4' # {"$imagepolicy": "flux-system:nginx:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
