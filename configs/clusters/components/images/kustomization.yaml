@@ -34,7 +34,7 @@ images:
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
   newTag: '3.0.0' # {"$imagepolicy": "flux-system:registry:tag"}
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
-  newTag: '205701598-testing-20260112' # {"$imagepolicy": "flux-system:roon:tag"}
+  newTag: '205801608-testing-20260112' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
   newTag: '10.0.162-ls113' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: docker.io/velero/velero-plugin-for-aws # {"$imagepolicy": "flux-system:velero-plugin-aws:name"}
