@@ -24,6 +24,14 @@ resource "google_project_service" "services" {
   ])
 }
 
+resource "google_project_default_service_accounts" "home-servers" {
+  project = "home-servers-275405"
+  action  = "DEPRIVILEGE"
+  depends_on = [
+    google_project_service.services,
+  ]
+}
+
 module "vault" {
   source = "./vault"
   depends_on = [
