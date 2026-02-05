@@ -46,7 +46,7 @@ app.Base('dae').Deployment()
   },
 }])
 .DNSConfig({
-  nameservers: [ '8.8.8.8', '8.8.4.4' ],
+  nameservers: ['8.8.8.8', '8.8.4.4'],
 })
 .OnePassword(spec={
   dataFrom: [{
@@ -86,7 +86,9 @@ app.Base('dae').Deployment()
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
     domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general-cn
 
-    domain(suffix: beyond-cn.hypergryph.com) -> game
+    domain(full: beyond-cn.hypergryph.com) -> game
+
+    domain(full: game-re-service.sl916.com) -> general-cn
 
     fallback: direct
   }
