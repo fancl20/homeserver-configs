@@ -6,7 +6,7 @@ images:
 - name: internetsystemsconsortium/bind9 # {"$imagepolicy": "flux-system:bind9:name"}
   newTag: '9.21' # {"$imagepolicy": "flux-system:bind9:tag"}
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibre:name"}
-  newTag: '0.6.25-ls368' # {"$imagepolicy": "flux-system:calibre:tag"}
+  newTag: '0.6.26-ls369' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: '1.0.0-testing-20260202' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
