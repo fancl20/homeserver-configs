@@ -47,7 +47,7 @@ app.Base('unifi').Deployment()
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {
       name: 'macvlan-static',
-      ips: ['192.168.1.10/24'],
+      ips: ['192.168.1.18/24'],
     },
   ]),
 })

@@ -83,14 +83,13 @@ service {
         shared-network-name LAN1 {
             authoritative enable
             subnet 192.168.1.0/24 {
-                /* 192.168.1.1-192.168.1.4     used by router, controller, dns */
-                /* 192.168.1.5-192.168.1.37    used by metallb */
-                /* 192.168.1.245               used by dae */
+                /* 192.168.1.1-192.168.1.15    used by router, controllers, nodes */
+                /* 192.168.1.16-192.168.1.31   used by metallb */
                 default-router 192.168.1.1
                 dns-server 192.168.1.1
                 lease 86400
-                start 192.168.1.38 {
-                    stop 192.168.1.243
+                start 192.168.1.32 {
+                    stop 192.168.1.159
                 }
             }
         }
@@ -103,7 +102,7 @@ service {
             listen-on eth1
             name-server 1.1.1.1
             name-server 1.0.0.1
-            options server=/local.d20.fan/192.168.1.3
+            options server=/local.d20.fan/192.168.1.17
 
             /* PlayStation5 */
             options dhcp-host=00:e4:21:e8:79:0c,set:LAN1,set:Proxy
@@ -114,8 +113,8 @@ service {
             /* Asus ROG Ally */
             options dhcp-host=74:97:79:c3:cd:23,set:LAN1,set:Proxy
 
-            options dhcp-option=tag:Proxy,option:router,192.168.1.245
-            options dhcp-option=tag:Proxy,option:dns-server,192.168.1.245
+            options dhcp-option=tag:Proxy,option:router,192.168.1.20
+            options dhcp-option=tag:Proxy,option:dns-server,192.168.1.20
         }
     }
     gui {

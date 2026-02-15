@@ -31,7 +31,7 @@ app.Base('dae').Deployment()
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {
       name: 'macvlan-static',
-      ips: ['192.168.1.245/24'],
+      ips: ['192.168.1.20/24'],
     },
   ]),
 })
