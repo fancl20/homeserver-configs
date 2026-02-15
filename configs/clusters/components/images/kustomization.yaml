@@ -28,7 +28,7 @@ images:
 - name: docker.io/library/postgres # {"$imagepolicy": "flux-system:postgres:name"}
   newTag: '18.2' # {"$imagepolicy": "flux-system:postgres:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
-  newTag: '5.1.4-r2-ls440' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
+  newTag: '5.1.4-r2-ls441' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/redis # {"$imagepolicy": "flux-system:redis:name"}
   newTag: '8.6.0' # {"$imagepolicy": "flux-system:redis:tag"}
 - name: docker.io/library/registry # {"$imagepolicy": "flux-system:registry:name"}
