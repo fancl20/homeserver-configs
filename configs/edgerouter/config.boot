@@ -76,6 +76,21 @@ interfaces {
     loopback lo {
     }
 }
+port-forward {
+    auto-firewall enable
+    hairpin-nat enable
+    lan-interface eth1
+    rule 1 {
+        description Roon
+        forward-to {
+            address 192.168.1.31
+            port 55002
+        }
+        original-port 55002
+        protocol tcp
+    }
+    wan-interface eth0
+}
 service {
     dhcp-server {
         disabled false
@@ -134,12 +149,6 @@ service {
         protocol-version v2
     }
     unms {
-    }
-    upnp2 {
-        listen-on eth1
-        nat-pmp enable
-        secure-mode enable
-        wan eth0
     }
 }
 system {
