@@ -84,8 +84,17 @@ Replace disk
 ```bash
 # remove the disk and wait until cluster return healthy
 ceph osd rm {osd-num}
-ceph osd crush remove {name}
+ceph osd crush remove osd.{osd-num}
 ceph auth del osd.{osd-num}
+kubectl --namespace=rook-ceph delete deployments rook-ceph-osd-{osd-num}
 # ...then install the new disk
+ceph device rm {device} # optional
+```
+
+Find osd
+```bash
+ceph osd tree
+ceph device ls
+kubectl --namespace=rook-ceph logs deployment/rook-ceph-osd-{osd-num} --container activate
 ```
 

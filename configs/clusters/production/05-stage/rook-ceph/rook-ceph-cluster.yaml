@@ -33,20 +33,17 @@ spec:
         count: 1
       mgr:
         count: 1
-      storage:
-        useAllNodes: false
-        useAllDevices: false
-        nodes:
-        - name: talos-lje-xo8
-          devicePathFilter: '^/dev/disk/by-id/nvme-.*(4TB|512GB|512HBJQ|INTEL).*'
       placement:
-        all:
+        osd:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
               - matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: DoesNotExist
+                - key: node.kubernetes.io/instance-type
+                  operator: In
+                  values:
+                  - cwwk-p5
+                  - erying-14450hx
       resources:
         mgr:
           limits:
