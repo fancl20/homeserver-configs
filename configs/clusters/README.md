@@ -86,9 +86,10 @@ Replace disk
 ceph osd rm {osd-num}
 ceph osd crush remove osd.{osd-num}
 ceph auth del osd.{osd-num}
-kubectl --namespace=rook-ceph delete deployments rook-ceph-osd-{osd-num}
 # ...then install the new disk
 ceph device rm {device} # optional
+# if moving disk between nodes only need this step
+kubectl --namespace=rook-ceph delete deployments rook-ceph-osd-{osd-num}
 ```
 
 Find osd
