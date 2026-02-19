@@ -296,6 +296,19 @@ resource "kubernetes_deployment_v1" "main" {
         }
 
         affinity {
+          // Schedule only on nodes with the specific instance type
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key      = "node.kubernetes.io/instance-type"
+                  operator = "In"
+                  values   = ["erying-14450hx"]
+                }
+              }
+            }
+          }
+
           // This affinity attempts to spread out all workspace pods evenly across
           // nodes.
           pod_anti_affinity {
