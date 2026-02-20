@@ -1,0 +1,13 @@
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: end0
+up: true
+mtu: 1500
+addresses: [{ address: '${NODE_ADDRESS}/24' }]
+routes: [{ gateway: '192.168.1.1' }]
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: '192.168.1.3'
+link: end0
