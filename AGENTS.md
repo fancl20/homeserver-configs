@@ -170,7 +170,6 @@ The repository includes custom images built and maintained in the `images/` dire
 | Image | Description | Registry |
 |-------|-------------|----------|
 | dae | Network proxy tool | `registry.local.d20.fan/fancl20/dae` |
-| fava | Beancount web interface | `registry.local.d20.fan/fancl20/fava` |
 | roon | Music server | `registry.local.d20.fan/fancl20/roon` |
 
 ## Application Patterns
