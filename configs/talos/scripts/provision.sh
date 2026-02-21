@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
-POSITIONAL_ARGS=()
-
 while [[ $# -gt 0 ]]; do
   case $1 in
     --node)
