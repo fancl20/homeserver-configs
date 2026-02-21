@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd "$(git rev-parse --show-toplevel)" && source scripts/common.sh
+cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
 export TALOS_SCHEMATIC="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
 export TALOS_SCHEMATIC_BOOTSTRAP="$(get_schematic_id configs/bootstrap/{bootstrap.yaml,rpi_generic.yaml})"
@@ -21,7 +21,7 @@ for i in {1..3}; do
 
   export NODE_ADDRESS="192.168.1.$((3 + $i))"
   talosctl apply-config --nodes 192.168.1.254 --insecure --mode=staged --file <(cat \
-    <(talosctl gen config --with-secrets "${SECRETS}" \
+    <(talosctl gen config --with-secrets <(op document get Talos --vault Cluster) \
                           --config-patch @configs/controlplane.yaml \
                           --output-types controlplane \
                           --output - \

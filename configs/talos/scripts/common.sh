@@ -1,10 +1,7 @@
 set -eo pipefail
 
-SECRETS="${HOME}/.talos/secrets.yaml"
-[ -e "${SECRETS}" ] || op document get Talos --vault Cluster --out-file "${SECRETS}"
-
 if ! talosctl config info &> /dev/null; then
-  talosctl gen config --with-secrets "${SECRETS}" \
+  talosctl gen config --with-secrets <(op document get Talos --vault Cluster) \
                       --output-types talosconfig \
                       --output "${HOME}/.talos/config" \
                       --force \
@@ -12,6 +9,12 @@ if ! talosctl config info &> /dev/null; then
   talosctl config endpoint 192.168.1.3
   talosctl kubeconfig --nodes 192.168.1.3 --force
 fi
+
+get_secrets() {
+  talosctl gen secrets \
+    --from-controlplane-config <(talosctl --nodes 192.168.1.3 get machineconfig v1alpha1 -o jsonpath='{.spec}') \
+    --output-file -
+}
 
 export TALOS_VERSION="$(talosctl version --client --short | awk '{printf "%s", $2}')"
 

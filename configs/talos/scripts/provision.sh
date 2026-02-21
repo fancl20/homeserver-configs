@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd "$(git rev-parse --show-toplevel)" && source scripts/common.sh
+cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
 POSITIONAL_ARGS=()
 
@@ -27,7 +27,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 talosctl apply-config --nodes "${MAINTENANCE_ADDRESS}" --insecure --file <(cat \
-  <(talosctl gen config --with-secrets "${SECRETS}" \
+  <(talosctl gen config --with-secrets <(get_secrets) \
                         --config-patch "@configs/worker-${NODE_TYPE}.yaml" \
                         --output-types worker \
                         --output - \

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd "$(git rev-parse --show-toplevel)" && source scripts/common.sh
+cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
 DRY_RUN="--dry-run"
 while [[ $# -gt 0 ]]; do
@@ -24,7 +24,7 @@ apply_controlplane() {(
     grep -q "^[[:space:]]*- ${NODE_ADDRESS//./\\.}$" <<< "$MEMBERS" || continue
     echo "========== ${NODE_ADDRESS} =========="
     talosctl apply-config --endpoints "192.168.1.3" --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
-      <(talosctl gen config --with-secrets "${SECRETS}"  \
+      <(talosctl gen config --with-secrets <(get_secrets)  \
                             --config-patch @configs/controlplane.yaml \
                             --output-types controlplane \
                             --output - \
@@ -38,7 +38,7 @@ apply_worker() {(
   export NODE_ADDRESS=$2
   echo "========== ${NODE_TYPE}: ${NODE_ADDRESS} =========="
   talosctl apply-config --endpoints "192.168.1.3" --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
-    <(talosctl gen config --with-secrets "${SECRETS}" \
+    <(talosctl gen config --with-secrets <(get_secrets) \
                           --config-patch "@configs/worker-${NODE_TYPE}".yaml \
                           --output-types worker \
                           --output - \

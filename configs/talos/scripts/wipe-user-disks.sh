@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd "$(git rev-parse --show-toplevel)" && source scripts/common.sh
+cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
 while [[ $# -gt 0 ]]; do
   case $1 in
