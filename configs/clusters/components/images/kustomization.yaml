@@ -10,7 +10,7 @@ images:
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: '1.0.0-testing-20260202' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
-  newTag: 'testing-20260202' # {"$imagepolicy": "flux-system:debian:tag"}
+  newTag: 'testing-20260223' # {"$imagepolicy": "flux-system:debian:tag"}
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
   newTag: 'v0.20.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
