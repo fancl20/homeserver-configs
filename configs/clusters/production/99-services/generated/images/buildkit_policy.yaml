@@ -7,7 +7,7 @@
    },
    "spec": {
       "filterTags": {
-         "pattern": "^.*-rootless$"
+         "pattern": "^v[0-9.]*-rootless$"
       },
       "imageRepositoryRef": {
          "name": "buildkit"

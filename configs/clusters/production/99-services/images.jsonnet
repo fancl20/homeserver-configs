@@ -10,7 +10,7 @@ app.Image('bind9')
 +
 app.Image('buildkit')
 .Repository('docker.io/moby/buildkit')
-.Policy(app.DefaultPolicy.Semver('*-rootless', pattern='^.*-rootless$'))
+.Policy(app.DefaultPolicy.Semver('*-rootless', pattern='^v[0-9.]*-rootless$'))
 +
 app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
@@ -41,6 +41,10 @@ app.Image('git')
 app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
 .Policy(app.DefaultPolicy.LinuxServer('*-1', pattern='^.*-ls\\d{3,}$'))
++
+app.Image('kea')
+.Repository('docker.cloudsmith.io/isc/docker/kea-dhcp4')
+.Policy(app.DefaultPolicy.Semver())
 +
 app.Image('mongo')
 .Repository('docker.io/library/mongo')

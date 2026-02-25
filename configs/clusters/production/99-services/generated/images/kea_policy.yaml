@@ -2,7 +2,7 @@
    "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
    "kind": "ImagePolicy",
    "metadata": {
-      "name": "fava",
+      "name": "kea",
       "namespace": "flux-system"
    },
    "spec": {
@@ -10,11 +10,11 @@
          "pattern": ".*"
       },
       "imageRepositoryRef": {
-         "name": "fava"
+         "name": "kea"
       },
       "policy": {
          "semver": {
-            "range": "*-testing-"
+            "range": "*"
          }
       }
    }

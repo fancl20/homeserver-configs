@@ -1,0 +1,77 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "kea",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "kea"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": {
+               "k8s.v1.cni.cncf.io/networks": "[\n    {\n        \"ips\": [\n            \"192.168.1.19/24\"\n        ],\n        \"name\": \"macvlan-static\"\n    }\n]"
+            },
+            "labels": {
+               "app.kubernetes.io/name": "kea"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "env": [
+                     {
+                        "name": "TZ",
+                        "value": "Australia/Sydney"
+                     }
+                  ],
+                  "image": "docker.cloudsmith.io/isc/docker/kea-dhcp4",
+                  "name": "kea",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/etc/kea/kea-dhcp4.conf",
+                        "name": "config",
+                        "subPath": "kea-dhcp4.conf"
+                     },
+                     {
+                        "mountPath": "/var/lib/kea",
+                        "name": "kea",
+                        "subPath": "var/lib/kea"
+                     }
+                  ]
+               }
+            ],
+            "enableServiceLinks": false,
+            "serviceAccountName": "kea",
+            "volumes": [
+               {
+                  "configMap": {
+                     "name": "kea"
+                  },
+                  "name": "config"
+               },
+               {
+                  "name": "kea",
+                  "persistentVolumeClaim": {
+                     "claimName": "kea"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

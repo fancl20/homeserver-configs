@@ -15,6 +15,8 @@ images:
   newTag: 'v0.20.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
   newTag: '10.8.13-1-ls247' # {"$imagepolicy": "flux-system:jellyfin:tag"}
+- name: docker.cloudsmith.io/isc/docker/kea-dhcp4 # {"$imagepolicy": "flux-system:kea:name"}
+  newTag: '3.1.4' # {"$imagepolicy": "flux-system:kea:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
   newTag: '8.2.5' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: docker.io/library/nginx # {"$imagepolicy": "flux-system:nginx:name"}

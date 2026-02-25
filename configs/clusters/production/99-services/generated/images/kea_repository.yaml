@@ -2,11 +2,11 @@
    "apiVersion": "image.toolkit.fluxcd.io/v1beta2",
    "kind": "ImageRepository",
    "metadata": {
-      "name": "fava",
+      "name": "kea",
       "namespace": "flux-system"
    },
    "spec": {
-      "image": "registry.local.d20.fan/fancl20/fava",
+      "image": "docker.cloudsmith.io/isc/docker/kea-dhcp4",
       "interval": "1h"
    }
 }
