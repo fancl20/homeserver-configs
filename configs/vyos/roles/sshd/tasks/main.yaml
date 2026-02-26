@@ -1,0 +1,18 @@
+- name: create vyos user
+  no_log: true
+  vyos.vyos.vyos_user:
+    name: vyos
+    encrypted_password: '$6$rounds=656000$0G9D8Oc/lpQwNE3C$linWN2fT2tfsDOIyyqNGByfBzd4izi3tCeqt/LuKHKYyABJKg10aMJumhHcGg/juATBnYmwZMI4JCt4yU9Twp1'
+    public_keys:
+    - name: 1password
+      key: 'AAAAC3NzaC1lZDI1NTE5AAAAINiadG/9e8UfgxSlhs0kFaOHMrz01ii9CShD+Bme05vY'
+      type: ssh-ed25519 
+    state: present
+    purge: true
+- name: setup ssh service
+  vyos.vyos.vyos_config:
+    lines:
+    - set service ssh port 22
+    - set service ssh disable-password-authentication
+    save: true
+

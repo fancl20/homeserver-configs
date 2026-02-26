@@ -1,0 +1,5 @@
+- name: config dhcp-server
+  vyos.vyos.vyos_config:
+    src: "{{ role_path }}/files/dhcp-server.cfg"
+    save: true
+

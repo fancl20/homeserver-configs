@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+exec uv run --with ansible \
+            --with paramiko \
+            -- ansible-playbook "$@"

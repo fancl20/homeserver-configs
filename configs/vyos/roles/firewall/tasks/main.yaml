@@ -1,0 +1,8 @@
+- name: config firewall global-options
+  vyos.vyos.vyos_config:
+    lines:
+    # For https://vyos.dev/T7150
+    - set firewall global-options apply-to-bridged-traffic accept-invalid ethernet-type arp
+    - set firewall global-options state-policy established action accept
+    - set firewall global-options state-policy invalid action drop
+    - set firewall global-options state-policy related action accept

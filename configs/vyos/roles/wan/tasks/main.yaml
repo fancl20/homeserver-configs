@@ -1,0 +1,96 @@
+- name: setup interface
+  vyos.vyos.vyos_interfaces:
+    config:
+    - name: "{{ item }}"
+      description: WAN
+      enabled: true
+    state: replaced
+  loop: "{{ wan_interfaces }}"
+
+- name: config interface
+  vyos.vyos.vyos_config:
+    lines:
+    - "set interfaces ethernet {{ item }} address dhcp"
+    - "set interfaces ethernet {{ item }} offload gro"
+    - "set interfaces ethernet {{ item }} offload gso"
+    - "set interfaces ethernet {{ item }} offload sg"
+    - "set interfaces ethernet {{ item }} offload tso"
+    - "set firewall group interface-group WAN interface {{ item }}"
+    save: true
+  loop: "{{ wan_interfaces }}"
+
+- name: config lan interface group
+  vyos.vyos.vyos_config:
+    lines:
+    - set firewall group interface-group LAN interface br0
+    save: true
+
+- name: config nat
+  vyos.vyos.vyos_config:
+    lines:
+    - "set nat source rule {{ 100 + index * 50 }} outbound-interface name {{ item }}"
+    - "set nat source rule {{ 100 + index * 50 }} source address 192.168.1.0/24"
+    - "set nat source rule {{ 100 + index * 50 }} translation address masquerade"
+    save: true
+  loop: "{{ wan_interfaces }}"
+  loop_control:
+    index_var: index
+
+- name: config firewall rules
+  vyos.vyos.vyos_firewall_rules:
+    config:
+    - afi: ipv4
+      rule_sets:
+      - name: WAN_IN
+        default_action: drop
+        description: "WAN to internal"
+        rules:
+        - number: 10
+          action: accept
+          description: "Allow established/related"
+          state:
+            established: true
+            related: true
+        - number: 20
+          action: drop
+          description: "Drop invalid state"
+          state:
+            invalid: true
+      - name: WAN_LOCAL
+        default_action: drop
+        description: "WAN to router"
+        rules:
+        - number: 10
+          action: accept
+          description: "Allow established/related"
+          state:
+            established: true
+            related: true
+        - number: 20
+          action: drop
+          description: "Drop invalid state"
+          state:
+            invalid: true
+      - filter: forward
+        rules:
+        - number: 10
+          action: jump
+          jump_target: WAN_IN
+          description: "Apply WAN_IN to traffic from WAN"
+          inbound_interface:
+            group: WAN
+      - filter: input
+        rules:
+        - number: 10
+          action: jump
+          jump_target: WAN_LOCAL
+          description: "Apply WAN_LOCAL to traffic from WAN"
+          inbound_interface:
+            group: WAN
+        - number: 20
+          action: accept
+          description: "Accept all from LAN to router"
+          inbound_interface:
+            group: LAN
+    state: replaced
+

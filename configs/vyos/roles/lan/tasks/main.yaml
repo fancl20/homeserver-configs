@@ -1,0 +1,32 @@
+- name: setup interface
+  vyos.vyos.vyos_interfaces:
+    config:
+    - name: "{{ item }}"
+      description: LAN
+      enabled: true
+    state: replaced
+  loop: "{{ lan_interfaces }}"
+
+- name: config bridge
+  vyos.vyos.vyos_config:
+    lines:
+    - set interfaces bridge br0 address 192.168.1.1/24
+    - set interfaces bridge br0 stp
+    save: true
+
+- name: config interface
+  vyos.vyos.vyos_config:
+    lines:
+    - "set interfaces ethernet {{ item }} offload gro"
+    - "set interfaces ethernet {{ item }} offload gso"
+    - "set interfaces ethernet {{ item }} offload sg"
+    - "set interfaces ethernet {{ item }} offload tso"
+    - "set interfaces bridge br0 member interface {{ item }}"
+    save: true
+  loop: "{{ lan_interfaces }}"
+
+# For https://vyos.dev/T7150
+- name: config accept-invalid
+  vyos.vyos.vyos_config:
+    lines:
+    - set firewall global-options apply-to-bridged-traffic accept-invalid ethernet-type arp

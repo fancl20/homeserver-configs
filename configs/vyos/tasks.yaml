@@ -1,0 +1,10 @@
+- hosts: all
+  roles:
+  - sshd
+  - firewall
+  - wan
+  - lan
+  - dhcp
+  vars:
+    wan_interfaces: [ eth0 ]
+    lan_interfaces: [ eth1, eth2, eth3 ]
