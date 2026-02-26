@@ -26,7 +26,7 @@ images:
 - name: ghcr.io/paperless-ngx/paperless-ngx # {"$imagepolicy": "flux-system:paperless-ngx:name"}
   newTag: '2.20.8' # {"$imagepolicy": "flux-system:paperless-ngx:tag"}
 - name: docker.io/library/postgres # {"$imagepolicy": "flux-system:postgres:name"}
-  newTag: '18.2' # {"$imagepolicy": "flux-system:postgres:tag"}
+  newTag: '18.3' # {"$imagepolicy": "flux-system:postgres:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
   newTag: '5.1.4-r2-ls442' # {"$imagepolicy": "flux-system:qbittorrent:tag"}
 - name: docker.io/library/redis # {"$imagepolicy": "flux-system:redis:name"}
