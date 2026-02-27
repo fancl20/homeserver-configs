@@ -101,7 +101,3 @@ app.Image('velero-plugin-aws')
 app.Image('youtrack')
 .Repository('docker.io/jetbrains/youtrack')
 .Policy(app.DefaultPolicy.Semver())
-+
-app.Image('n8n')
-.Repository('docker.io/n8nio/n8n')
-.Policy(app.DefaultPolicy.Semver())
