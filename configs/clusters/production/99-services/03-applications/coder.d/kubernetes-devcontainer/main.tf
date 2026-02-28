@@ -365,7 +365,6 @@ resource "kubernetes_deployment_v1" "main" {
 resource "coder_agent" "main" {
   arch = data.coder_provisioner.me.arch
   os   = "linux"
-  dir  = "/workspaces"
   display_apps {
     vscode          = false
     vscode_insiders = false
@@ -440,8 +439,7 @@ module "vscode-web" {
     "hashicorp.terraform",
     "Grafana.vscode-jsonnet",
     "golang.go",
-    "RooVeterinaryInc.roo-cline",
-    "anthropics.claude-code",
+    "anthropic.claude-code",
     "bufbuild.vscode-buf",
     "Lencerf.beancount",
     "dongfg.vscode-beancount-formatter",
@@ -465,9 +463,6 @@ module "vscode-web" {
       "editor.formatOnType" : true
       "editor.defaultFormatter" : "ms-python.autopep8"
     }
-    "roo-cline" : {
-      "autoImportSettingsPath" : "/etc/secrets/roo-code-settings.json"
-    }
   }
 }
 
@@ -487,7 +482,6 @@ module "claude-code" {
   workdir             = local.checkout_dir
   install_claude_code = true
   report_tasks        = false
-  install_agentapi    = false
   mcp                 = jsonencode({
     "web-search-prime" = {
       type = "http"
