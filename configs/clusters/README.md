@@ -12,6 +12,7 @@ gcloud --project=home-servers-275405 auth application-default login
 ```bash
 mkdir -p ~/.config/1password && cd ~/.config/1password
 eval $(op account add --address my1.1password.com --email fancl20@gmail.com --signin)
+# op connect server create homeserver --vaults Cluster
 ```
 
 ## Bootstrapping
@@ -29,10 +30,9 @@ bash -c '(read -p "Vault token:" -s VAULT_TOKEN && echo "${VAULT_TOKEN}" | sudo 
 
 ### 1Password
 ```bash
-# op connect server create homeserver --vaults Cluster
 # eval $(op signin)
-kubectl -n onepassword create secret generic op-credentials --from-literal=1password-credentials.json="$(base64 ./1password-credentials.json)"
-kubectl -n onepassword create secret generic onepassword-token --from-literal=token=$(op connect token create --server homeserver --vault Cluster onepassword-operator)
+kubectl --namespace=onepassword create secret generic op-credentials --from-file=~/.config/1password/1password-credentials.json
+kubectl --namespace=onepassword create secret generic onepassword-token --from-literal=token=$(op connect token create --server homeserver --vault Cluster onepassword-operator)
 ```
 
 ### Terraform
