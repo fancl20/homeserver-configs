@@ -446,7 +446,16 @@ module "mux" {
   agent_id    = coder_agent.main.id
   subdomain   = true
   open_in     = "tab"
-  add-project = local.checkout_dir
+  add_project = local.checkout_dir
+}
+
+module "claude-code" {
+  count               = data.coder_workspace.me.start_count
+  source              = "registry.coder.com/coder/claude-code/coder"
+  agent_id            = coder_agent.main.id
+  workdir             = local.checkout_dir
+  install_claude_code = true
+  report_tasks        = false
 }
 
 resource "coder_metadata" "container_info" {
