@@ -482,26 +482,28 @@ module "claude-code" {
   workdir             = local.checkout_dir
   install_claude_code = true
   report_tasks        = false
-  mcp                 = jsonencode({
-    "web-search-prime" = {
-      type = "http"
-      url  = "https://api.z.ai/api/mcp/web_search_prime/mcp"
-      headers = {
-        Authorization = "Bearer $ANTHROPIC_AUTH_TOKEN"
+  mcp = jsonencode({
+    mcpServers = {
+      "web-search-prime" = {
+        type = "http"
+        url  = "https://api.z.ai/api/mcp/web_search_prime/mcp"
+        headers = {
+          Authorization = "Bearer $${ANTHROPIC_AUTH_TOKEN}"
+        }
       }
-    }
-    "zread" = {
-      type = "http"
-      url  = "https://api.z.ai/api/mcp/zread/mcp"
-      headers = {
-        Authorization = "$ANTHROPIC_AUTH_TOKEN"
+      "zread" = {
+        type = "http"
+        url  = "https://api.z.ai/api/mcp/zread/mcp"
+        headers = {
+          Authorization = "Bearer $${ANTHROPIC_AUTH_TOKEN}"
+        }
       }
-    }
-    "web-reader" = {
-      type = "http"
-      url  = "https://api.z.ai/api/mcp/web_reader/mcp"
-      headers = {
-        Authorization = "Bearer $ANTHROPIC_AUTH_TOKEN"
+      "web-reader" = {
+        type = "http"
+        url  = "https://api.z.ai/api/mcp/web_reader/mcp"
+        headers = {
+          Authorization = "Bearer $${ANTHROPIC_AUTH_TOKEN}"
+        }
       }
     }
   })
