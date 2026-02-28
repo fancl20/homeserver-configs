@@ -258,6 +258,36 @@ resource "kubernetes_deployment_v1" "main" {
             }
           }
 
+          env {
+            name = "ANTHROPIC_AUTH_TOKEN"
+            value_from {
+              secret_key_ref {
+                name = data.coder_workspace_owner.me.name
+                key  = "ANTHROPIC_AUTH_TOKEN"
+              }
+            }
+          }
+          env {
+            name  = "ANTHROPIC_BASE_URL"
+            value = "https://api.z.ai/api/anthropic"
+          }
+          env {
+            name  = "API_TIMEOUT_MS"
+            value = "3000000"
+          }
+          env {
+            name  = "ANTHROPIC_DEFAULT_OPUS_MODEL"
+            value = "glm-5"
+          }
+          env {
+            name  = "ANTHROPIC_DEFAULT_SONNET_MODEL"
+            value = "glm-5"
+          }
+          env {
+            name  = "ANTHROPIC_DEFAULT_HAIKU_MODEL"
+            value = "glm-4.7"
+          }
+
           resources {
             requests = {
               "cpu"    = "250m"
@@ -411,6 +441,7 @@ module "vscode-web" {
     "Grafana.vscode-jsonnet",
     "golang.go",
     "RooVeterinaryInc.roo-cline",
+    "anthropics.claude-code",
     "bufbuild.vscode-buf",
     "Lencerf.beancount",
     "dongfg.vscode-beancount-formatter",
@@ -456,6 +487,30 @@ module "claude-code" {
   workdir             = local.checkout_dir
   install_claude_code = true
   report_tasks        = false
+  install_agentapi    = false
+  mcp                 = jsonencode({
+    "web-search-prime" = {
+      type = "http"
+      url  = "https://api.z.ai/api/mcp/web_search_prime/mcp"
+      headers = {
+        Authorization = "Bearer $ANTHROPIC_AUTH_TOKEN"
+      }
+    }
+    "zread" = {
+      type = "http"
+      url  = "https://api.z.ai/api/mcp/zread/mcp"
+      headers = {
+        Authorization = "$ANTHROPIC_AUTH_TOKEN"
+      }
+    }
+    "web-reader" = {
+      type = "http"
+      url  = "https://api.z.ai/api/mcp/web_reader/mcp"
+      headers = {
+        Authorization = "Bearer $ANTHROPIC_AUTH_TOKEN"
+      }
+    }
+  })
 }
 
 resource "coder_metadata" "container_info" {
