@@ -67,11 +67,6 @@
                ]
             }
          ],
-         "kubectl": {
-            "image": {
-               "repository": "public.ecr.aws/bitnami/kubectl"
-            }
-         },
          "nodeAgent": {
             "disableHostPath": true,
             "extraArgs": [
