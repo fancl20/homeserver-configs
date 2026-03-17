@@ -18,7 +18,7 @@ images:
 - name: docker.cloudsmith.io/isc/docker/kea-dhcp4 # {"$imagepolicy": "flux-system:kea:name"}
   newTag: '3.1.6' # {"$imagepolicy": "flux-system:kea:tag"}
 - name: docker.io/library/mongo # {"$imagepolicy": "flux-system:mongo:name"}
-  newTag: '8.2.5' # {"$imagepolicy": "flux-system:mongo:tag"}
+  newTag: '8.2.6' # {"$imagepolicy": "flux-system:mongo:tag"}
 - name: docker.io/library/nginx # {"$imagepolicy": "flux-system:nginx:name"}
   newTag: '1.29.6' # {"$imagepolicy": "flux-system:nginx:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
