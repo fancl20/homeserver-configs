@@ -38,6 +38,7 @@ spec:
         withItems:
         - dae
         - roon
+        - chrome
   - name: clone
     inputs:
       parameters:
