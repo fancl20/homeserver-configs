@@ -11,6 +11,13 @@ app.Base('chrome-devtools-mcp').Deployment()
       --headless \
       --isolated
   |||, '--outputTransport', 'streamableHttp', '--stateful', '--cors'],
+  env: [
+    { name: 'HOME', value: '/tmp' },
+  ],
+  securityContext: {
+    seccompProfile: { type: 'Unconfined' },
+    appArmorProfile: { type: 'Unconfined' },
+  },
 }])
 .RunAsUser()
 .Service({

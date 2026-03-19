@@ -42,8 +42,22 @@
                      "--stateful",
                      "--cors"
                   ],
+                  "env": [
+                     {
+                        "name": "HOME",
+                        "value": "/tmp"
+                     }
+                  ],
                   "image": "registry.local.d20.fan/fancl20/chrome",
-                  "name": "chrome-devtools-mcp"
+                  "name": "chrome-devtools-mcp",
+                  "securityContext": {
+                     "appArmorProfile": {
+                        "type": "Unconfined"
+                     },
+                     "seccompProfile": {
+                        "type": "Unconfined"
+                     }
+                  }
                }
             ],
             "enableServiceLinks": false,
