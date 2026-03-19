@@ -1,0 +1,53 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "chrome-devtools-mcp",
+      "namespace": "default"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "chrome-devtools-mcp"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "chrome-devtools-mcp"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "npx",
+                     "-y",
+                     "supergateway",
+                     "--stdio",
+                     "npx -y chrome-devtools-mcp@latest \\\n  --executablePath=/opt/chrome/chrome \\\n  --slim \\\n  --headless \\\n  --isolated\n",
+                     "--outputTransport streamableHttp",
+                     "--stateful"
+                  ],
+                  "image": "registry.local.d20.fan/fancl20/chrome",
+                  "name": "chrome-devtools-mcp"
+               }
+            ],
+            "enableServiceLinks": false,
+            "serviceAccountName": "chrome-devtools-mcp",
+            "volumes": [ ]
+         }
+      }
+   }
+}

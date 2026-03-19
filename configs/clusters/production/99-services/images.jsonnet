@@ -16,6 +16,18 @@ app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
 .Policy(app.DefaultPolicy.LinuxServer(pattern='^.*-ls\\d{3,}$'))
 +
+app.Image('chrome')
+.Repository('registry.local.d20.fan/fancl20/chrome')
+.Policy({
+  filterTags: {
+    pattern: '^(?P<MAJOR>\\d+)\\.(?P<MINOR>\\d+)\\.\\d+\\.(?P<PATCH>\\d+)(?P<SUFFIX>-testing-\\d+)$',
+    extract: '$MAJOR.$MINOR.$PATCH$SUFFIX',
+  },
+  policy: {
+    semver: { range: '*-testing-' },
+  },
+})
++
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')
 .Policy(app.DefaultPolicy.Semver('*-testing-'))
