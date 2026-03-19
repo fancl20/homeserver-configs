@@ -10,7 +10,7 @@ app.Base('chrome-devtools-mcp').Deployment()
       --slim \
       --headless \
       --isolated
-  |||, '--outputTransport streamableHttp', '--stateful'],
+  |||, '--outputTransport', 'streamableHttp', '--stateful', '--cors'],
 }])
 .Service({
   ports: [{ name: 'http', protocol: 'TCP', port: 80, targetPort: 8000 }],

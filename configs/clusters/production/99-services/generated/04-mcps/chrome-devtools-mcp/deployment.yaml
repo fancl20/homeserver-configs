@@ -37,8 +37,10 @@
                      "supergateway",
                      "--stdio",
                      "npx -y chrome-devtools-mcp@latest \\\n  --executablePath=/opt/chrome/chrome \\\n  --slim \\\n  --headless \\\n  --isolated\n",
-                     "--outputTransport streamableHttp",
-                     "--stateful"
+                     "--outputTransport",
+                     "streamableHttp",
+                     "--stateful",
+                     "--cors"
                   ],
                   "image": "registry.local.d20.fan/fancl20/chrome",
                   "name": "chrome-devtools-mcp"
