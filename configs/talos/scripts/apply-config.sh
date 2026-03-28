@@ -15,7 +15,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-MEMBERS=$(talosctl get members --endpoints "192.168.1.3" --nodes 192.168.1.3 -o yaml)
+if [[ -z "${DRY_RUN}" ]]; then
+  talosctl upgrade-k8s --endpoints 192.168.1.3 --nodes 192.168.1.3
+fi
+
+MEMBERS=$(talosctl get members --endpoints 192.168.1.3 --nodes 192.168.1.3 -o yaml)
 
 apply_controlplane() {(
   export TALOS_SCHEMATIC="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
@@ -23,7 +27,7 @@ apply_controlplane() {(
     export NODE_ADDRESS="192.168.1.$i"
     grep -q "^[[:space:]]*- ${NODE_ADDRESS//./\\.}$" <<< "$MEMBERS" || continue
     echo "========== ${NODE_ADDRESS} =========="
-    talosctl apply-config --endpoints "192.168.1.3" --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
+    talosctl apply-config --endpoints 192.168.1.3 --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
       <(talosctl gen config --with-secrets <(get_secrets)  \
                             --config-patch @configs/controlplane.yaml \
                             --output-types controlplane \
@@ -37,7 +41,7 @@ apply_worker() {(
   NODE_TYPE=$1
   export NODE_ADDRESS=$2
   echo "========== ${NODE_TYPE}: ${NODE_ADDRESS} =========="
-  talosctl apply-config --endpoints "192.168.1.3" --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
+  talosctl apply-config --endpoints 192.168.1.3 --nodes "${NODE_ADDRESS}" ${DRY_RUN} --file <(cat \
     <(talosctl gen config --with-secrets <(get_secrets) \
                           --config-patch "@configs/worker-${NODE_TYPE}".yaml \
                           --output-types worker \
