@@ -258,13 +258,9 @@ resource "kubernetes_deployment_v1" "main" {
             }
           }
 
-          env {
-            name = "ANTHROPIC_AUTH_TOKEN"
-            value_from {
-              secret_key_ref {
-                name = data.coder_workspace_owner.me.name
-                key  = "ANTHROPIC_AUTH_TOKEN"
-              }
+          env_from {
+            secret_ref {
+              name = data.coder_workspace_owner.me.name
             }
           }
           env {

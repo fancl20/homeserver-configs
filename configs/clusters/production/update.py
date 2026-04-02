@@ -18,7 +18,8 @@ def get_url(dst: pathlib.Path, url: str):
 
 
 def get_github_latest_release(repo: str):
-  req = urllib.request.Request(f"https://api.github.com/repos/{repo}/releases/latest")
+  req = urllib.request.Request(
+      f"https://api.github.com/repos/{repo}/releases/latest")
   with urllib.request.urlopen(req) as r:
     d = json.loads(r.read().decode())
     return d["tag_name"].lstrip('v')
@@ -37,7 +38,7 @@ def main():
   # Multus-cni
   multus_ver = get_github_latest_release('k8snetworkplumbingwg/multus-cni')
   get_url(
-      pathlib.Path('04-stage', 'multus-cni', 'multus-daemonset.yaml'),
+      pathlib.Path('00-stage', 'multus-cni', 'multus-daemonset.yaml'),
       'https://raw.githubusercontent.com/'
       'k8snetworkplumbingwg/multus-cni/'
       f'refs/tags/v{multus_ver}/'
