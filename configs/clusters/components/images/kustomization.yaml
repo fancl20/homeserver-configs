@@ -24,7 +24,7 @@ images:
 - name: docker.io/library/nginx # {"$imagepolicy": "flux-system:nginx:name"}
   newTag: '1.30.0' # {"$imagepolicy": "flux-system:nginx:tag"}
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
-  newTag: '10.2_p1-r0-ls222' # {"$imagepolicy": "flux-system:openssh:tag"}
+  newTag: '10.2_p1-r0-ls223' # {"$imagepolicy": "flux-system:openssh:tag"}
 - name: ghcr.io/paperless-ngx/paperless-ngx # {"$imagepolicy": "flux-system:paperless-ngx:name"}
   newTag: '2.20.14' # {"$imagepolicy": "flux-system:paperless-ngx:tag"}
 - name: docker.io/library/postgres # {"$imagepolicy": "flux-system:postgres:name"}
