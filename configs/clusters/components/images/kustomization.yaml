@@ -38,7 +38,7 @@ images:
 - name: registry.local.d20.fan/fancl20/roon # {"$imagepolicy": "flux-system:roon:name"}
   newTag: '206401646-testing-20260316' # {"$imagepolicy": "flux-system:roon:tag"}
 - name: lscr.io/linuxserver/unifi-network-application # {"$imagepolicy": "flux-system:unifi:name"}
-  newTag: '10.3.55-ls125' # {"$imagepolicy": "flux-system:unifi:tag"}
+  newTag: '10.3.55-ls126' # {"$imagepolicy": "flux-system:unifi:tag"}
 - name: docker.io/velero/velero-plugin-for-aws # {"$imagepolicy": "flux-system:velero-plugin-aws:name"}
   newTag: 'v1.14.0' # {"$imagepolicy": "flux-system:velero-plugin-aws:tag"}
 - name: docker.io/jetbrains/youtrack # {"$imagepolicy": "flux-system:youtrack:name"}
