@@ -10,7 +10,7 @@ images:
 - name: registry.local.d20.fan/fancl20/chrome # {"$imagepolicy": "flux-system:chrome:name"}
   newTag: '147.0.7727.57-testing-20260421' # {"$imagepolicy": "flux-system:chrome:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
-  newTag: '1.0.0-testing-20260406' # {"$imagepolicy": "flux-system:dae:tag"}
+  newTag: '1.0.0-testing-20260421' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
   newTag: 'testing-20260421' # {"$imagepolicy": "flux-system:debian:tag"}
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
