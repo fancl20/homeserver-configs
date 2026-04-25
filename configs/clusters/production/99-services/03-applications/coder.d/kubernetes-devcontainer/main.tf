@@ -435,6 +435,7 @@ module "vscode-web" {
     "hashicorp.terraform",
     "Grafana.vscode-jsonnet",
     "golang.go",
+    "rust-lang.rust-analyzer",
     "anthropic.claude-code",
     "bufbuild.vscode-buf",
     "Lencerf.beancount",
@@ -478,7 +479,6 @@ module "claude-code" {
   agent_id            = coder_agent.main.id
   workdir             = local.checkout_dir
   install_claude_code = true
-  report_tasks        = false
   mcp = jsonencode({
     mcpServers = {
       "zread" = {
