@@ -451,6 +451,7 @@ module "vscode-web" {
     "files.trimTrailingWhitespace" : true
     "terminal.integrated.defaultProfile.linux" : "fish"
     "terminal.integrated.stickyScroll.enabled" : false
+    "remote.autoForwardPortsSource" : "hybrid"
     "extensions.ignoreRecommendations" : true
     "chat.disableAIFeatures" : true
     "vim.handleKeys" : {
