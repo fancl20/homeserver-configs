@@ -1,0 +1,8 @@
+- name: setup hostname
+  vyos.vyos.vyos_system:
+    host_name: vyos
+- name: setup name servers
+  vyos.vyos.vyos_system:
+    name_servers:
+    - 8.8.8.8
+    - 8.8.4.4
