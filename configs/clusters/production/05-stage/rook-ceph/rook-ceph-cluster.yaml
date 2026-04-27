@@ -17,6 +17,7 @@ spec:
       [global]
       bdev_enable_discard = true
       bdev_async_discard_threads = 1
+      # keep empty line
     toolbox:
       enabled: true
     route:
