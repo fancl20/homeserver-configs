@@ -17,7 +17,7 @@ spec:
       [global]
       bdev_enable_discard = true
       bdev_async_discard_threads = 1
-      # keep empty line
+      # EOF: https://github.com/rook/rook/issues/17245
     toolbox:
       enabled: true
     route:
