@@ -462,6 +462,7 @@ module "vscode-web" {
       "editor.defaultFormatter" : "ms-python.autopep8"
     }
     "autopep8.args" : ["--indent-size=2"]
+    "rust-analyzer.inlayHints.typeHints.enable" : false
   }
 }
 
