@@ -30,3 +30,8 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metallb
+  values:
+    frr-k8s:
+      prometheus:
+        serviceMonitor:
+          enabled: false
