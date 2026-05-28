@@ -31,7 +31,5 @@ spec:
         kind: HelmRepository
         name: metallb
   values:
-    frr-k8s:
-      prometheus:
-        serviceMonitor:
-          enabled: false
+    frrk8s:
+      enabled: false

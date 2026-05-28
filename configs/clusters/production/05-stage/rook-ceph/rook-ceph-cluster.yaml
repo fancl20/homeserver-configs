@@ -13,11 +13,6 @@ spec:
         kind: HelmRepository
         name: rook-ceph
   values:
-    configOverride: |
-      [global]
-      bdev_enable_discard = true
-      bdev_async_discard_threads = 1
-      # EOF: https://github.com/rook/rook/issues/17245
     toolbox:
       enabled: true
     route:
@@ -32,6 +27,11 @@ spec:
     cephClusterSpec:
       mon:
         count: 1
+        volumeClaimTemplate:
+         spec:
+           resources:
+             requests:
+               storage: 20Gi
       mgr:
         count: 1
       placement:
@@ -55,6 +55,11 @@ spec:
             memory: '2Gi'
       dashboard:
         ssl: false
+      cephConfig:
+        global:
+          bdev_enable_discard: "true"
+          bdev_async_discard_threads: "1"
+          mon_data_avail_warn: "10"
     cephBlockPools:
     - name: builtin-mgr
       spec:
