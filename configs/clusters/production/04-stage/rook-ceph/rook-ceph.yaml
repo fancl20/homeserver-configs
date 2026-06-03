@@ -28,6 +28,3 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
-  values:
-    csi:
-      enableRbdDriver: false
