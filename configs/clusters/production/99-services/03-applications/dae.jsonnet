@@ -86,8 +86,6 @@ app.Base('dae').Deployment()
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
     domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general-cn
 
-    domain(full: beyond-cn.hypergryph.com) -> game
-
     domain(full: game-re-service.sl916.com) -> general-cn
 
     fallback: direct
