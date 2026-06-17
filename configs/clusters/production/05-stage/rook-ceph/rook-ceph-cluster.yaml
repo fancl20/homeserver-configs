@@ -27,12 +27,6 @@ spec:
     cephClusterSpec:
       mon:
         count: 1
-        volumeClaimTemplate:
-         spec:
-           storageClassName: "local-path"
-           resources:
-             requests:
-               storage: 20Gi
       mgr:
         count: 1
       placement:
