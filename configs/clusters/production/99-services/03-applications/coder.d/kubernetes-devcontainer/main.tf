@@ -283,6 +283,10 @@ resource "kubernetes_deployment_v1" "main" {
             name  = "ANTHROPIC_DEFAULT_HAIKU_MODEL"
             value = "glm-4.5-air"
           }
+          env {
+            name  = "CLAUDE_CODE_EFFORT_LEVEL"
+            value = "max"
+          }
 
           resources {
             requests = {
