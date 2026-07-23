@@ -11,6 +11,9 @@ app.Base('paperless').Deployment()
     { name: 'USERMAP_UID', value: '1000' },
     { name: 'USERMAP_GID', value: '1000' },
   ],
+  envFrom: [
+    { secretRef: { name: 'paperless' } },
+  ],
   volumeMounts: [
     { name: 'paperless', mountPath: '/usr/src/paperless/data', subPath: 'paperless/data' },
     { name: 'paperless', mountPath: '/usr/src/paperless/media', subPath: 'paperless/media' },
