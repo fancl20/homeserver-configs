@@ -2,6 +2,8 @@
 
 This directory contains Kubernetes application manifests defined using Jsonnet, following the project's standard patterns.
 
+> This is a focused reference for `03-applications/`. For the repo-wide guide and the deployment model (GitOps via Flux + in-cluster tofu-controller), see the root [AGENTS.md](../../../../../AGENTS.md#deployment-model).
+
 ## Directory Structure
 
 Each application typically consists of:
@@ -34,14 +36,20 @@ From `app.Base()`:
 - `.StatefulSet(service_name=name)` - Creates a StatefulSet resource
 - `.Helm(repo, chart, values)` - Creates HelmRelease and HelmRepository (for chart-based deployments)
 - `.Nested(name)` - Creates nested resources (e.g., for databases)
+- `.ServiceAccount()` - Creates a ServiceAccount (auto-created by Deployment/StatefulSet/Helm)
 - `.PodContainers(containers)` - Configures pod containers
 - `.PodInitContainers(containers)` - Configures init containers
 - `.PodVolumes(volumes)` - Adds volumes to pod spec
+- `.PodAnnotations(annotations)` - Adds pod annotations
+- `.PodSecurityContext(securityContext)` - Sets pod security context
+- `.RunAsUser(uid=1000, gid=1000)` - Convenience method for user/group IDs
 - `.PersistentVolumeClaim(name, spec)` - Creates PVC and adds volume to pod
 - `.Service(spec, name, external_dns, load_balancer_ip)` - Creates Service
 - `.HTTPRoute(service, port, wildcard, metadata)` - Creates HTTPRoute for gateway
 - `.OnePassword(name, spec)` - Creates ExternalSecret for 1Password integration
+- `.DNSConfig(config)` - Configures custom DNS for pods
 - `.Role(name, rules)` - Creates Role/RoleBinding for RBAC
+- `.ClusterRole(name=base.Name, rules)` - Creates ClusterRole/ClusterRoleBinding (cluster-scoped RBAC)
 - `.Kustomize()` - Enables Kustomize features (ConfigMap, etc.)
 - `.Config(file, content)` - Creates ConfigMap from file content
 
@@ -145,6 +153,18 @@ app.Base('app-name', 'app-name', create_namespace=true).Helm('https://helm.examp
 .HTTPRoute()
 ```
 
+#### Shared Data Volume
+
+Several apps share the cluster-wide `shared-data` PVC (defined in `01-infrastructure`) via `app.Volumes.shared_data`:
+
+```jsonnet
+.PodVolumes([
+  app.Volumes.shared_data,
+])
+// the volume name is 'data'; mount it as:
+//   { name: 'data', mountPath: '/shared' }
+```
+
 ## Terraform Integration
 
 For applications requiring secrets (database passwords, API keys, etc.), use Terraform:
@@ -189,7 +209,7 @@ envFrom: [
    .Policy(app.DefaultPolicy.Semver())
    ```
 
-2. **Add to [`kustomization.yaml`](../../components/images/kustomization.yaml)**:
+2. **Add to [`kustomization.yaml`](../../../components/images/kustomization.yaml)**:
    ```yaml
    - name: docker.io/namespace/image # {"$imagepolicy": "flux-system:app-name:name"}
      newTag: 'x.y.z' # {"$imagepolicy": "flux-system:app-name:tag"}
@@ -205,14 +225,14 @@ Available policies from `app.DefaultPolicy`:
 ## Naming Conventions
 
 ### Resources
-- **Services**: `<app-name>` or `<app-name>-<purpose>` (e.g., `n8n-postgres`)
+- **Services**: `<app-name>` or `<app-name>-<purpose>` (e.g., `coder-db`)
 - **StatefulSets**: `<app-name>-db` or `<app-name>-postgres`
 - **PVCs**: `<app-name>` or `<app-name>-<purpose>`
 - **Secrets**: `<app-name>` (shared between app and database)
 
 ### Hostnames
-- Default: `<app-name>.local.d20.fan`
-- Set via `app.Base()` `Hostname` field in `app.libsonnet`
+- Default: `<app-name>.local.d20.fan`, **derived automatically** from the name passed to `app.Base()` (`Hostname = name + '.local.d20.fan'`, defined in `00-libsonnet/base.libsonnet`). It is not a parameter — to change the hostname, change the `Base()` name.
+- Consumed by `.HTTPRoute()` and by `.Service(..., external_dns=true)`. Apps that need their own URL env var (e.g. `PAPERLESS_URL`) must set it to match `https://<app-name>.local.d20.fan` by hand.
 
 ## Adding or Updating a Service
 
@@ -230,7 +250,7 @@ Add the application's image to [`images.jsonnet`](../images.jsonnet).
 
 ### Step 4: Update Kustomization
 
-Add the image with current version to [`kustomization.yaml`](../../components/images/kustomization.yaml).
+Add the image with current version to [`kustomization.yaml`](../../../components/images/kustomization.yaml).
 
 ### Step 5: Generate and Verify
 
@@ -241,6 +261,8 @@ python3 generate.py
 ```
 
 Verify the generated files in `generated/03-applications/<app-name>/`.
+
+> **Then commit and push.** The `generated/` directory is committed to git and applied by Flux, and Terraform (`.tf`) is applied automatically in-cluster by tofu-controller. After pushing to `main`, manifests and secrets reconcile with no manual `kubectl`/`terraform` (see the root [AGENTS.md](../../../../../AGENTS.md#deployment-model) Deployment Model).
 
 ## Best Practices
 
@@ -257,21 +279,23 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 
 ## Existing Applications
 
-| Application | Type | Database | Notes |
-|-------------|------|----------|--------|
-| beets | Deployment | - | Music library |
-| calibre | Deployment | - | eBook library |
-| coder | Helm | PostgreSQL | Code server |
-| dae | Deployment | - | Network tool |
-| jellyfin | Deployment | - | Media server |
-| n8n | StatefulSet | PostgreSQL (sidecar) | Workflow automation |
-| paperless | Deployment | - | Document management |
-| qbittorrent | Deployment | - | Torrent client |
-| roon | Deployment | - | Music server |
-| sftp | Deployment | - | SFTP server |
-| unifi | Deployment | MongoDB (sidecar) | Network management |
-| velero | Helm | - | Backup tool |
-| youtrack | Deployment | - | Issue tracker |
+| Application | Type | Database | Namespace | Notes |
+|-------------|------|----------|-----------|-------|
+| beets | Deployment | - | default | Music library |
+| calibre | Deployment | - | default | eBook library |
+| coder | Helm | PostgreSQL (nested `coder-db`) | coder | Code server |
+| dae | Deployment | - | default | Network proxy (Multus static IP) |
+| jellyfin | Deployment | - | default | Media server |
+| kea | Deployment | - | default | DHCP server (Multus static IP, HA with vyos) |
+| paperless | Deployment | Redis (sidecar) | default | Document management |
+| qbittorrent | Deployment | - | default | Torrent client |
+| roon | Deployment | - | default | Music server (custom image; `Base('roon-server')`, macvlan IP) |
+| sftp | Deployment | - | default | SFTP server (LoadBalancer + external-dns) |
+| unifi | Deployment | MongoDB (sidecar) | default | Network management |
+| velero | Helm | - | velero | Backup tool |
+| youtrack | Deployment | - | default | Issue tracker |
+
+> Namespace reflects the second argument to `app.Base()`. `coder` and `velero` use their own namespace (`create_namespace=true`); all others run in `default`.
 
 ## Troubleshooting
 

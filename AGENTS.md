@@ -5,6 +5,7 @@ This document serves as a comprehensive guide for AI agents working with this ho
 ## Table of Contents
 
 - [Overview](#overview)
+- [Deployment Model](#deployment-model)
 - [Directory Structure](#directory-structure)
 - [Talos Configuration](#talos-configuration)
 - [Image Management](#image-management)
@@ -20,6 +21,32 @@ This repository uses a multi-layered approach to infrastructure and application 
 2. **Stages** (`configs/clusters/production/00-stage/` through `05-stage/`) - Bootstrap and core infrastructure
 3. **Services** (`configs/clusters/production/99-services/`) - Application manifests and infrastructure services
 4. **Talos** (`configs/talos/`) - Talos OS configuration for cluster nodes
+
+## Deployment Model
+
+This repository is deployed via **GitOps**. Flux, running in the cluster, polls `main` of this repo and reconciles it. There is **no CI pipeline** (no GitHub Actions, no Makefile) — the only automation outside the cluster is Flux itself and the in-cluster image builder.
+
+### Developer workflow
+
+1. Edit the jsonnet/Terraform source locally (the devcontainer installs `jsonnet` and `terraform`).
+2. Regenerate the committed manifests: `python3 configs/clusters/production/99-services/generate.py`.
+3. Commit the regenerated `generated/` files (plus any source changes) and push to `main`.
+4. Flux reconciles everything else — including applying Terraform.
+
+### Manifests → cluster
+
+A single `GitRepository/configs` (polling `main` every 1m) feeds a cascade of Flux `Kustomization` resources — `00-stage` → `01-stage` → … → `99-services` — each defined in the previous stage's directory and depending on the one before it. The terminal `Kustomization/99-services` applies the whole `configs/clusters/production/99-services` tree (including the committed `generated/` manifests) and pulls in two kustomize Components:
+
+- [`components/images`](configs/clusters/components/images/) — image tag overrides (see [Image Management](#image-management)).
+- [`components/terraform`](configs/clusters/components/terraform/) — injects the Terraform automation (below).
+
+### Terraform → cluster
+
+Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-iac/tofu-controller)**, not by a human in the loop. The `components/terraform` Component injects a `Terraform/<layer>` custom resource per layer (e.g. `Terraform/99-services`) with `approvePlan: auto` and a 1h reconcile interval, sourcing the same `GitRepository`. Pushing a `.tf` change to `main` triggers an automatic plan and apply; the controller persists Terraform state itself (`backendConfig.disable: true`). The `backend "gcs"` block inside each `.tf` is only used by rare, manual `terraform apply` runs (see [`configs/clusters/README.md`](configs/clusters/README.md)).
+
+### Image updates → cluster
+
+Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, `chrome`) are built nightly in-cluster by an Argo `CronWorkflow` and pushed to `registry.local.d20.fan`.
 
 ## Directory Structure
 
@@ -57,7 +84,7 @@ configs/
 │       ├── apply-config.sh  # Apply configuration changes
 │       ├── wipe-user-disks.sh
 │       └── rotate-ca.sh
-└── edgerouter/              # Edge router configuration
+└── vyos/                     # Edge router (VyOS) Ansible configuration
 ```
 
 ## Talos Configuration
@@ -169,6 +196,7 @@ The repository includes custom images built and maintained in the `images/` dire
 
 | Image | Description | Registry |
 |-------|-------------|----------|
+| chrome | Headless Chrome with MCP proxy | `registry.local.d20.fan/fancl20/chrome` |
 | dae | Network proxy tool | `registry.local.d20.fan/fancl20/dae` |
 | roon | Music server | `registry.local.d20.fan/fancl20/roon` |
 
@@ -204,6 +232,7 @@ From `app.Base()`:
 - `.StatefulSet(service_name=name)` - Creates a StatefulSet resource
 - `.Helm(repo, chart, values)` - Creates HelmRelease and HelmRepository (for chart-based deployments)
 - `.Nested(name)` - Creates nested resources (e.g., for databases)
+- `.ServiceAccount()` - Creates a ServiceAccount (auto-created by Deployment/StatefulSet/Helm)
 - `.PodContainers(containers)` - Configures pod containers
 - `.PodInitContainers(containers)` - Configures init containers
 - `.PodVolumes(volumes)` - Adds volumes to pod spec
@@ -216,6 +245,7 @@ From `app.Base()`:
 - `.OnePassword(name, spec)` - Creates ExternalSecret for 1Password integration
 - `.DNSConfig(config)` - Configures custom DNS for pods
 - `.Role(name, rules)` - Creates Role/RoleBinding for RBAC
+- `.ClusterRole(name=base.Name, rules)` - Creates ClusterRole/ClusterRoleBinding (cluster-scoped RBAC)
 - `.Kustomize()` - Enables Kustomize features (ConfigMap, etc.)
 - `.Config(file, content)` - Creates ConfigMap from file content
 
@@ -432,14 +462,14 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 ### Naming Conventions
 
 #### Resources
-- **Services**: `<app-name>` or `<app-name>-<purpose>` (e.g., `n8n-postgres`)
+- **Services**: `<app-name>` or `<app-name>-<purpose>` (e.g., `coder-db`)
 - **StatefulSets**: `<app-name>-db` or `<app-name>-postgres`
 - **PVCs**: `<app-name>` or `<app-name>-<purpose>`
 - **Secrets**: `<app-name>` (shared between app and database)
 
 #### Hostnames
-- Default: `<app-name>.local.d20.fan`
-- Set via `app.Base()` `Hostname` field in `app.libsonnet`
+- Default: `<app-name>.local.d20.fan`, **derived automatically** from the name passed to `app.Base()` (`Hostname = name + '.local.d20.fan'`, defined in `00-libsonnet/base.libsonnet`). It is not a parameter — to change the hostname, change the `Base()` name.
+- Consumed by `.HTTPRoute()` and by `.Service(..., external_dns=true)`. Apps that need their own URL env var (e.g. `PAPERLESS_URL`) must set it to match `https://<app-name>.local.d20.fan` by hand.
 
 ## Best Practices
 
@@ -457,18 +487,20 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 
 ## Existing Applications
 
-| Application | Type | Database | Notes |
-|-------------|------|----------|-------|
-| beets | Deployment | - | Music library |
-| calibre | Deployment | - | eBook library |
-| coder | Helm | PostgreSQL | Code server |
-| dae | Deployment | - | Network proxy (Multus static IP) |
-| jellyfin | Deployment | - | Media server |
-| n8n | StatefulSet | PostgreSQL (sidecar) | Workflow automation |
-| paperless | Deployment | - | Document management |
-| qbittorrent | Deployment | - | Torrent client |
-| roon | Deployment | - | Music server (custom image) |
-| sftp | Deployment | - | SFTP server |
-| unifi | Deployment | MongoDB (sidecar) | Network management |
-| velero | Helm | - | Backup tool |
-| youtrack | Deployment | - | Issue tracker |
+| Application | Type | Database | Namespace | Notes |
+|-------------|------|----------|-----------|-------|
+| beets | Deployment | - | default | Music library |
+| calibre | Deployment | - | default | eBook library |
+| coder | Helm | PostgreSQL (nested `coder-db`) | coder | Code server |
+| dae | Deployment | - | default | Network proxy (Multus static IP) |
+| jellyfin | Deployment | - | default | Media server |
+| kea | Deployment | - | default | DHCP server (Multus static IP, HA with vyos) |
+| paperless | Deployment | Redis (sidecar) | default | Document management |
+| qbittorrent | Deployment | - | default | Torrent client |
+| roon | Deployment | - | default | Music server (custom image; `Base('roon-server')`, macvlan IP) |
+| sftp | Deployment | - | default | SFTP server (LoadBalancer + external-dns) |
+| unifi | Deployment | MongoDB (sidecar) | default | Network management |
+| velero | Helm | - | velero | Backup tool |
+| youtrack | Deployment | - | default | Issue tracker |
+
+> Namespace reflects the second argument to `app.Base()`. `coder` and `velero` use their own namespace (`create_namespace=true`); all others run in `default`.
