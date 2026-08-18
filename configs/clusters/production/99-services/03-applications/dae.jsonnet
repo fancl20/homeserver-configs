@@ -4,7 +4,7 @@ local images = import '../images.jsonnet';
 app.Base('dae').Deployment()
 .PodContainers([{
   image: images.dae,
-  command: ['/bin/bash', '-ex', '-c', |||
+  command: ['/bin/bash', '-x', '-c', |||
     mount bpffs /sys/fs/bpf/ -t bpf
 
     sysctl -w net.ipv4.conf.net1.forwarding=1
@@ -13,6 +13,15 @@ app.Base('dae').Deployment()
 
     ip route replace 10.96.0.0/12 via 10.244.0.1 dev eth0 onlink # serviceCIDR
     ip route replace default via 192.168.1.1 dev net1
+
+    nft -f - <<EOF
+    table ip nat {
+      chain postrouting {
+        type nat hook postrouting priority 100
+        oifname "net1" masquerade
+      }
+    }
+    EOF
 
     exec /opt/dae/dae-linux-x86_64_v3_avx2 run --disable-timestamp -c /etc/dae/config.dae
   |||],
@@ -66,6 +75,7 @@ app.Base('dae').Deployment()
     auto_config_firewall_rule: true
   }
   dns {
+    ipversion_prefer: 4
     upstream {
       googledns: 'udp+tcp://dns.google.com:53'
     }

@@ -8,6 +8,7 @@ global {
   auto_config_firewall_rule: true
 }
 dns {
+  ipversion_prefer: 4
   upstream {
     googledns: 'udp+tcp://dns.google.com:53'
   }

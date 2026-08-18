@@ -17,7 +17,7 @@ RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.
     echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/10nocheckvalid && \
     apt-get update
 
-RUN apt-get install -y --no-install-recommends iproute2 procps dumb-init && \
+RUN apt-get install -y --no-install-recommends iproute2 procps nftables dumb-init && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 COPY --from=0 /tmp/dae/ /opt/dae
