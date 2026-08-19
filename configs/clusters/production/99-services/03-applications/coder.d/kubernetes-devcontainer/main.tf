@@ -273,11 +273,11 @@ resource "kubernetes_deployment_v1" "main" {
           }
           env {
             name  = "ANTHROPIC_DEFAULT_OPUS_MODEL"
-            value = "glm-5.2[1m]"
+            value = "glm-5.3[1m]"
           }
           env {
             name  = "ANTHROPIC_DEFAULT_SONNET_MODEL"
-            value = "glm-5.2[1m]"
+            value = "glm-5.3[1m]"
           }
           env {
             name  = "ANTHROPIC_DEFAULT_HAIKU_MODEL"
