@@ -5,6 +5,7 @@ app.Base('external-dns').Deployment()
 .PodContainers([{
   image: images['external-dns'],
   args: [
+    '--policy=sync',
     '--registry=txt',
     '--txt-prefix=external-dns-',
     '--txt-owner-id=k8s',

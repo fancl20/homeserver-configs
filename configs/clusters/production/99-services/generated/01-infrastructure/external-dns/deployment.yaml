@@ -32,6 +32,7 @@
             "containers": [
                {
                   "args": [
+                     "--policy=sync",
                      "--registry=txt",
                      "--txt-prefix=external-dns-",
                      "--txt-owner-id=k8s",
