@@ -3,7 +3,7 @@
     Repository(repository, spec={}):: self {
       [name]:: repository,
       [name + '_repository.yaml']: {
-        apiVersion: 'image.toolkit.fluxcd.io/v1beta2',
+        apiVersion: 'image.toolkit.fluxcd.io/v1',
         kind: 'ImageRepository',
         metadata: {
           name: name,
@@ -17,7 +17,7 @@
     },
     Policy(spec):: self {
       [name + '_policy.yaml']: {
-        apiVersion: 'image.toolkit.fluxcd.io/v1beta2',
+        apiVersion: 'image.toolkit.fluxcd.io/v1',
         kind: 'ImagePolicy',
         metadata: {
           name: name,
