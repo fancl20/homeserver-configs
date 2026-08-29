@@ -54,6 +54,11 @@ spec:
             memory: '2Gi'
       dashboard:
         ssl: false
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
       cephConfig:
         global:
           bdev_enable_discard: "true"
