@@ -59,6 +59,15 @@ spec:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
+          # Rotate CSI keys to aes256k - requires kernel >= 7.0 on all nodes
+          # (Talos currently ships 6.18.x, which cannot mount CephFS PVCs with
+          # aes256k keys). Once rotated, set keepPriorKeyCountMax: 0 after all
+          # existing volumes have remounted with the new key.
+          #csi:
+          #  keyRotationPolicy: KeyGeneration
+          #  keyGeneration: 2
+          #  keyType: aes256k
+          #  keepPriorKeyCountMax: 1
       cephConfig:
         global:
           bdev_enable_discard: "true"
