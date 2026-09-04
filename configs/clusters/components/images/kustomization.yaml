@@ -26,7 +26,7 @@ images:
 - name: lscr.io/linuxserver/openssh-server # {"$imagepolicy": "flux-system:openssh:name"}
   newTag: '10.3_p1-r1-ls235' # {"$imagepolicy": "flux-system:openssh:tag"}
 - name: ghcr.io/paperless-ngx/paperless-ngx # {"$imagepolicy": "flux-system:paperless-ngx:name"}
-  newTag: '3.1.2' # {"$imagepolicy": "flux-system:paperless-ngx:tag"}
+  newTag: '3.1.3' # {"$imagepolicy": "flux-system:paperless-ngx:tag"}
 - name: docker.io/library/postgres # {"$imagepolicy": "flux-system:postgres:name"}
   newTag: '18.6' # {"$imagepolicy": "flux-system:postgres:tag"}
 - name: lscr.io/linuxserver/qbittorrent # {"$imagepolicy": "flux-system:qbittorrent:name"}
