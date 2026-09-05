@@ -4,7 +4,7 @@ local images = import '../images.jsonnet';
 app.Base('dae').Deployment()
 .PodContainers([{
   image: images.dae,
-  command: ['/bin/bash', '-x', '-c', |||
+  command: ['/bin/bash', '-xe', '-c', |||
     mount bpffs /sys/fs/bpf/ -t bpf
 
     sysctl -w net.ipv4.conf.net1.forwarding=1
@@ -110,14 +110,18 @@ app.Base('dae').Deployment()
       udp_check_dns: 'dns.google:53'
     }
     general-cn {
-      filter: name(SG3-CN2, SG1-SG3-CN2, JP2)
-      policy: min_moving_avg
+      filter: name(JP2)
+      policy: fixed(0)
+      # filter: name(SG3-CN2, SG1-SG3-CN2)
+      # policy: min_moving_avg
       tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
       udp_check_dns: 'dns.alidns.com:53'
     }
     game {
-      filter: name(SG3-CN2-CN3, SG1-SG3-CN2-CN3, JP2)
-      policy: min_moving_avg
+      filter: name(JP2-CN3)
+      policy: fixed(0)
+      # filter: name(SG3-CN2-CN3, SG1-SG3-CN2-CN3)
+      # policy: min_moving_avg
       tcp_check_url: 'http://oss.aliyuncs.com/systemoperation/checkossstatus'
       udp_check_dns: 'dns.alidns.com:53'
     }
