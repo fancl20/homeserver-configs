@@ -31,11 +31,17 @@ routing{
 
   domain(full: game-re-service.sl916.com) -> general-cn
 
-  domain(suffix: bilivideo.com) -> general-cn
+  domain(suffix: bilivideo.com) -> general-jp
 
   fallback: direct
 }
 group {
+  general-jp {
+    filter: name(JP2)
+    policy: min_moving_avg
+    tcp_check_url: 'http://cp.cloudflare.com'
+    udp_check_dns: 'dns.google:53'
+  }
   general-sg {
     filter: name(SG1)
     policy: min_moving_avg
@@ -43,7 +49,7 @@ group {
     udp_check_dns: 'dns.google:53'
   }
   general-cn {
-    filter: name(JP2)
+    filter: name(JP2-CN3)
     policy: fixed(0)
     # filter: name(SG3-CN2, SG1-SG3-CN2)
     # policy: min_moving_avg
