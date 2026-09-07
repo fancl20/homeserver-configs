@@ -92,7 +92,7 @@ app.Base('dae').Deployment()
   routing{
     dip(geoip:private) -> direct
 
-    domain(full: autopatchcn.yuanshen.com) -> general-sg
+    domain(full: autopatchcn.yuanshen.com) -> general-jp
     dip(geoip:cn) && l4proto(udp) && dport(22101, 22102) -> game
     domain(suffix: mihoyo.com, suffix: yuanshen.com) -> general-cn
 
