@@ -124,7 +124,7 @@ app.Base('dae').Deployment()
       udp_check_dns: 'dns.alidns.com:53'
     }
     game {
-      filter: name(JP2-CN3)
+      filter: name(TW1-CN3)
       policy: fixed(0)
       # filter: name(SG3-CN2-CN3, SG1-SG3-CN2-CN3)
       # policy: min_moving_avg
