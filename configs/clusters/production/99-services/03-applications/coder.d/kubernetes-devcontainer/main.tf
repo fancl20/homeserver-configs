@@ -307,6 +307,16 @@ resource "kubernetes_deployment_v1" "main" {
             mount_path = "/etc/secrets"
             name       = "secrets"
           }
+          volume_mount {
+            mount_path = "/dev/net/tun"
+            name       = "dev-net-tun"
+          }
+
+          security_context {
+            capabilities {
+              add = ["NET_ADMIN"]
+            }
+          }
         }
 
         volume {
@@ -322,6 +332,14 @@ resource "kubernetes_deployment_v1" "main" {
           secret {
             secret_name = data.coder_workspace_owner.me.name
             optional    = true
+          }
+        }
+
+        volume {
+          name = "dev-net-tun"
+          host_path {
+            path = "/dev/net/tun"
+            type = "CharDevice"
           }
         }
 
