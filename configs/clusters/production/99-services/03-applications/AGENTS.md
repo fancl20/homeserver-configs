@@ -145,7 +145,7 @@ app.Base('app-name').Deployment()
 #### Helm-based Application
 
 ```jsonnet
-app.Base('app-name', 'app-name', create_namespace=true).Helm('https://helm.example.com', 'chart-name', {
+app.Base('app-name', 'app-name', create_namespace={}).Helm('https://helm.example.com', 'chart-name', {
   chart: {
     // Helm values
   },
@@ -275,7 +275,7 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 7. **Document external dependencies** (databases, caches) in this file
 8. **Use `PersistentVolumeClaim()`** helper for storage to ensure consistent volume naming
 9. **Add `HTTPRoute()`** for all web-facing applications
-10. **Use `create_namespace=true`** only when the application needs its own namespace
+10. **Use `create_namespace={}`** only when the application needs its own namespace
 
 ## Existing Applications
 
@@ -295,7 +295,7 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 | velero | Helm | - | velero | Backup tool |
 | youtrack | Deployment | - | default | Issue tracker |
 
-> Namespace reflects the second argument to `app.Base()`. `coder` and `velero` use their own namespace (`create_namespace=true`); all others run in `default`.
+> Namespace reflects the second argument to `app.Base()`. `coder` and `velero` use their own namespace (`create_namespace={}`); all others run in `default`.
 
 ## Troubleshooting
 

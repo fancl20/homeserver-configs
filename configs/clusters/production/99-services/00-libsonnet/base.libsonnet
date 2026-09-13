@@ -4,7 +4,7 @@ local service = import 'service.libsonnet';
 local serviceaccount = import 'serviceaccount.libsonnet';
 
 {
-  Base(name, namespace='default', create_namespace=false):: {
+  Base(name, namespace='default', create_namespace=null):: {
     local baseName = std.get(self, 'BaseName', name),
     local root = { [i.key]: i.value for i in std.objectKeysValues(self) } {
       Name:: name,
@@ -12,12 +12,12 @@ local serviceaccount = import 'serviceaccount.libsonnet';
       BaseName:: baseName,
       Match:: { 'app.kubernetes.io/name': name },
       Hostname:: name + '.local.d20.fan',
-      [if create_namespace then 'namespace.yaml']: {
+      [if create_namespace != null then 'namespace.yaml']: {
         apiVersion: 'v1',
         kind: 'Namespace',
         metadata: {
           name: namespace,
-        },
+        } + create_namespace,
       },
       Nested(name):: self + $.Base(name, namespace),
     },
@@ -45,7 +45,6 @@ local serviceaccount = import 'serviceaccount.libsonnet';
         template: base.PodTemplate,
       },
     },
-
 
     Deployment():: (root + pod + serviceaccount + service + misc) {
       'deployment.yaml': spec(self) {

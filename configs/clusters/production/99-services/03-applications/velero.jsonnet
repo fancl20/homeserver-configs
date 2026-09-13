@@ -1,7 +1,7 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('velero', 'velero', create_namespace=true).Helm('https://vmware-tanzu.github.io/helm-charts', 'velero', {
+app.Base('velero', 'velero', create_namespace={}).Helm('https://vmware-tanzu.github.io/helm-charts', 'velero', {
   configuration: {
     backupStorageLocation: [{
       name: 'wasabi',

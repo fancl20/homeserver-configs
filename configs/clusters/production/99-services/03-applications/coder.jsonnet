@@ -1,7 +1,13 @@
 local app = import '../app.libsonnet';
 local images = import '../images.jsonnet';
 
-app.Base('coder', 'coder', create_namespace=true).Helm('https://helm.coder.com/v2', 'coder', {
+app.Base('coder', 'coder', create_namespace={
+  labels: {
+    'pod-security.kubernetes.io/enforce': 'privileged',
+    'pod-security.kubernetes.io/audit': 'privileged',
+    'pod-security.kubernetes.io/warn': 'privileged',
+  },
+}).Helm('https://helm.coder.com/v2', 'coder', {
   local domain = 'coder.local.d20.fan',
   coder: {
     env: [
