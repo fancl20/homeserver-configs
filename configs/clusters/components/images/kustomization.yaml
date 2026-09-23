@@ -8,7 +8,7 @@ images:
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibre:name"}
   newTag: '0.6.27-ls402' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: registry.local.d20.fan/fancl20/chrome # {"$imagepolicy": "flux-system:chrome:name"}
-  newTag: '153.0.8010.52-testing-20260918' # {"$imagepolicy": "flux-system:chrome:tag"}
+  newTag: '154.0.8037.57-testing-20260918' # {"$imagepolicy": "flux-system:chrome:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: '2.1.1-testing-20260918' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
