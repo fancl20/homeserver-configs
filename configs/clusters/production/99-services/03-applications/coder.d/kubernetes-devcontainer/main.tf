@@ -281,11 +281,15 @@ resource "kubernetes_deployment_v1" "main" {
           }
           env {
             name  = "ANTHROPIC_DEFAULT_HAIKU_MODEL"
-            value = "glm-4.5-air"
+            value = "glm-5.3-flash[1m]"
           }
           env {
             name  = "CLAUDE_CODE_EFFORT_LEVEL"
             value = "max"
+          }
+          env {
+            name  = "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
+            value = "131072"
           }
 
           resources {

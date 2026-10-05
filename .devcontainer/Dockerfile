@@ -11,6 +11,7 @@ RUN echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder && \
     chmod 440 /etc/sudoers.d/coder
 
 RUN apt-get install -y \
+    build-essential pkg-config \
     python3 golang
 
 COPY install_terraform.py /tmp/install_terraform.py
