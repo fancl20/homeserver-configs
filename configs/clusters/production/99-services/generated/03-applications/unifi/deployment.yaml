@@ -152,7 +152,6 @@
                }
             ],
             "serviceAccountName": "unifi",
-            "terminationGracePeriodSeconds": 90,
             "volumes": [
                {
                   "configMap": {

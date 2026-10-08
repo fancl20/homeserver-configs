@@ -1,9 +1,5 @@
 local app = import '../app.libsonnet';
-
-// Pinned by hand: the image transforms in components/images only reach rendered
-// workload manifests, not values nested inside the HelmRelease. Bump alongside
-// the postgres entry in components/images/kustomization.yaml.
-local postgresImage = 'docker.io/library/postgres:18.6';
+local images = import '../images.jsonnet';
 
 app.Base('coder', 'coder', create_namespace={
   labels: {
@@ -96,10 +92,8 @@ app.Base('coder', 'coder', create_namespace={
         { name: 'CODER_SESSION_TOKEN', valueFrom: { secretKeyRef: { name: 'coder-init-token', key: 'token', optional: true } } },
       ],
     }, {
-      // Native sidecar: postgres starts before the coder container and shares
-      // the coder-db PVC with the old coder-db StatefulSet layout.
       name: 'postgres',
-      image: postgresImage,
+      image: images.postgres,
       restartPolicy: 'Always',
       envFrom: [
         { secretRef: { name: 'coder-db' } },
@@ -109,30 +103,6 @@ app.Base('coder', 'coder', create_namespace={
       },
       volumeMounts: [
         { name: 'coder-db', mountPath: '/var/lib/postgresql' },
-      ],
-    }, {
-      // POSTGRES_PASSWORD only takes effect at initdb time, so the database
-      // keeps whatever password it was created with whenever the secret drifts
-      // (e.g. terraform state loss regenerating random_password.coder_db).
-      // This converges the database to the secret on every start; loopback
-      // connections are trust-auth in the official image, so it works even
-      // while the passwords disagree.
-      name: 'coder-db-sync',
-      image: postgresImage,
-      command: [
-        '/bin/sh',
-        '-ec',
-        |||
-          : "${POSTGRES_PASSWORD:?missing}"
-          until pg_isready -h 127.0.0.1 -q; do sleep 1; done
-          psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_USER" \
-            -v ON_ERROR_STOP=1 \
-            -v pw="$POSTGRES_PASSWORD" \
-            -c "ALTER USER \"$POSTGRES_USER\" WITH PASSWORD :'pw'"
-        |||,
-      ],
-      envFrom: [
-        { secretRef: { name: 'coder-db' } },
       ],
     }],
   },

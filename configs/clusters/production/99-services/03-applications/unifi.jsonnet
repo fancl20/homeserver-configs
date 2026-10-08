@@ -56,10 +56,6 @@ app.Base('unifi').Deployment()
 ])
 .PodInitContainers([
   {
-    // UniFi only auto-repairs its database when mongo is embedded; with the
-    // external sidecar an unclean shutdown leaves mongod unable to start until
-    // `mongod --repair` runs. A non-empty mongod.lock (or an interrupted
-    // repair) is mongod's own unclean-shutdown marker.
     name: 'mongo-repair',
     image: images.mongo,
     command: [
@@ -79,10 +75,6 @@ app.Base('unifi').Deployment()
     ],
   },
 ])
-.PodSpec({
-  // Give mongod room for its ~15s shutdown quiesce on SIGTERM.
-  terminationGracePeriodSeconds: 90,
-})
 .PodAnnotations({
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {
