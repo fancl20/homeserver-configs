@@ -2,7 +2,7 @@
 
 This directory contains Kubernetes application manifests defined using Jsonnet, following the project's standard patterns.
 
-> This is a focused reference for `03-applications/`. For the repo-wide guide and the deployment model (GitOps via Flux + in-cluster tofu-controller), see the root [AGENTS.md](../../../../../AGENTS.md#deployment-model).
+> This is a focused reference for `03-applications/`. For the repo-wide guide, see the root [AGENTS.md](../../../../../AGENTS.md); for the deployment model (GitOps via Flux + in-cluster tofu-controller), see [docs/homeserver-configs/README.md](../../../../../docs/homeserver-configs/README.md#deployment-model).
 
 ## Directory Structure
 
@@ -262,7 +262,7 @@ python3 generate.py
 
 Verify the generated files in `generated/03-applications/<app-name>/`.
 
-> **Then commit and push.** The `generated/` directory is committed to git and applied by Flux, and Terraform (`.tf`) is applied automatically in-cluster by tofu-controller. After pushing to `main`, manifests and secrets reconcile with no manual `kubectl`/`terraform` (see the root [AGENTS.md](../../../../../AGENTS.md#deployment-model) Deployment Model).
+> **Then commit and push.** The `generated/` directory is committed to git and applied by Flux, and Terraform (`.tf`) is applied automatically in-cluster by tofu-controller. After pushing to `main`, manifests and secrets reconcile with no manual `kubectl`/`terraform` (see [docs/homeserver-configs/README.md](../../../../../docs/homeserver-configs/README.md#deployment-model) Deployment Model).
 
 ## Best Practices
 
