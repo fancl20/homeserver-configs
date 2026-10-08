@@ -61,7 +61,7 @@ local serviceaccount = import 'serviceaccount.libsonnet';
       },
     }.ServiceAccount(),
 
-    Helm(repo, chart, values):: (root + serviceaccount + service + misc) {
+    Helm(repo, chart, values):: (root + pod + serviceaccount + service + misc) {
       local base = self,
 
       'helmrepository.yaml': {

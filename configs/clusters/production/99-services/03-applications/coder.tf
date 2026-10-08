@@ -11,7 +11,7 @@ resource "kubernetes_secret_v1" "coder" {
   data = {
     POSTGRES_USER = "coder"
     POSTGRES_PASSWORD = random_password.coder_db.result
-    url = "postgres://coder:${random_password.coder_db.result}@coder-db.coder.svc.cluster.local:5432/coder?sslmode=disable"
+    url = "postgres://coder:${random_password.coder_db.result}@127.0.0.1:5432/coder?sslmode=disable"
   }
 }
 

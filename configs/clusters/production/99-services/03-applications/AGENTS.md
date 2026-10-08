@@ -283,7 +283,7 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 |-------------|------|----------|-----------|-------|
 | beets | Deployment | - | default | Music library |
 | calibre | Deployment | - | default | eBook library |
-| coder | Helm | PostgreSQL (nested `coder-db`) | coder | Code server |
+| coder | Helm | PostgreSQL (sidecar; `coder-db-sync` converges creds at start) | coder | Code server |
 | dae | Deployment | - | default | Network proxy (Multus static IP) |
 | jellyfin | Deployment | - | default | Media server |
 | kea | Deployment | - | default | DHCP server (Multus static IP, HA with vyos) |

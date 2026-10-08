@@ -42,7 +42,7 @@ A single `GitRepository/configs` (polling `main` every 1m) feeds a cascade of Fl
 
 ### Terraform → cluster
 
-Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-iac/tofu-controller)**, not by a human in the loop. The `components/terraform` Component injects a `Terraform/<layer>` custom resource per layer (e.g. `Terraform/99-services`) with `approvePlan: auto` and a 1h reconcile interval, sourcing the same `GitRepository`. Pushing a `.tf` change to `main` triggers an automatic plan and apply; the controller persists Terraform state itself (`backendConfig.disable: true`). The `backend "gcs"` block inside each `.tf` is only used by rare, manual `terraform apply` runs (see [`configs/clusters/README.md`](configs/clusters/README.md)).
+Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-iac/tofu-controller)**, not by a human in the loop. The `components/terraform` Component injects a `Terraform/<layer>` custom resource per layer (e.g. `Terraform/99-services`) with `approvePlan: auto` and a 1h reconcile interval, sourcing the same `GitRepository`. Pushing a `.tf` change to `main` triggers an automatic plan and apply. With `backendConfig.disable: true` the controller manages **no state of its own** — state persists in GCS via the `backend "gcs"` block in each layer's root `.tf`, the same state used by rare, manual `terraform apply` runs (see [`configs/clusters/README.md`](configs/clusters/README.md)). If that state is ever lost or re-keyed, `random_password` values regenerate and the secrets they feed (e.g. database passwords) silently rotate — so databases must converge their credentials at startup (see coder's `coder-db-sync` init container) rather than assume the secret never changed.
 
 ### Image updates → cluster
 
@@ -491,7 +491,7 @@ Verify the generated files in `generated/03-applications/<app-name>/`.
 |-------------|------|----------|-----------|-------|
 | beets | Deployment | - | default | Music library |
 | calibre | Deployment | - | default | eBook library |
-| coder | Helm | PostgreSQL (nested `coder-db`) | coder | Code server |
+| coder | Helm | PostgreSQL (sidecar; `coder-db-sync` converges creds at start) | coder | Code server |
 | dae | Deployment | - | default | Network proxy (Multus static IP) |
 | jellyfin | Deployment | - | default | Media server |
 | kea | Deployment | - | default | DHCP server (Multus static IP, HA with vyos) |
