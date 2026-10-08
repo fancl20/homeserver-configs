@@ -54,6 +54,12 @@
     },
   },
 
+  PodSpec(spec):: self {
+    PodTemplate+: {
+      spec+: spec,
+    },
+  },
+
   DNSConfig(config):: self {
     PodTemplate+: {
       spec+: {

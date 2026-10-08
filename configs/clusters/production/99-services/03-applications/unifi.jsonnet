@@ -31,6 +31,17 @@ app.Base('unifi').Deployment()
       { name: 'unifi-db', mountPath: '/data/db' },
       { name: 'config', mountPath: '/docker-entrypoint-initdb.d' },
     ],
+    startupProbe: {
+      exec: { command: ['mongosh', '--quiet', '--eval', 'db.adminCommand({ ping: 1 })'] },
+      periodSeconds: 10,
+      failureThreshold: 36,
+    },
+    livenessProbe: {
+      exec: { command: ['mongosh', '--quiet', '--eval', 'db.adminCommand({ ping: 1 })'] },
+      periodSeconds: 30,
+      timeoutSeconds: 10,
+      failureThreshold: 5,
+    },
   },
   {
     name: 'nginx',
@@ -43,6 +54,35 @@ app.Base('unifi').Deployment()
 .PodVolumes([
   { name: 'config', configMap: { name: 'unifi' } },
 ])
+.PodInitContainers([
+  {
+    // UniFi only auto-repairs its database when mongo is embedded; with the
+    // external sidecar an unclean shutdown leaves mongod unable to start until
+    // `mongod --repair` runs. A non-empty mongod.lock (or an interrupted
+    // repair) is mongod's own unclean-shutdown marker.
+    name: 'mongo-repair',
+    image: images.mongo,
+    command: [
+      '/bin/sh',
+      '-ec',
+      |||
+        if [ ! -s /data/db/mongod.lock ] && [ ! -f /data/db/_repair_incomplete ]; then
+          echo 'mongodb: clean shutdown, no repair needed'
+          exit 0
+        fi
+        echo 'mongodb: unclean shutdown detected, running repair'
+        exec gosu mongodb mongod --dbpath /data/db --repair
+      |||,
+    ],
+    volumeMounts: [
+      { name: 'unifi-db', mountPath: '/data/db' },
+    ],
+  },
+])
+.PodSpec({
+  // Give mongod room for its ~15s shutdown quiesce on SIGTERM.
+  terminationGracePeriodSeconds: 90,
+})
 .PodAnnotations({
   'k8s.v1.cni.cncf.io/networks': std.manifestJson([
     {

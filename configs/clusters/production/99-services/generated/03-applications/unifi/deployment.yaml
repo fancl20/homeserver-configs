@@ -84,7 +84,32 @@
                      }
                   ],
                   "image": "docker.io/library/mongo",
+                  "livenessProbe": {
+                     "exec": {
+                        "command": [
+                           "mongosh",
+                           "--quiet",
+                           "--eval",
+                           "db.adminCommand({ ping: 1 })"
+                        ]
+                     },
+                     "failureThreshold": 5,
+                     "periodSeconds": 30,
+                     "timeoutSeconds": 10
+                  },
                   "name": "mongo",
+                  "startupProbe": {
+                     "exec": {
+                        "command": [
+                           "mongosh",
+                           "--quiet",
+                           "--eval",
+                           "db.adminCommand({ ping: 1 })"
+                        ]
+                     },
+                     "failureThreshold": 36,
+                     "periodSeconds": 10
+                  },
                   "volumeMounts": [
                      {
                         "mountPath": "/data/db",
@@ -109,7 +134,25 @@
                }
             ],
             "enableServiceLinks": false,
+            "initContainers": [
+               {
+                  "command": [
+                     "/bin/sh",
+                     "-ec",
+                     "if [ ! -s /data/db/mongod.lock ] && [ ! -f /data/db/_repair_incomplete ]; then\n  echo 'mongodb: clean shutdown, no repair needed'\n  exit 0\nfi\necho 'mongodb: unclean shutdown detected, running repair'\nexec gosu mongodb mongod --dbpath /data/db --repair\n"
+                  ],
+                  "image": "docker.io/library/mongo",
+                  "name": "mongo-repair",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/data/db",
+                        "name": "unifi-db"
+                     }
+                  ]
+               }
+            ],
             "serviceAccountName": "unifi",
+            "terminationGracePeriodSeconds": 90,
             "volumes": [
                {
                   "configMap": {
