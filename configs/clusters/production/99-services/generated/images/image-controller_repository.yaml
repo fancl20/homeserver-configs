@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "image-controller",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "registry.local.d20.fan/fancl20/image-controller",
+      "interval": "1h"
+   }
+}

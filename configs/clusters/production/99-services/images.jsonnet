@@ -50,6 +50,10 @@ app.Image('git')
 .Repository('docker.io/alpine/git')
 .Policy(app.DefaultPolicy.Semver(pattern='^v'))
 +
+app.Image('image-controller')
+.Repository('registry.local.d20.fan/fancl20/image-controller')
+.Policy(app.DefaultPolicy.Semver('*-testing-'))
++
 app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
 .Policy(app.DefaultPolicy.LinuxServer('*-1', pattern='^.*-ls\\d{3,}$'))
@@ -85,6 +89,10 @@ app.Image('postgres')
   filterTags: { pattern: '^[0-9]+\\.[0-9]+$' },
   policy: { numerical: { order: 'asc' } },
 })
++
+app.Image('python')
+.Repository('docker.io/library/python')
+.Policy(app.DefaultPolicy.Semver('*-slim', pattern='^.*-slim$'))
 +
 app.Image('qbittorrent')
 .Repository('lscr.io/linuxserver/qbittorrent')

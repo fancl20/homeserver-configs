@@ -1,0 +1,116 @@
+---
+# ContainerImages: declarative image builds from the configs GitRepository.
+#
+# The tag template reproduces the Argo scheme: <version>-<debian base tag>,
+# e.g. 2.0.2-testing-20260824, which is what the dae/chrome semver ranges
+# ('*-testing-') and the image-automation setters match on.
+#
+# dae/roon/chrome stay suspended until the Argo CronWorkflow is removed;
+# the nightly schedule then takes over unchanged.
+apiVersion: d20.fan/v1alpha1
+kind: ContainerImage
+metadata:
+  name: image-controller
+  namespace: continuous
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: configs
+    namespace: flux-system
+  context: 99-services/02-continuous/controller
+  image: fancl20/image-controller
+  # Static version: bump it to release — with an unchanged rendered tag a
+  # rebuild would silently mutate the pushed digest, so revision changes
+  # alone no longer trigger a build.
+  version: 0.1.0
+  tag: '{{ version }}-{{ base }}'
+  baseRef:
+    name: debian
+    namespace: flux-system
+  interval: 10m
+---
+apiVersion: d20.fan/v1alpha1
+kind: ContainerImage
+metadata:
+  name: dae
+  namespace: continuous
+  annotations:
+    # Suspend while the Argo CronWorkflow still owns the nightly builds;
+    # flip to false when Argo Workflows is removed.
+    d20.fan/notice: suspended-pending-argo-removal
+spec:
+  suspend: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+    namespace: flux-system
+  context: images/dae
+  image: fancl20/dae
+  tag: '{{ version }}-{{ base }}'
+  update:
+    command: [python3, update.py, version]
+    versionFile: VERSION
+  baseRef:
+    name: debian
+    namespace: flux-system
+  buildArgs:
+    FETCHER: docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+  schedule: 0 3 * * *
+  timeZone: Australia/Sydney
+  interval: 10m
+---
+apiVersion: d20.fan/v1alpha1
+kind: ContainerImage
+metadata:
+  name: roon
+  namespace: continuous
+  annotations:
+    d20.fan/notice: suspended-pending-argo-removal
+spec:
+  suspend: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+    namespace: flux-system
+  context: images/roon
+  image: fancl20/roon
+  tag: '{{ version }}-{{ base }}'
+  update:
+    command: [python3, update.py, version]
+    versionFile: VERSION
+  baseRef:
+    name: debian
+    namespace: flux-system
+  buildArgs:
+    FETCHER: docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+  schedule: 0 3 * * *
+  timeZone: Australia/Sydney
+  interval: 10m
+---
+apiVersion: d20.fan/v1alpha1
+kind: ContainerImage
+metadata:
+  name: chrome
+  namespace: continuous
+  annotations:
+    d20.fan/notice: suspended-pending-argo-removal
+spec:
+  suspend: true
+  sourceRef:
+    kind: GitRepository
+    name: configs
+    namespace: flux-system
+  context: images/chrome
+  image: fancl20/chrome
+  tag: '{{ version }}-{{ base }}'
+  update:
+    command: [python3, update.py, version]
+    versionFile: VERSION
+  baseRef:
+    name: debian
+    namespace: flux-system
+  buildArgs:
+    FETCHER: docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+  schedule: 0 3 * * *
+  timeZone: Australia/Sydney
+  interval: 10m

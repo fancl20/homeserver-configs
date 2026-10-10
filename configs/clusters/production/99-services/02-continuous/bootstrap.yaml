@@ -1,0 +1,118 @@
+---
+# Bootstrap: build the image-controller image once, before the controller
+# itself exists. Runs entirely on public images, fetches the configs artifact
+# from source-controller, and pushes a sentinel tag.
+#
+# NOT applied by Flux (see the ignore annotation below): as a Flux-managed
+# manifest it would run on merge and be re-created after every TTL expiry,
+# rebuilding whatever main holds on a weekly cadence nobody asked for. Apply
+# it by hand on a fresh cluster or after a registry wipe:
+#
+#   kubectl apply -f configs/clusters/production/99-services/02-continuous/bootstrap.yaml
+#
+# Recovery then flows through image automation: with an empty registry the
+# sentinel is the only tag, the image-controller ImagePolicy (semver
+# *-testing-, 1h scan) selects it, and ImageUpdateAutomation rewrites the
+# Deployment pin — expect up to ~1.5h before the controller starts. Its first
+# real build pushes <version>-testing-<base>, which outranks 0.0.0 and moves
+# the pin back up.
+#
+# Idempotent (re-pushes the same tag); backoffLimit rides out the
+# registry/DNS/network-policy chain coming up. The artifact is fetched from
+# latest.tar.gz without digest verification — this Job is the one-shot
+# exception; steady-state builds always pin and verify the digest.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: image-controller-bootstrap
+  namespace: continuous
+  annotations:
+    kustomize.toolkit.fluxcd.io/ignore: "true"
+spec:
+  backoffLimit: 20
+  activeDeadlineSeconds: 3600
+  ttlSecondsAfterFinished: 604800
+  template:
+    metadata:
+      labels:
+        d20.fan/container-image: image-controller
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: work
+        emptyDir:
+          sizeLimit: 8Gi
+      initContainers:
+      - name: prepare
+        image: docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+        command:
+        - python3
+        - -c
+        - |
+          import os, pathlib, tarfile, urllib.request
+          src = pathlib.Path('/work/src')
+          src.mkdir(parents=True, exist_ok=True)
+          url = 'http://source-controller.flux-system.svc.cluster.local./gitrepository/flux-system/configs/latest.tar.gz'
+          buf = pathlib.Path('/tmp/artifact.tar.gz')
+          with urllib.request.urlopen(url, timeout=300) as r, buf.open('wb') as f:
+            for chunk in iter(lambda: r.read(1 << 20), b''):
+              f.write(chunk)
+          with tarfile.open(buf, mode='r:gz') as tf:
+            for m in tf.getmembers():
+              n = os.path.normpath(m.name)
+              if n.startswith('/') or '..' in pathlib.PurePosixPath(n).parts:
+                raise SystemExit(f'unsafe path in artifact: {m.name}')
+            tf.extractall(src, filter='data')
+          print('bootstrap: artifact extracted')
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        volumeMounts:
+        - name: work
+          mountPath: /work
+      containers:
+      - name: build
+        image: docker.io/moby/buildkit:v0.32.2-rootless # {"$imagepolicy": "flux-system:buildkit"}
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -eu
+          cd "/work/src/$CONTEXT"
+          ref="$REGISTRY_HOST/$IMAGE_NAME:$TAG"
+          echo "bootstrap: building $ref"
+          buildctl-daemonless.sh build \
+            --frontend dockerfile.v0 \
+            --local context=. \
+            --local dockerfile=. \
+            --output "type=image,name=$ref,push=true" \
+            --export-cache type=inline \
+            --import-cache "type=registry,ref=$ref"
+          echo "bootstrap: pushed $ref"
+        env:
+        - name: BUILDKITD_FLAGS
+          value: --oci-worker-no-process-sandbox
+        - name: REGISTRY_HOST
+          value: registry.local.d20.fan
+        - name: IMAGE_NAME
+          value: fancl20/image-controller
+        - name: TAG
+          # Sentinel: semver-below every real release, so the ImagePolicy
+          # only ever selects it when the registry holds no real tag.
+          value: 0.0.0-testing-00000000
+        - name: CONTEXT
+          value: 99-services/02-continuous/controller
+        securityContext:
+          seccompProfile:
+            type: Unconfined
+          appArmorProfile:
+            type: Unconfined
+          runAsUser: 1000
+          runAsGroup: 1000
+        workingDir: /work/src
+        volumeMounts:
+        - name: work
+          mountPath: /work
