@@ -46,10 +46,6 @@ app.Image('external-dns')
 .Repository('registry.k8s.io/external-dns/external-dns')
 .Policy(app.DefaultPolicy.Semver())
 +
-app.Image('git')
-.Repository('docker.io/alpine/git')
-.Policy(app.DefaultPolicy.Semver(pattern='^v'))
-+
 app.Image('image-controller')
 .Repository('registry.local.d20.fan/fancl20/image-controller')
 .Policy(app.DefaultPolicy.Semver('*-testing-'))

@@ -15,7 +15,7 @@ var prepareScript string
 // through a heredoc rather than a pipe so the accumulated positional
 // parameters survive the loop's (sub)shell, and never evals anything. The
 // inline cache is imported from the ref being pushed (which carries the cache
-// of previous builds of the same tag), matching the Argo template.
+// of previous builds of the same tag).
 const buildScript = `set -eu
 ref="$REGISTRY_HOST/$IMAGE_NAME:$(cat "$TAG_FILE")"
 echo "build: $ref"

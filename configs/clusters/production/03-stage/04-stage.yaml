@@ -27,8 +27,3 @@ spec:
     kind: HelmRelease
     name: rook-ceph
     namespace: rook-ceph
-  # Argo Workflows
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: argo-server
-    namespace: argo

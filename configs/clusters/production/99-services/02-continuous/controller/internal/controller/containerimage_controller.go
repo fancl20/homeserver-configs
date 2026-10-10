@@ -150,8 +150,7 @@ func (r *ContainerImageReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	if job != nil {
 		if trigger != nil && job.Annotations[build.AnnTriggerKey] != pendingKey {
-			// Replace semantics, mirroring the Argo CronWorkflow's
-			// concurrencyPolicy: the pending trigger wins.
+			// Replace semantics: the pending trigger wins.
 			if err := r.Delete(ctx, job, client.PropagationPolicy(metav1.DeletePropagationBackground)); err != nil && !apierrors.IsNotFound(err) {
 				return ctrl.Result{}, err
 			}

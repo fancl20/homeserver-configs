@@ -45,14 +45,6 @@ def main():
       'deployments/multus-daemonset.yml',
   )
 
-  # Argo Workflows
-  argo_workflows_ver = get_github_latest_release('argoproj/argo-workflows')
-  get_url(
-      pathlib.Path('04-stage', 'argo-workflows', 'argo-workflows.yaml'),
-      'https://github.com/argoproj/argo-workflows/'
-      f'releases/download/v{argo_workflows_ver}/install.yaml'
-  )
-
   # 99-services
   subprocess.check_call([
       sys.executable,

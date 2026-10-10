@@ -87,8 +87,8 @@ type JobInput struct {
 	Now           time.Time
 }
 
-// BuildJob renders the buildkit Job. The build container's security context
-// and buildctl invocation mirror the proven Argo Workflows template.
+// BuildJob renders the buildkit Job: a prepare init container (artifact
+// fetch, update command, tag render) and a rootless build container.
 func BuildJob(in JobInput) *batchv1.Job {
 	ci := in.ContainerImage
 	spec := ci.Spec

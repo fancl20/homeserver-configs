@@ -1,8 +1,7 @@
 # image-controller
 
 A small Flux-native controller that builds container images from Flux
-`GitRepository` artifacts and pushes them to the local registry, replacing the
-image-building role of the Argo Workflows `CronWorkflow`.
+`GitRepository` artifacts and pushes them to the local registry.
 
 Each `ContainerImage` (d20.fan/v1alpha1) declares an image that must exist:
 a source artifact revision, a build context inside it, a tag template, and an

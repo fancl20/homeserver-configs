@@ -72,7 +72,7 @@ func TestShortSHA(t *testing.T) {
 	}
 }
 
-// TestBuildJobGolden pins the Job shape against the proven Argo template.
+// TestBuildJobGolden pins the Job shape against regressions.
 func TestBuildJobGolden(t *testing.T) {
 	ci := &v1alpha1.ContainerImage{
 		ObjectMeta: metav1.ObjectMeta{

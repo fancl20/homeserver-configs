@@ -46,7 +46,7 @@ Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-i
 
 ### Image updates → cluster
 
-Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, `chrome`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. An Argo `CronWorkflow` still exists as the previous build mechanism, pending removal; the `dae`/`roon`/`chrome` `ContainerImage` CRs are suspended until then.
+Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, `chrome`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. The `dae`/`roon`/`chrome` images are built nightly by their `ContainerImage` CRs.
 
 ## Directory Structure
 
@@ -61,7 +61,7 @@ configs/
 │       ├── 01-stage/        # Core infrastructure (1Password, MetalLB config, Vault)
 │       ├── 02-stage/        # Security and networking (cert-manager, external-secrets, nginx-gateway)
 │       ├── 03-stage/        # Workload management (Flux image-update, tofu-controller repos)
-│       ├── 04-stage/        # Storage and workloads (Argo Workflows, Rook Ceph, Multus CNI)
+│       ├── 04-stage/        # Storage and workloads (Rook Ceph, Multus CNI)
 │       ├── 05-stage/        # Network configuration (Multus macvlan, Rook Ceph cluster)
 │       └── 99-services/     # Applications and services
 │           ├── 00-libsonnet/    # Jsonnet libraries
@@ -205,7 +205,7 @@ The repository includes custom images built and maintained in the `images/` dire
 Custom images are built in-cluster by **image-controller** ([`99-services/02-continuous/`](../../configs/clusters/production/99-services/02-continuous/)), a Flux-native Go controller whose source lives at `02-continuous/controller/`. Each image is declared as a `ContainerImage` CR (`d20.fan/v1alpha1`, ns `continuous`) in `02-continuous/container-images.yaml`:
 
 - **Trigger**: first observation, a spec change, a new `GitRepository/configs` artifact revision (skipped for static-version images whose rendered tag would not change — rebuilding would silently mutate the pushed digest), a nightly `schedule` (for images whose version is discovered from upstream at build time), a base-tag change (`baseRef` → the `debian` policy), or a manual `reconcile.fluxcd.io/requestedAt` annotation. Triggers are consumed on success, not when the build Job is created: a failed manual or nightly build keeps retrying and stays `Ready=False` instead of being repainted from the last pushed image.
-- **Build**: the controller creates a rootless buildkit Job that fetches the source-controller artifact tarball (digest-verified), runs the context's `update.py version`, renders the tag template (`{{ version }}-{{ base }}` → e.g. `2.0.2-testing-20260824`), and pushes with `buildctl` (inline registry cache) — the same invocation the Argo `CronWorkflow` used.
+- **Build**: the controller creates a rootless buildkit Job that fetches the source-controller artifact tarball (digest-verified), runs the context's `update.py version`, renders the tag template (`{{ version }}-{{ base }}` → e.g. `2.0.2-testing-20260824`), and pushes with `buildctl` (inline registry cache, imported from the pushed ref).
 - **Rollout**: the existing ImagePolicy/Setters machinery picks the new tag up.
 
 The controller builds its own image (`image-controller` CR, self-hosting; releasing = bumping the CR's `spec.version`. `02-continuous/bootstrap.yaml` seeds it on a fresh cluster — it carries a `kustomize.toolkit.fluxcd.io/ignore` annotation and is applied by hand with `kubectl apply`). Development workflow and operational commands are documented in [`02-continuous/controller/README.md`](../../configs/clusters/production/99-services/02-continuous/controller/README.md). When adding a new custom image: create `images/<name>/{Dockerfile,update.py}` (follow dae/roon/chrome), add a `ContainerImage` CR, and add the `images.jsonnet` + `components/images` entries as for any other image.
