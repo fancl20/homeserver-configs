@@ -1,0 +1,77 @@
+{
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
+   "metadata": {
+      "annotations": {
+         "kustomize.toolkit.fluxcd.io/substitute": "disabled"
+      },
+      "name": "image-controller",
+      "namespace": "continuous"
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "image-controller"
+         }
+      },
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "image-controller"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "image": "registry.local.d20.fan/fancl20/image-controller",
+                  "livenessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": "healthz"
+                     }
+                  },
+                  "name": "image-controller",
+                  "ports": [
+                     {
+                        "containerPort": 8081,
+                        "name": "healthz"
+                     }
+                  ],
+                  "readinessProbe": {
+                     "httpGet": {
+                        "path": "/readyz",
+                        "port": "healthz"
+                     }
+                  },
+                  "securityContext": {
+                     "allowPrivilegeEscalation": false,
+                     "capabilities": {
+                        "drop": [
+                           "ALL"
+                        ]
+                     },
+                     "readOnlyRootFilesystem": true
+                  }
+               }
+            ],
+            "enableServiceLinks": false,
+            "securityContext": {
+               "runAsNonRoot": true,
+               "seccompProfile": {
+                  "type": "RuntimeDefault"
+               }
+            },
+            "serviceAccountName": "image-controller",
+            "volumes": [ ]
+         }
+      }
+   }
+}

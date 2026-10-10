@@ -71,6 +71,19 @@ func buildKitImage(ctx context.Context, c client.Reader, cfg *config.Config) str
 	return cfg.BuildKitFallbackImage
 }
 
+// prepareImage resolves the prepare init container image from the python
+// ImagePolicy, falling back to the pinned default when the policy has no tag
+// yet.
+func prepareImage(ctx context.Context, c client.Reader, cfg *config.Config) string {
+	policy := &imagev1.ImagePolicy{}
+	key := client.ObjectKey{Namespace: cfg.PythonPolicyNamespace, Name: cfg.PythonPolicyName}
+	if err := c.Get(ctx, key, policy); err == nil &&
+		policy.Status.LatestRef != nil && policy.Status.LatestRef.Name != "" {
+		return policy.Status.LatestRef.Name
+	}
+	return cfg.PrepareImage
+}
+
 // isNotFound reports whether err is a notFoundError.
 func isNotFound(err error) bool {
 	var nf *notFoundError

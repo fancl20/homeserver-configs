@@ -2,14 +2,15 @@
 # itself exists. Runs entirely on public images and in-cluster services: the
 # prepare container reads the configs artifact URL and digest from the
 # GitRepository status (using the controller's own ServiceAccount, whose
-# ClusterRole in image-controller.yaml grants read access to gitrepositories),
-# downloads and verifies the tarball, and the build pushes a sentinel tag.
+# ClusterRole in image-controller.jsonnet's generated manifests grants read
+# access to gitrepositories), downloads and verifies the tarball, and the
+# build pushes a sentinel tag.
 #
 # NOT applied by Flux (see the ignore annotation below): as a Flux-managed
 # manifest it would run on merge and be re-created after every TTL expiry,
 # rebuilding whatever main holds on a weekly cadence nobody asked for. Apply
 # it by hand on a fresh cluster or after a registry wipe, once Flux has
-# applied image-controller.yaml (the RBAC must exist):
+# applied the generated image-controller manifests (the RBAC must exist):
 #
 #   kubectl apply -f configs/clusters/production/99-services/02-continuous/bootstrap.yaml
 #

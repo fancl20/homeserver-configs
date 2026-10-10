@@ -79,9 +79,12 @@ type JobInput struct {
 	ArtifactDigest string
 	ArtifactRev    string
 	BaseTag        string
-	BuildKitImage  string
-	Config         *config.Config
-	Now            time.Time
+	// PrepareImage overrides Config.PrepareImage (the python policy tag,
+	// resolved by the reconciler); empty falls back to the config value.
+	PrepareImage  string
+	BuildKitImage string
+	Config        *config.Config
+	Now           time.Time
 }
 
 // BuildJob renders the buildkit Job. The build container's security context
@@ -97,6 +100,9 @@ func BuildJob(in JobInput) *batchv1.Job {
 	}
 
 	prepareImage := in.Config.PrepareImage
+	if in.PrepareImage != "" {
+		prepareImage = in.PrepareImage
+	}
 	var updateCommand string
 	var versionFile string
 	if spec.Update != nil {

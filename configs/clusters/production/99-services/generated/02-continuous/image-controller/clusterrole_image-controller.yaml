@@ -1,0 +1,79 @@
+{
+   "apiVersion": "rbac.authorization.k8s.io/v1",
+   "kind": "ClusterRole",
+   "metadata": {
+      "name": "image-controller"
+   },
+   "rules": [
+      {
+         "apiGroups": [
+            "d20.fan"
+         ],
+         "resources": [
+            "containerimages"
+         ],
+         "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "update",
+            "patch",
+            "delete"
+         ]
+      },
+      {
+         "apiGroups": [
+            "d20.fan"
+         ],
+         "resources": [
+            "containerimages/status",
+            "containerimages/finalizers"
+         ],
+         "verbs": [
+            "get",
+            "update",
+            "patch"
+         ]
+      },
+      {
+         "apiGroups": [
+            "source.toolkit.fluxcd.io"
+         ],
+         "resources": [
+            "gitrepositories"
+         ],
+         "verbs": [
+            "get",
+            "list",
+            "watch"
+         ]
+      },
+      {
+         "apiGroups": [
+            "image.toolkit.fluxcd.io"
+         ],
+         "resources": [
+            "imagepolicies"
+         ],
+         "verbs": [
+            "get",
+            "list",
+            "watch"
+         ]
+      },
+      {
+         "apiGroups": [
+            "",
+            "events.k8s.io"
+         ],
+         "resources": [
+            "events"
+         ],
+         "verbs": [
+            "create",
+            "patch"
+         ]
+      }
+   ]
+}

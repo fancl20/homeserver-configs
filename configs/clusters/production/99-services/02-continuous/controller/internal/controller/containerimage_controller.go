@@ -254,6 +254,7 @@ func (r *ContainerImageReconciler) createJob(ctx context.Context, ci *v1alpha1.C
 		ArtifactDigest: artifact.Digest,
 		ArtifactRev:    artifact.Revision,
 		BaseTag:        baseTag,
+		PrepareImage:   prepareImage(ctx, r.Client, r.Config),
 		BuildKitImage:  buildKitImage(ctx, r.Client, r.Config),
 		Config:         r.Config,
 		Now:            now,

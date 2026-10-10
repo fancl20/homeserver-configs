@@ -19,9 +19,15 @@ type Config struct {
 	// Location is the default time zone for schedules and date template vars.
 	Location *time.Location
 
-	// PrepareImage is the default image for the prepare init container and
-	// update commands (python).
+	// PrepareImage is the fallback image for the prepare init container and
+	// update commands, used while the python ImagePolicy has not selected a
+	// tag yet.
 	PrepareImage string
+
+	// PythonPolicyNamespace and PythonPolicyName select the ImagePolicy
+	// tracking the python image used for the prepare init container.
+	PythonPolicyNamespace string
+	PythonPolicyName      string
 
 	// BuildKitRepo is the buildkit image repository; the tag is resolved from
 	// BuildKitImagePolicy.
@@ -55,7 +61,8 @@ func FromFlags(fs *flag.FlagSet, args []string) (*Config, error) {
 		registryHost   = fs.String("registry-host", "registry.local.d20.fan", "registry images are pushed to")
 		buildNamespace = fs.String("build-namespace", "continuous", "namespace build Jobs run in")
 		timeZone       = fs.String("timezone", "Australia/Sydney", "default time zone for schedules and dates")
-		prepareImage   = fs.String("prepare-image", "docker.io/library/python:3.14.2-slim", "image for the prepare init container")
+		pythonPolicy   = fs.String("python-image-policy", "flux-system/python", "ImagePolicy tracking the python image tag for the prepare init container (namespace/name)")
+		prepareImage   = fs.String("prepare-image", "docker.io/library/python:3.14.2-slim", "prepare image used when the python policy has no tag yet")
 		buildkitRepo   = fs.String("buildkit-repo", "docker.io/moby/buildkit", "buildkit image repository")
 		buildkitPolicy = fs.String("buildkit-image-policy", "flux-system/buildkit", "ImagePolicy tracking the buildkit image tag (namespace/name)")
 		buildkitPinned = fs.String("buildkit-image", "docker.io/moby/buildkit:v0.32.2-rootless", "buildkit image used when the policy has no tag yet")
@@ -73,7 +80,12 @@ func FromFlags(fs *flag.FlagSet, args []string) (*Config, error) {
 		return nil, fmt.Errorf("invalid --timezone: %w", err)
 	}
 
-	policyNamespace, policyName, ok := splitNamespacedName(*buildkitPolicy)
+	pythonNamespace, pythonName, ok := splitNamespacedName(*pythonPolicy)
+	if !ok {
+		return nil, fmt.Errorf("invalid --python-image-policy %q: want namespace/name", *pythonPolicy)
+	}
+
+	buildkitNamespace, buildkitName, ok := splitNamespacedName(*buildkitPolicy)
 	if !ok {
 		return nil, fmt.Errorf("invalid --buildkit-image-policy %q: want namespace/name", *buildkitPolicy)
 	}
@@ -83,9 +95,11 @@ func FromFlags(fs *flag.FlagSet, args []string) (*Config, error) {
 		BuildNamespace:          *buildNamespace,
 		Location:                loc,
 		PrepareImage:            *prepareImage,
+		PythonPolicyNamespace:   pythonNamespace,
+		PythonPolicyName:        pythonName,
 		BuildKitRepo:            *buildkitRepo,
-		BuildKitPolicyNamespace: policyNamespace,
-		BuildKitPolicyName:      policyName,
+		BuildKitPolicyNamespace: buildkitNamespace,
+		BuildKitPolicyName:      buildkitName,
 		BuildKitFallbackImage:   *buildkitPinned,
 		JobTTL:                  *jobTTL,
 		JobTimeout:              *jobTimeout,
