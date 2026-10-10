@@ -16,7 +16,7 @@ spec:
     kind: GitRepository
     name: configs
     namespace: flux-system
-  context: 99-services/02-continuous/controller
+  context: configs/clusters/production/99-services/02-continuous/controller
   image: fancl20/image-controller
   # Static version: bump it to release — with an unchanged rendered tag a
   # rebuild would silently mutate the pushed digest, so revision changes

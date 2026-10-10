@@ -122,7 +122,7 @@ spec:
           # only ever selects it when the registry holds no real tag.
           value: 0.0.0-testing-00000000
         - name: CONTEXT
-          value: 99-services/02-continuous/controller
+          value: configs/clusters/production/99-services/02-continuous/controller
         securityContext:
           seccompProfile:
             type: Unconfined
