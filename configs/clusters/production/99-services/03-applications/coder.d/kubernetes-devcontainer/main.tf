@@ -235,6 +235,8 @@ resource "kubernetes_deployment_v1" "main" {
       spec {
         security_context {}
 
+        service_account_name = "coder-workspace"
+
         container {
           name              = "dev"
           image             = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image

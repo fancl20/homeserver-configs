@@ -25,6 +25,13 @@ Provision Devcontainers as [Coder workspaces](https://coder.com/docs/workspaces)
 
 This template authenticates using a `~/.kube/config`, if present on the server, or via built-in authentication if the Coder provisioner is running on Kubernetes with an authorized ServiceAccount. To use another [authentication method](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#authentication), edit the template.
 
+## Kubernetes Access
+
+Workspace pods run as the `coder-workspace` ServiceAccount in the `coder` namespace
+(defined in [`../coderd.yaml`](../coderd.yaml)), bound to the built-in `view`
+ClusterRole for cluster-wide read-only access. Existing workspaces pick this up after a
+restart once the template is updated.
+
 ## Architecture
 
 Coder supports devcontainers with [envbuilder](https://github.com/coder/envbuilder), an open source project. Read more about this in [Coder's documentation](https://coder.com/docs/templates/dev-containers).
