@@ -1,4 +1,3 @@
----
 # image-controller: builds ContainerImages from Flux source artifacts.
 # The CRD lives in d20.fan_containerimages.yaml (controller-gen output).
 apiVersion: v1
@@ -143,7 +142,7 @@ spec:
       - name: image-controller
         image: registry.local.d20.fan/fancl20/image-controller:0.1.0-testing-20260824
         args:
-        - --prepare-image=docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+        - docker.io/library/python:3.14.8-slim # {"$imagepolicy": "flux-system:python"}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

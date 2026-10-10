@@ -1,4 +1,3 @@
----
 # Bootstrap: build the image-controller image once, before the controller
 # itself exists. Runs entirely on public images, fetches the configs artifact
 # from source-controller, and pushes a sentinel tag.
@@ -47,7 +46,7 @@ spec:
           sizeLimit: 8Gi
       initContainers:
       - name: prepare
-        image: docker.io/library/python:3.14.2-slim # {"$imagepolicy": "flux-system:python"}
+        image: docker.io/library/python:3.14.8-slim # {"$imagepolicy": "flux-system:python"}
         command:
         - python3
         - -c
@@ -75,7 +74,7 @@ spec:
           mountPath: /work
       containers:
       - name: build
-        image: docker.io/moby/buildkit:v0.32.2-rootless # {"$imagepolicy": "flux-system:buildkit"}
+        image: docker.io/moby/buildkit:v0.34.0-rootless # {"$imagepolicy": "flux-system:buildkit"}
         command:
         - /bin/sh
         - -c
