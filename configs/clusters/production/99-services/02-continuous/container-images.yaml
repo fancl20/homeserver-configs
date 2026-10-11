@@ -1,7 +1,7 @@
 # ContainerImages: declarative image builds from the configs GitRepository.
 #
 # The tag template is <version>-<debian base tag>, e.g.
-# 2.0.2-testing-20260824, which is what the dae/chrome semver ranges
+# 2.0.2-testing-20260824, which is what the dae semver ranges
 # ('*-testing-') and the image-automation setters match on.
 
 apiVersion: d20.fan/v1alpha1
@@ -63,31 +63,6 @@ spec:
     namespace: flux-system
   context: images/roon
   image: fancl20/roon
-  tag: '{{ version }}-{{ base }}'
-  update:
-    command: [python3, update.py, version]
-    versionFile: VERSION
-  baseRef:
-    name: debian
-    namespace: flux-system
-  buildArgs:
-    FETCHER: docker.io/library/python:3.14.8-slim # {"$imagepolicy": "flux-system:python"}
-  schedule: 0 3 * * *
-  timeZone: Australia/Sydney
-  interval: 10m
----
-apiVersion: d20.fan/v1alpha1
-kind: ContainerImage
-metadata:
-  name: chrome
-  namespace: continuous
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: configs
-    namespace: flux-system
-  context: images/chrome
-  image: fancl20/chrome
   tag: '{{ version }}-{{ base }}'
   update:
     command: [python3, update.py, version]

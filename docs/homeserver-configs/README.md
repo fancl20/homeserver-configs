@@ -46,7 +46,7 @@ Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-i
 
 ### Image updates → cluster
 
-Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, `chrome`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. The `dae`/`roon`/`chrome` images are built nightly by their `ContainerImage` CRs.
+Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. The `dae`/`roon` images are built nightly by their `ContainerImage` CRs.
 
 ## Directory Structure
 
@@ -196,7 +196,6 @@ The repository includes custom images built and maintained in the `images/` dire
 
 | Image | Description | Registry |
 |-------|-------------|----------|
-| chrome | Headless Chrome with MCP proxy | `registry.local.d20.fan/fancl20/chrome` |
 | dae | Network proxy tool | `registry.local.d20.fan/fancl20/dae` |
 | roon | Music server | `registry.local.d20.fan/fancl20/roon` |
 
@@ -208,7 +207,7 @@ Custom images are built in-cluster by **image-controller** ([`99-services/02-con
 - **Build**: the controller creates a rootless buildkit Job that fetches the source-controller artifact tarball (digest-verified), runs the context's `update.py version`, renders the tag template (`{{ version }}-{{ base }}` → e.g. `2.0.2-testing-20260824`), and pushes with `buildctl` (inline registry cache, imported from the pushed ref).
 - **Rollout**: the existing ImagePolicy/Setters machinery picks the new tag up.
 
-The controller builds its own image (`image-controller` CR, self-hosting; releasing = bumping the CR's `spec.version`. `02-continuous/bootstrap.yaml` seeds it on a fresh cluster — it carries a `kustomize.toolkit.fluxcd.io/ignore` annotation and is applied by hand with `kubectl apply`). Development workflow and operational commands are documented in [`02-continuous/controller/README.md`](../../configs/clusters/production/99-services/02-continuous/controller/README.md). When adding a new custom image: create `images/<name>/{Dockerfile,update.py}` (follow dae/roon/chrome), add a `ContainerImage` CR, and add the `images.jsonnet` + `components/images` entries as for any other image.
+The controller builds its own image (`image-controller` CR, self-hosting; releasing = bumping the CR's `spec.version`. `02-continuous/bootstrap.yaml` seeds it on a fresh cluster — it carries a `kustomize.toolkit.fluxcd.io/ignore` annotation and is applied by hand with `kubectl apply`). Development workflow and operational commands are documented in [`02-continuous/controller/README.md`](../../configs/clusters/production/99-services/02-continuous/controller/README.md). When adding a new custom image: create `images/<name>/{Dockerfile,update.py}` (follow dae/roon), add a `ContainerImage` CR, and add the `images.jsonnet` + `components/images` entries as for any other image.
 
 ## Application Patterns
 

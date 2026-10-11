@@ -43,7 +43,7 @@ type ContainerImageSpec struct {
 
 	// Tag is a template for the pushed tag. Variables: version, base, sha,
 	// date. The image-controller tag policy matches "<version>-testing-<date>"
-	// (Semver '*-testing-'), mirroring the dae/chrome schemes.
+	// (Semver '*-testing-'), mirroring the dae scheme.
 	// +kubebuilder:validation:MaxLength=128
 	// +kubebuilder:default=`{{ version }}`
 	Tag string `json:"tag,omitempty"`
