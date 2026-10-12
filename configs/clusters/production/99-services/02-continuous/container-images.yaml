@@ -46,7 +46,7 @@ spec:
     name: debian
     namespace: flux-system
   buildArgs:
-    FETCHER: docker.io/library/python:3.14.8-slim # {"$imagepolicy": "flux-system:python"}
+    FETCHER: docker.io/library/python:3.15.0-slim # {"$imagepolicy": "flux-system:python"}
   schedule: 0 3 * * *
   timeZone: Australia/Sydney
   interval: 10m
@@ -71,7 +71,7 @@ spec:
     name: debian
     namespace: flux-system
   buildArgs:
-    FETCHER: docker.io/library/python:3.14.8-slim # {"$imagepolicy": "flux-system:python"}
+    FETCHER: docker.io/library/python:3.15.0-slim # {"$imagepolicy": "flux-system:python"}
   schedule: 0 3 * * *
   timeZone: Australia/Sydney
   interval: 10m
