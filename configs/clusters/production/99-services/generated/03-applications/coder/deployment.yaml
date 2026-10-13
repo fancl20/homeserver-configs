@@ -1,6 +1,6 @@
 {
-   "apiVersion": "helm.toolkit.fluxcd.io/v2",
-   "kind": "HelmRelease",
+   "apiVersion": "apps/v1",
+   "kind": "Deployment",
    "metadata": {
       "annotations": {
          "kustomize.toolkit.fluxcd.io/substitute": "disabled"
@@ -9,37 +9,101 @@
       "namespace": "coder"
    },
    "spec": {
-      "chart": {
-         "spec": {
-            "chart": "coder",
-            "sourceRef": {
-               "kind": "HelmRepository",
-               "name": "coder"
-            }
+      "replicas": 1,
+      "selector": {
+         "matchLabels": {
+            "app.kubernetes.io/name": "coder"
          }
       },
-      "interval": "15m",
-      "values": {
-         "coder": {
-            "env": [
+      "strategy": {
+         "rollingUpdate": {
+            "maxSurge": 0,
+            "maxUnavailable": "100%"
+         }
+      },
+      "template": {
+         "metadata": {
+            "annotations": { },
+            "labels": {
+               "app.kubernetes.io/name": "coder"
+            }
+         },
+         "spec": {
+            "containers": [
                {
-                  "name": "CODER_PG_CONNECTION_URL",
-                  "valueFrom": {
-                     "secretKeyRef": {
-                        "key": "url",
-                        "name": "coder-db"
+                  "args": [
+                     "server"
+                  ],
+                  "command": [
+                     "/opt/coder"
+                  ],
+                  "env": [
+                     {
+                        "name": "CODER_HTTP_ADDRESS",
+                        "value": "0.0.0.0:8080"
+                     },
+                     {
+                        "name": "CODER_PG_CONNECTION_URL",
+                        "valueFrom": {
+                           "secretKeyRef": {
+                              "key": "url",
+                              "name": "coder-db"
+                           }
+                        }
+                     },
+                     {
+                        "name": "CODER_ACCESS_URL",
+                        "value": "https://coder.local.d20.fan"
+                     },
+                     {
+                        "name": "CODER_WILDCARD_ACCESS_URL",
+                        "value": "*.coder.local.d20.fan"
+                     },
+                     {
+                        "name": "CODER_DERP_SERVER_RELAY_URL",
+                        "value": "http://$(KUBE_POD_IP):8080"
+                     },
+                     {
+                        "name": "KUBE_POD_IP",
+                        "valueFrom": {
+                           "fieldRef": {
+                              "fieldPath": "status.podIP"
+                           }
+                        }
+                     }
+                  ],
+                  "image": "ghcr.io/coder/coder",
+                  "name": "coder",
+                  "ports": [
+                     {
+                        "containerPort": 8080,
+                        "name": "http",
+                        "protocol": "TCP"
+                     }
+                  ],
+                  "readinessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": "http"
+                     }
+                  },
+                  "resources": {
+                     "requests": {
+                        "memory": "1024Mi"
+                     }
+                  },
+                  "securityContext": {
+                     "allowPrivilegeEscalation": false,
+                     "runAsGroup": 1000,
+                     "runAsNonRoot": true,
+                     "runAsUser": 1000,
+                     "seccompProfile": {
+                        "type": "RuntimeDefault"
                      }
                   }
-               },
-               {
-                  "name": "CODER_ACCESS_URL",
-                  "value": "https://coder.local.d20.fan"
-               },
-               {
-                  "name": "CODER_WILDCARD_ACCESS_URL",
-                  "value": "*.coder.local.d20.fan"
                }
             ],
+            "enableServiceLinks": false,
             "initContainers": [
                {
                   "command": [
@@ -85,7 +149,7 @@
                         }
                      }
                   ],
-                  "image": "ghcr.io/coder/coder:latest",
+                  "image": "ghcr.io/coder/coder",
                   "name": "coder-init",
                   "restartPolicy": "Always"
                },
@@ -113,11 +177,8 @@
                   ]
                }
             ],
-            "resources": {
-               "requests": {
-                  "memory": "1024Mi"
-               }
-            },
+            "serviceAccountName": "coder",
+            "terminationGracePeriodSeconds": 60,
             "volumes": [
                {
                   "name": "coder-db",

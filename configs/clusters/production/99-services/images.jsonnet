@@ -16,6 +16,10 @@ app.Image('calibre')
 .Repository('lscr.io/linuxserver/calibre-web')
 .Policy(app.DefaultPolicy.LinuxServer(pattern='^.*-ls\\d{3,}$'))
 +
+app.Image('coder')
+.Repository('ghcr.io/coder/coder')
+.Policy(app.DefaultPolicy.Semver())
++
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')
 .Policy(app.DefaultPolicy.Semver('*-testing-'))

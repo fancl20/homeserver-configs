@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "coder",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "ghcr.io/coder/coder",
+      "interval": "1h"
+   }
+}
