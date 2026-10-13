@@ -509,6 +509,12 @@ module "claude-code" {
   agent_id            = coder_agent.main.id
   workdir             = local.checkout_dir
   install_claude_code = true
+  managed_settings = {
+    attribution = {
+      commit = ""
+      pr     = ""
+    }
+  }
   mcp = jsonencode({
     mcpServers = {
       "zread" = {
