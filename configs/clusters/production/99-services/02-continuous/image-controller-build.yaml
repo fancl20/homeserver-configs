@@ -1,0 +1,155 @@
+# The image-controller image is built outside the controller itself: this
+# CronJob keeps the registry holding the pinned VERSION, building it from
+# the configs artifact only when the tag is missing (fresh cluster, wiped
+# registry, or a release). Nightly runs are seconds-long no-ops while the
+# tag exists — re-pushing a present tag would silently mutate its digest,
+# and an unchanged tag rolls nothing anyway.
+#
+# Release: bump VERSION below (both containers) — the next run builds the
+# new tag, the image-controller ImagePolicy (semver) selects it, and
+# ImageUpdateAutomation re-pins the Deployment. Immediate build / disaster
+# recovery:
+#
+#   kubectl -n continuous create job --from=cronjob/image-controller-build <name>
+#
+# Base images (golang, distroless) are not tracked by any policy; their
+# updates ride along on each build. Unlike a bare Job, the jobTemplate is
+# mutable, so the setter-driven image bumps below never hit an
+# immutable-field wall.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: image-controller-build
+  namespace: continuous
+spec:
+  schedule: 0 4 * * *
+  timeZone: Australia/Sydney
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 20
+      activeDeadlineSeconds: 3600
+      ttlSecondsAfterFinished: 3600
+      template:
+        metadata:
+          labels:
+            d20.fan/container-image: image-controller
+        spec:
+          restartPolicy: Never
+          serviceAccountName: image-controller
+          securityContext:
+            fsGroup: 1000
+          volumes:
+          - name: work
+            emptyDir:
+              sizeLimit: 8Gi
+          initContainers:
+          - name: prepare
+            image: docker.io/library/python:3.15.0-slim # {"$imagepolicy": "flux-system:python"}
+            command:
+            - python3
+            - -c
+            - |
+              import hashlib, io, json, os, pathlib, ssl, tarfile, urllib.error, urllib.request
+
+              def get(url, token=None):
+                  req = urllib.request.Request(url, headers={'Authorization': token} if token else {})
+                  ctx = ssl.create_default_context(cafile='/var/run/secrets/kubernetes.io/serviceaccount/ca.crt') \
+                      if url.startswith('https://kubernetes.default.svc') else None
+                  with urllib.request.urlopen(req, timeout=300, context=ctx) as r:
+                      return r.read()
+
+              try:
+                  tags = json.loads(get(f'https://{REGISTRY_HOST}/v2/{IMAGE_NAME}/tags/list'))['tags'] or []
+              except urllib.error.HTTPError as e:
+                  if e.code != 404:
+                      raise
+                  tags = []  # repository not created yet: nothing has been built
+              if VERSION in tags:
+                  pathlib.Path('/work/skip').write_text('')
+                  print(f'build: {REGISTRY_HOST}/{IMAGE_NAME}:{VERSION} present, skipping')
+                  raise SystemExit(0)
+
+              sa = pathlib.Path('/var/run/secrets/kubernetes.io/serviceaccount')
+              token = 'Bearer ' + (sa / 'token').read_text()
+              repo = json.loads(get(
+                  'https://kubernetes.default.svc/apis/source.toolkit.fluxcd.io'
+                  '/v1/namespaces/flux-system/gitrepositories/configs', token))
+              artifact = repo['status']['artifact']
+              print(f"build: artifact {artifact['revision']}")
+
+              buf = get(artifact['url'])
+              algorithm, _, expected = artifact['digest'].partition(':')
+              actual = hashlib.new(algorithm, buf).hexdigest()
+              if actual != expected:
+                  raise SystemExit('build: digest mismatch')
+
+              src = pathlib.Path('/work/src')
+              src.mkdir(parents=True, exist_ok=True)
+              with tarfile.open(fileobj=io.BytesIO(buf), mode='r:gz') as tf:
+                  for m in tf.getmembers():
+                      n = os.path.normpath(m.name)
+                      if n.startswith('/') or '..' in pathlib.PurePosixPath(n).parts:
+                          raise SystemExit(f'unsafe path in artifact: {m.name}')
+                  tf.extractall(src, filter='data')
+              print('build: artifact extracted')
+            env:
+            - name: REGISTRY_HOST
+              value: registry.local.d20.fan
+            - name: IMAGE_NAME
+              value: fancl20/image-controller
+            - name: VERSION
+              # The registry tag is exactly this version; bump it to release.
+              value: 0.1.0
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+            volumeMounts:
+            - name: work
+              mountPath: /work
+          containers:
+          - name: build
+            image: docker.io/moby/buildkit:v0.34.0-rootless # {"$imagepolicy": "flux-system:buildkit"}
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              if [ -f /work/skip ]; then
+                exit 0
+              fi
+              cd "/work/src/$CONTEXT"
+              ref="$REGISTRY_HOST/$IMAGE_NAME:$VERSION"
+              echo "build: building $ref"
+              buildctl-daemonless.sh build \
+                --frontend dockerfile.v0 \
+                --local context=. \
+                --local dockerfile=. \
+                --output "type=image,name=$ref,push=true" \
+                --export-cache type=inline \
+                --import-cache "type=registry,ref=$ref"
+              echo "build: pushed $ref"
+            env:
+            - name: BUILDKITD_FLAGS
+              value: --oci-worker-no-process-sandbox
+            - name: REGISTRY_HOST
+              value: registry.local.d20.fan
+            - name: IMAGE_NAME
+              value: fancl20/image-controller
+            - name: VERSION
+              value: 0.1.0
+            - name: CONTEXT
+              value: configs/clusters/production/99-services/02-continuous/controller
+            securityContext:
+              seccompProfile:
+                type: Unconfined
+              appArmorProfile:
+                type: Unconfined
+              runAsUser: 1000
+              runAsGroup: 1000
+            workingDir: /work/src
+            volumeMounts:
+            - name: work
+              mountPath: /work

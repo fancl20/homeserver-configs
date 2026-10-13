@@ -39,28 +39,28 @@ kubectl -n continuous logs job/<name>-<hash> -c build
 
 ## Self-hosting
 
-The controller's own image is built by itself (`container-images.yaml`,
-`image-controller` CR). Releasing = bump `spec.version` on that CR: the new
-tag lands in the registry, image-automation commits the new setter tag, and
-Flux rolls the Deployment (expect ~30-45 min end to end). A broken build
-leaves the last good controller running. With a static version, revision
-changes alone do not rebuild — the rendered tag would not change, so the
-push would silently mutate the existing tag's digest.
+The controller's own image is built outside the controller itself: the
+nightly `image-controller-build` CronJob (`../image-controller-build.yaml`)
+builds the pinned `VERSION` from the artifact only when the registry is
+missing that tag, so unchanged nights are seconds-long no-ops and a present
+tag is never re-pushed (re-pushing would silently mutate its digest).
 
-On a fresh cluster (or a wiped registry) apply the bootstrap Job by hand
-(`kubectl apply -f ../bootstrap.yaml`; Flux ignores it) to build the
-controller image from the artifact tarball once. The bootstrap pushes the
-sentinel `0.0.0-testing-00000000`: the ImagePolicy only selects it when the
-registry holds no real tag, so recovery rides one automation cycle (1h scan
-+ 30m update, ~1.5h worst case) and the first real build outranks it
-immediately.
+Releasing = bump `VERSION` in that manifest: the next nightly run — or an
+immediate manual one, `kubectl -n continuous create job
+--from=cronjob/image-controller-build <name>` — builds the new tag, the
+image-controller ImagePolicy selects it, and image-automation re-pins the
+Deployment (expect ~30-45 min end to end after the build). Source changes
+never deploy without a version bump, and a broken build leaves the last
+good controller running. On a fresh cluster or after a registry wipe the
+same machinery re-seeds the tag: within a day on schedule, or ~1.5h via the
+manual trigger (build + 1h policy scan + 30m update).
 
 ## Reconcile behavior
 
 - Triggers: first observation, spec change, artifact revision change, manual
   `reconcile.fluxcd.io/requestedAt`, schedule tick, base tag change. First
   match wins. Static-version images skip artifact revisions that would
-  re-render the last pushed tag (see Self-hosting).
+  re-render the last pushed tag.
 - Triggers are consumed on success, not when the Job is created: a failed
   manual or nightly build keeps retrying (up to `--max-attempts`) and stays
   `Ready=False` instead of being repainted from the stale image ref. A

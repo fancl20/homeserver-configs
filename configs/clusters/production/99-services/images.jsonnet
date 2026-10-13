@@ -40,7 +40,7 @@ app.Image('external-dns')
 +
 app.Image('image-controller')
 .Repository('registry.local.d20.fan/fancl20/image-controller')
-.Policy(app.DefaultPolicy.Semver('*-testing-'))
+.Policy(app.DefaultPolicy.Semver())
 +
 app.Image('jellyfin')
 .Repository('lscr.io/linuxserver/jellyfin')
