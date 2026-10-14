@@ -26,3 +26,6 @@ spec:
   - apiVersion: storage.k8s.io/v1
     kind: StorageClass
     name: rook-cephfs
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    name: rook-rbd

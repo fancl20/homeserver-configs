@@ -27,7 +27,8 @@ spec:
         enabled: true
         name: rook-ceph.cephfs.csi.ceph.com
       rbd:
-        enabled: false
+        enabled: true
+        name: rook-ceph.rbd.csi.ceph.com
       nfs:
         enabled: false
       nvmeof:
