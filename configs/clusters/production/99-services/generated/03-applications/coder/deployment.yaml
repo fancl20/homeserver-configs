@@ -113,7 +113,7 @@
                   "command": [
                      "/bin/sh",
                      "-ec",
-                     "until curl -sSf http://127.0.0.1:8080/healthz; do\n  echo \"Waiting for Coder to be ready...\"\n  sleep 5\ndone\n\necho \"Initializing Coder with first user...\"\ncoder login --use-token-as-session\n\ntrap \"exit\" TERM\nwhile sleep 60; do\n  expire=$(date -d \"$( (coder token view ${CODER_SESSION_TOKEN} -c \"expires at\" || date -I) | tail -n 1 | cut -d\"T\" -f1)\" \"+%s\")\n  ttl=$(expr \"${expire}\" - $(date \"+%s\"))\n  if [[ \"${ttl}\" -gt 259200 ]]; then\n    echo \"Token ttl: ${ttl} greater than 259200, continue...\"\n    continue\n  fi\n  echo \"Token ttl: ${ttl} less than 259200, refreshing...\"\n\n  token=$(coder token create --lifetime 7d)\n  if [[ -z ${token} ]]; then\n    echo \"Failed to create new token, continue...\"\n    continue\n  fi\n\n  echo \"Update secrets for the new token...\"\n  data='{\n    \"kind\": \"Secret\",\n    \"apiVersion\": \"v1\",\n    \"metadata\": {\n      \"name\": \"coder-init-token\",\n      \"namespace\": \"coder\"\n    },\n    \"type\": \"Opaque\",\n    \"data\": {\n      \"token\": \"'$(echo -n ${token} | base64)'\"\n    }\n  }'\n  method=\"PUT\"\n  url_suffix=\"coder-init-token\"\n  if [[ -z ${CODER_SESSION_TOKEN} ]]; then\n    method=\"POST\"\n    url_suffix=\"\"\n  fi\n  curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \\\n    -H \"Content-Type: application/json\" \\\n    -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \\\n    -d \"${data}\" \\\n    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/${url_suffix} > /dev/null\n\n  echo \"Login with the new session token...\"\n  export CODER_SESSION_TOKEN=${token}\n  coder login --use-token-as-session\ndone\n"
+                     "token_file=/var/run/coder-init-token/token\n\n# Read the session token from the mounted coder-init-token secret; the\n# output is empty while the secret does not exist. Re-reading on every\n# use picks up a token placed in the secret without a pod restart.\nread_token() {\n  cat \"${token_file}\" 2>/dev/null || true\n}\n\nuntil curl -sSf http://127.0.0.1:8080/healthz; do\n  echo \"Waiting for Coder to be ready...\"\n  sleep 5\ndone\n\nexport CODER_SESSION_TOKEN=$(read_token)\nlogin_failed=\"\"\n\ntrap \"exit\" TERM\nwhile :; do\n  if [[ -z \"${CODER_SESSION_TOKEN}\" ]]; then\n    first_user=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/v2/users/first || true)\n    if [[ \"${first_user}\" == 404 ]]; then\n      echo \"Initializing Coder with first user...\"\n      coder login --use-token-as-session || echo \"First user setup failed, retrying...\"\n    fi\n    token=$(read_token)\n    if [[ -n \"${token}\" && \"${token}\" != \"${login_failed}\" ]]; then\n      echo \"Using session token from the coder-init-token secret...\"\n      export CODER_SESSION_TOKEN=${token}\n    elif [[ \"${first_user}\" == 200 && -z \"${token}\" ]]; then\n      echo \"Waiting for a session token in the coder-init-token secret...\"\n      continue\n    fi\n  fi\n\n  if [[ -n \"${CODER_SESSION_TOKEN}\" ]]; then\n    expire=$(date -d \"$( (coder token view ${CODER_SESSION_TOKEN} -c \"expires at\" || date -I) | tail -n 1 | cut -d\"T\" -f1)\" \"+%s\")\n    ttl=$(expr \"${expire}\" - $(date \"+%s\"))\n    if [[ \"${ttl}\" -gt 259200 ]]; then\n      echo \"Token ttl: ${ttl} greater than 259200, continue...\"\n      continue\n    fi\n    echo \"Token ttl: ${ttl} less than 259200, refreshing...\"\n  else\n    echo \"Minting the initial session token...\"\n  fi\n\n  if ! token=$(coder token create --lifetime 7d); then\n    if ! curl -sSf http://127.0.0.1:8080/healthz > /dev/null; then\n      echo \"Coder is not ready, retrying...\"\n      continue\n    fi\n    if coder token view ${CODER_SESSION_TOKEN} -c \"expires at\" > /dev/null 2>&1; then\n      echo \"Token refresh failed, retrying...\"\n      continue\n    fi\n    echo \"Session token is invalid, waiting for a new token in the coder-init-token secret...\"\n    login_failed=${CODER_SESSION_TOKEN}\n    unset CODER_SESSION_TOKEN\n    continue\n  fi\n\n  echo \"Update secrets for the new token...\"\n  data='{\n    \"kind\": \"Secret\",\n    \"apiVersion\": \"v1\",\n    \"metadata\": {\n      \"name\": \"coder-init-token\",\n      \"namespace\": \"coder\"\n    },\n    \"type\": \"Opaque\",\n    \"data\": {\n      \"token\": \"'$(echo -n ${token} | base64)'\"\n    }\n  }'\n  method=\"PUT\"\n  url_suffix=\"coder-init-token\"\n  if [[ ! -f \"${token_file}\" ]]; then\n    method=\"POST\"\n    url_suffix=\"\"\n  fi\n  if ! curl -sSf --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -X ${method} \\\n    -H \"Content-Type: application/json\" \\\n    -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \\\n    -d \"${data}\" \\\n    https://kubernetes.default.svc/api/v1/namespaces/coder/secrets/${url_suffix} > /dev/null; then\n    echo \"Failed to update the coder-init-token secret, retrying...\"\n    continue\n  fi\n\n  export CODER_SESSION_TOKEN=${token}\n  sleep 60\ndone\n"
                   ],
                   "env": [
                      {
@@ -141,21 +141,18 @@
                               "name": "coder"
                            }
                         }
-                     },
-                     {
-                        "name": "CODER_SESSION_TOKEN",
-                        "valueFrom": {
-                           "secretKeyRef": {
-                              "key": "token",
-                              "name": "coder-init-token",
-                              "optional": true
-                           }
-                        }
                      }
                   ],
                   "image": "ghcr.io/coder/coder",
                   "name": "coder-init",
-                  "restartPolicy": "Always"
+                  "restartPolicy": "Always",
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/var/run/coder-init-token",
+                        "name": "coder-init-token",
+                        "readOnly": true
+                     }
+                  ]
                },
                {
                   "envFrom": [
@@ -184,6 +181,13 @@
             "serviceAccountName": "coder",
             "terminationGracePeriodSeconds": 60,
             "volumes": [
+               {
+                  "name": "coder-init-token",
+                  "secret": {
+                     "optional": true,
+                     "secretName": "coder-init-token"
+                  }
+               },
                {
                   "name": "coder-db",
                   "persistentVolumeClaim": {
