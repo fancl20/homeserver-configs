@@ -13,12 +13,13 @@ app.Base('coder', 'coder', create_namespace={
   command: ['/opt/coder'],
   args: ['server'],
   env: [
+    { name: 'KUBE_POD_IP', valueFrom: { fieldRef: { fieldPath: 'status.podIP' } } },
     { name: 'CODER_HTTP_ADDRESS', value: '0.0.0.0:8080' },
     { name: 'CODER_PG_CONNECTION_URL', valueFrom: { secretKeyRef: { name: 'coder-db', key: 'url' } } },
     { name: 'CODER_ACCESS_URL', value: 'https://coder.local.d20.fan' },
     { name: 'CODER_WILDCARD_ACCESS_URL', value: '*.coder.local.d20.fan' },
     { name: 'CODER_DERP_SERVER_RELAY_URL', value: 'http://$(KUBE_POD_IP):8080' },
-    { name: 'KUBE_POD_IP', valueFrom: { fieldRef: { fieldPath: 'status.podIP' } } },
+    { name: 'CODER_CLUSTER_HOST', value: '$(KUBE_POD_IP)' },
   ],
   ports: [
     { name: 'http', containerPort: 8080, protocol: 'TCP' },

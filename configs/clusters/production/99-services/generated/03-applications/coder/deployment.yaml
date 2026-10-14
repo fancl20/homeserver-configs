@@ -39,6 +39,14 @@
                   ],
                   "env": [
                      {
+                        "name": "KUBE_POD_IP",
+                        "valueFrom": {
+                           "fieldRef": {
+                              "fieldPath": "status.podIP"
+                           }
+                        }
+                     },
+                     {
                         "name": "CODER_HTTP_ADDRESS",
                         "value": "0.0.0.0:8080"
                      },
@@ -64,12 +72,8 @@
                         "value": "http://$(KUBE_POD_IP):8080"
                      },
                      {
-                        "name": "KUBE_POD_IP",
-                        "valueFrom": {
-                           "fieldRef": {
-                              "fieldPath": "status.podIP"
-                           }
-                        }
+                        "name": "CODER_CLUSTER_HOST",
+                        "value": "$(KUBE_POD_IP)"
                      }
                   ],
                   "image": "ghcr.io/coder/coder",
