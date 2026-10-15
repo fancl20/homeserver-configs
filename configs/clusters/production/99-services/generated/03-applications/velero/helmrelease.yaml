@@ -48,7 +48,7 @@
             "features": "EnableCSI",
             "volumeSnapshotLocation": [
                {
-                  "name": "rook-cephfs",
+                  "name": "csi",
                   "provider": "csi"
                }
             ]
@@ -85,7 +85,7 @@
                   "storageLocation": "wasabi",
                   "ttl": "720h0m0s",
                   "volumeSnapshotLocations": [
-                     "rook-cephfs"
+                     "csi"
                   ]
                }
             }
