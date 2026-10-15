@@ -126,6 +126,20 @@ locals {
   git_author_name            = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email           = data.coder_workspace_owner.me.email
   repo_url                   = data.coder_parameter.repo.value
+  vscode_extensions = [
+    "vscodevim.vim",
+    "ms-python.python",
+    "ms-python.autopep8",
+    "ms-toolsai.jupyter",
+    "hashicorp.terraform",
+    "Grafana.vscode-jsonnet",
+    "golang.go",
+    "rust-lang.rust-analyzer",
+    "anthropic.claude-code",
+    "bufbuild.vscode-buf",
+    "Lencerf.beancount",
+    "dongfg.vscode-beancount-formatter",
+  ]
   # Extract the checkout directory name from the git URL
   # Supports both SSH (git@github.com:user/repo.git) and HTTPS (https://github.com/user/repo.git) formats
   checkout_dir = local.repo_url != "" ? "/workspaces/${regex("(:|/)([^/]+/)?([^/\\.]+)(\\.git)?$", local.repo_url)[2]}" : ""
@@ -455,20 +469,7 @@ module "vscode-web" {
   agent_id        = coder_agent.main.id
   additional_args = "--disable-workspace-trust"
   folder          = local.checkout_dir
-  extensions = [
-    "vscodevim.vim",
-    "ms-python.python",
-    "ms-python.autopep8",
-    "ms-toolsai.jupyter",
-    "hashicorp.terraform",
-    "Grafana.vscode-jsonnet",
-    "golang.go",
-    "rust-lang.rust-analyzer",
-    "anthropic.claude-code",
-    "bufbuild.vscode-buf",
-    "Lencerf.beancount",
-    "dongfg.vscode-beancount-formatter",
-  ]
+  extensions      = local.vscode_extensions
   settings = {
     "workbench.colorTheme" : "Solarized Light"
     "explorer.autoReveal" : false
@@ -492,6 +493,14 @@ module "vscode-web" {
     "autopep8.args" : ["--indent-size=2"]
     "rust-analyzer.inlayHints.typeHints.enable" : false
   }
+}
+
+module "vscode-desktop" {
+  count      = data.coder_workspace.me.start_count
+  source     = "registry.coder.com/coder/vscode-desktop/coder"
+  agent_id   = coder_agent.main.id
+  folder     = local.checkout_dir
+  extensions = local.vscode_extensions
 }
 
 module "mux" {
