@@ -21,5 +21,4 @@ COPY --chown=coder:coder kubeconfig /home/coder/.kube/config
 # Clean up
 RUN rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
-SHELL ["/usr/bin/fish"]
 USER coder
