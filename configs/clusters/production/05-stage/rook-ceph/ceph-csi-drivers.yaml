@@ -26,9 +26,11 @@ spec:
       cephfs:
         enabled: true
         name: rook-ceph.cephfs.csi.ceph.com
+        snapshotPolicy: volumeSnapshot
       rbd:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
+        snapshotPolicy: volumeSnapshot
       nfs:
         enabled: false
       nvmeof:
