@@ -4,11 +4,7 @@ RUN groupadd --gid 1000 coder && \
     useradd --uid 1000 --gid 1000 -m coder
 
 RUN apt-get update && apt-get install -y \
-    curl git vim jq fish kubectl \
-    nodejs npm sudo
-
-RUN echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder && \
-    chmod 440 /etc/sudoers.d/coder
+    curl git vim jq fish kubectl
 
 RUN apt-get install -y \
     build-essential pkg-config \
