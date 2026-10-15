@@ -186,7 +186,10 @@ app.Base('coder', 'coder', create_namespace={
   resources: ['secrets'],
   verbs: ['create', 'update'],
 }])
-.PersistentVolumeClaim('coder-db')
+.PersistentVolumeClaim('coder-db', {
+  accessModes: ['ReadWriteOnce'],
+  storageClassName: 'rook-rbd',
+})
 .Service({
   ports: [
     { name: 'http', protocol: 'TCP', port: 80, targetPort: 8080 },
