@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "coder" {
-  url = "http://coder.coder.svc"
+  url = "https://coder.local.d20.fan"
 }
 provider "kubernetes" {
   config_path = local.use_kubeconfig == true ? "~/.kube/config" : null
@@ -147,7 +147,8 @@ locals {
   # Base environment variables used for envbuilder_cached_image (without ENVBUILDER_GIT_URL)
   envbuilder_env_base = {
     "CODER_AGENT_TOKEN" : coder_agent.main.token,
-    "CODER_AGENT_URL" : data.coder_workspace.me.access_url,
+    # The agent talks to Coder in-cluster instead of through the public gateway.
+    "CODER_AGENT_URL" : "http://coder.coder.svc",
     # Used for when SSH is an available authentication mechanism for git providers
     "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : base64encode(try(data.coder_workspace_owner.me.ssh_private_key, "")),
     "ENVBUILDER_INIT_SCRIPT" : coder_agent.main.init_script,
@@ -501,15 +502,6 @@ module "vscode-desktop" {
   agent_id   = coder_agent.main.id
   folder     = local.checkout_dir
   extensions = local.vscode_extensions
-}
-
-module "mux" {
-  count       = data.coder_workspace.me.start_count
-  source      = "registry.coder.com/coder/mux/coder"
-  agent_id    = coder_agent.main.id
-  subdomain   = true
-  open_in     = "tab"
-  add_project = local.checkout_dir
 }
 
 module "claude-code" {
