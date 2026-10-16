@@ -31,11 +31,10 @@
          "spec": {
             "containers": [
                {
-                  "args": [
-                     "server"
-                  ],
                   "command": [
-                     "/opt/coder"
+                     "/bin/sh",
+                     "-ec",
+                     "/opt/coder server &\nchild=$!\ntrap 'kill -INT \"$child\"' TERM INT\nwhile kill -0 \"$child\" 2>/dev/null; do\n  wait \"$child\" || :\ndone\n"
                   ],
                   "env": [
                      {
@@ -185,7 +184,7 @@
                }
             ],
             "serviceAccountName": "coder",
-            "terminationGracePeriodSeconds": 60,
+            "terminationGracePeriodSeconds": 120,
             "volumes": [
                {
                   "name": "coder-init-token",

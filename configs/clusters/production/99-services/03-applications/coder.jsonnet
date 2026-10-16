@@ -10,8 +10,23 @@ app.Base('coder', 'coder', create_namespace={
 }).Deployment()
 .PodContainers([{
   image: images.coder,
-  command: ['/opt/coder'],
-  args: ['server'],
+  // Signal shim until v1.38: forwards the pod's SIGTERM to coder as SIGINT,
+  // which takes the cancel-jobs shutdown path (5s) instead of waiting for
+  // in-flight provisioner jobs. Once ContainerStopSignals reaches beta in
+  // v1.38 the stopSignal fields apply directly — remove this shim and restore
+  // the 60s termination grace period then.
+  command: [
+    '/bin/sh',
+    '-ec',
+    |||
+      /opt/coder server &
+      child=$!
+      trap 'kill -INT "$child"' TERM INT
+      while kill -0 "$child" 2>/dev/null; do
+        wait "$child" || :
+      done
+    |||,
+  ],
   stopSignal: 'SIGINT',
   env: [
     { name: 'KUBE_POD_IP', valueFrom: { fieldRef: { fieldPath: 'status.podIP' } } },
@@ -174,7 +189,7 @@ app.Base('coder', 'coder', create_namespace={
     { name: 'coder-db', mountPath: '/var/lib/postgresql' },
   ],
 }])
-.PodSpec({ terminationGracePeriodSeconds: 60 })
+.PodSpec({ terminationGracePeriodSeconds: 120 })
 .PodVolumes([{
   name: 'coder-init-token',
   secret: { secretName: 'coder-init-token', optional: true },
