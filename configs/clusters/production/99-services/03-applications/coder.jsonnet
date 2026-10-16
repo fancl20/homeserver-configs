@@ -77,6 +77,7 @@ app.Base('coder', 'coder', create_namespace={
             export CODER_SESSION_TOKEN=${token}
           elif [[ "${first_user}" == 200 && -z "${token}" ]]; then
             echo "Waiting for a session token in the coder-init-token secret..."
+            sleep 5
             continue
           fi
         fi
@@ -84,8 +85,12 @@ app.Base('coder', 'coder', create_namespace={
         if [[ -n "${CODER_SESSION_TOKEN}" ]]; then
           expire=$(date -d "$( (coder token view ${CODER_SESSION_TOKEN} -c "expires at" || date -I) | tail -n 1 | cut -d"T" -f1)" "+%s")
           ttl=$(expr "${expire}" - $(date "+%s"))
+          # Recheck hourly; the 3d threshold is days away and re-reading the
+          # secret picks up externally patched tokens at the same cadence as
+          # the ExternalSecret sync.
           if [[ "${ttl}" -gt 259200 ]]; then
-            echo "Token ttl: ${ttl} greater than 259200, continue..."
+            echo "Token ttl: ${ttl} greater than 259200, sleeping 3600..."
+            sleep 3600
             continue
           fi
           echo "Token ttl: ${ttl} less than 259200, refreshing..."
@@ -96,10 +101,12 @@ app.Base('coder', 'coder', create_namespace={
         if ! token=$(coder token create --lifetime 7d); then
           if ! curl -sSf http://127.0.0.1:8080/healthz > /dev/null; then
             echo "Coder is not ready, retrying..."
+            sleep 5
             continue
           fi
           if coder token view ${CODER_SESSION_TOKEN} -c "expires at" > /dev/null 2>&1; then
             echo "Token refresh failed, retrying..."
+            sleep 60
             continue
           fi
           echo "Session token is invalid, waiting for a new token in the coder-init-token secret..."
