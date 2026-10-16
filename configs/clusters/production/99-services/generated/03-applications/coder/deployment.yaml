@@ -104,7 +104,8 @@
                      "seccompProfile": {
                         "type": "RuntimeDefault"
                      }
-                  }
+                  },
+                  "stopSignal": "SIGINT"
                }
             ],
             "enableServiceLinks": false,
@@ -174,6 +175,7 @@
                      }
                   },
                   "restartPolicy": "Always",
+                  "stopSignal": "SIGINT",
                   "volumeMounts": [
                      {
                         "mountPath": "/var/lib/postgresql",

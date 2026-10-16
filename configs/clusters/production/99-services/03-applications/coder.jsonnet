@@ -12,6 +12,7 @@ app.Base('coder', 'coder', create_namespace={
   image: images.coder,
   command: ['/opt/coder'],
   args: ['server'],
+  stopSignal: 'SIGINT',
   env: [
     { name: 'KUBE_POD_IP', valueFrom: { fieldRef: { fieldPath: 'status.podIP' } } },
     { name: 'CODER_HTTP_ADDRESS', value: '0.0.0.0:8080' },
@@ -162,6 +163,7 @@ app.Base('coder', 'coder', create_namespace={
   name: 'postgres',
   image: images.postgres,
   restartPolicy: 'Always',
+  stopSignal: 'SIGINT',
   envFrom: [
     { secretRef: { name: 'coder-db' } },
   ],
