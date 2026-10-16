@@ -144,6 +144,7 @@ app.Base('coder', 'coder', create_namespace={
   env: [
     { name: 'CODER_URL', value: 'http://127.0.0.1:8080/' },
     { name: 'CODER_FIRST_USER_USERNAME', value: 'fancl20' },
+    { name: 'CODER_FIRST_USER_FULL_NAME', value: 'fancl20' },
     { name: 'CODER_FIRST_USER_EMAIL', valueFrom: { secretKeyRef: { name: 'coder', key: 'username' } } },
     { name: 'CODER_FIRST_USER_PASSWORD', valueFrom: { secretKeyRef: { name: 'coder', key: 'password' } } },
   ],

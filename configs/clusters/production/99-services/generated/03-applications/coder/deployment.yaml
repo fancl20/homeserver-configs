@@ -125,6 +125,10 @@
                         "value": "fancl20"
                      },
                      {
+                        "name": "CODER_FIRST_USER_FULL_NAME",
+                        "value": "fancl20"
+                     },
+                     {
                         "name": "CODER_FIRST_USER_EMAIL",
                         "valueFrom": {
                            "secretKeyRef": {
