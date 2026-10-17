@@ -294,6 +294,10 @@ resource "kubernetes_deployment_v1" "main" {
             name  = "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
             value = "131072"
           }
+          env {
+            name  = "CLAUDE_CODE_AUTO_MODE_SERVER"
+            value = "0"
+          }
 
           resources {
             requests = {
