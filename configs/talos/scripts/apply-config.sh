@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
+export TALOS_SCHEMATIC_RPI="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
+export TALOS_SCHEMATIC_EMPTY="$(get_schematic_id configs/bootstrap/empty.yaml)"
+
 DRY_RUN="--dry-run"
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -22,7 +25,6 @@ fi
 MEMBERS=$(talosctl get members --endpoints 192.168.1.3 --nodes 192.168.1.3 -o yaml)
 
 apply_controlplane() {(
-  export TALOS_SCHEMATIC="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
   for i in {4..6}; do
     export NODE_ADDRESS="192.168.1.$i"
     grep -q "^[[:space:]]*- ${NODE_ADDRESS//./\\.}$" <<< "$MEMBERS" || continue

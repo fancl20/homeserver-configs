@@ -106,8 +106,8 @@ The cluster runs on Talos OS, an immutable Linux distribution designed specifica
 #### Upgrade Nodes
 
 ```bash
-# Upgrade worker nodes
-talosctl upgrade -nodes 192.168.1.{4..7}
+# Upgrade Talos on all nodes (image comes from each node's config)
+./scripts/upgrade.sh
 
 # Upgrade Kubernetes version on control plane
 talosctl upgrade-k8s --nodes 192.168.1.3

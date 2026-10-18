@@ -3,7 +3,7 @@ Talos configuration for homecluster
 
 ## Upgrade Node
 ```bash
-talosctl upgrade -nodes 192.168.1.{4..7}
+./scripts/upgrade.sh
 talosctl upgrade-k8s --nodes 192.168.1.3
 ```
 

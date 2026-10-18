@@ -5,7 +5,7 @@ machine:
     user.max_user_namespaces: '11255'
   install:
     disk: '/dev/disk/by-path/pci-0000:0b:00.0-nvme-1'
-    image: 'factory.talos.dev/installer-secureboot/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:${TALOS_VERSION}'
+    image: 'factory.talos.dev/metal-installer-secureboot/${TALOS_SCHEMATIC_EMPTY}:${TALOS_VERSION}'
     wipe: true
 cluster:
   controlPlane:

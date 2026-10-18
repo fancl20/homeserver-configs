@@ -5,7 +5,7 @@ machine:
     user.max_user_namespaces: '11255'
   install:
     disk: '/dev/mmcblk0'
-    image: 'factory.talos.dev/installer/${TALOS_SCHEMATIC}:${TALOS_VERSION}'
+    image: 'factory.talos.dev/metal-installer/${TALOS_SCHEMATIC_RPI}:${TALOS_VERSION}'
     wipe: true
 cluster:
   controlPlane:

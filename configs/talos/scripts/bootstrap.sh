@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
-export TALOS_SCHEMATIC="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
+export TALOS_SCHEMATIC_RPI="$(get_schematic_id configs/bootstrap/rpi_generic.yaml)"
 export TALOS_SCHEMATIC_BOOTSTRAP="$(get_schematic_id configs/bootstrap/{bootstrap.yaml,rpi_generic.yaml})"
 
 IMAGE_TEMP="$(mktemp --suffix '-talos-metal-arm64.raw.zst')"
@@ -29,7 +29,7 @@ for i in {1..3}; do
     configs/controlplane-network.yaml | envsubst)
 
   # Workaround for https://github.com/siderolabs/talos/discussions/12799
-  talosctl upgrade --nodes 192.168.1.254 --insecure --image="factory.talos.dev/installer/${TALOS_SCHEMATIC}:${TALOS_VERSION}"
+  talosctl upgrade --nodes 192.168.1.254 --insecure --image="factory.talos.dev/metal-installer/${TALOS_SCHEMATIC_RPI}:${TALOS_VERSION}"
 
   until talosctl health --endpoints 192.168.1.3 --nodes "${NODE_ADDRESS}"; do
     sleep 10

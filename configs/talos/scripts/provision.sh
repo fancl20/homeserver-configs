@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 cd "$(git rev-parse --show-toplevel)/configs/talos" && source scripts/common.sh
 
+export TALOS_SCHEMATIC_EMPTY="$(get_schematic_id configs/bootstrap/empty.yaml)"
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     --node)

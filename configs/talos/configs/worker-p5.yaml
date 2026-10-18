@@ -5,7 +5,7 @@ machine:
     user.max_user_namespaces: '11255'
   install:
     disk: '/dev/disk/by-path/pci-0000:04:00.0-nvme-1'
-    image: 'ghcr.io/siderolabs/installer:${TALOS_VERSION}'
+    image: 'factory.talos.dev/metal-installer/${TALOS_SCHEMATIC_EMPTY}:${TALOS_VERSION}'
     wipe: true
 cluster:
   controlPlane:
