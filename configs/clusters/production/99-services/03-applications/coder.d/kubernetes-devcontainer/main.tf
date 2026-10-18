@@ -325,7 +325,7 @@ resource "kubernetes_deployment_v1" "main" {
 
           security_context {
             capabilities {
-              add = ["NET_ADMIN"]
+              add = ["NET_ADMIN", "SYS_ADMIN"]
             }
           }
         }
