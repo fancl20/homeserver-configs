@@ -111,7 +111,7 @@ spec:
               mountPath: /work
           containers:
           - name: build
-            image: docker.io/moby/buildkit:v0.34.0-rootless # {"$imagepolicy": "flux-system:buildkit"}
+            image: docker.io/moby/buildkit:v0.34.1-rootless # {"$imagepolicy": "flux-system:buildkit"}
             command:
             - /bin/sh
             - -c
