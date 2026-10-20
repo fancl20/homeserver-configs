@@ -1,15 +1,18 @@
 ---
 display_name: Kubernetes (Devcontainer)
-description: Provision envbuilder pods as Coder workspaces
+description: Provision Docker-in-Docker pods as Coder workspaces running dev containers
 icon: /icon/k8s.png
 maintainer_github: coder
 verified: true
 tags: [container, kubernetes, devcontainer]
 ---
 
-# Remote Development on Kubernetes Pods (with Devcontainers)
+# Remote Development on Kubernetes Pods (with Dev Containers)
 
-Provision Devcontainers as [Coder workspaces](https://coder.com/docs/workspaces) on Kubernetes with this template.
+Provision workspaces on Kubernetes that run `devcontainer.json` environments with
+Coder's [Dev Containers integration](https://coder.com/docs/admin/integrations/devcontainers):
+the `@devcontainers/cli` and a Docker daemon run inside the workspace, and dev
+containers are built and run on top of it.
 
 ## Prerequisites
 
@@ -17,9 +20,15 @@ Provision Devcontainers as [Coder workspaces](https://coder.com/docs/workspaces)
 
 **Cluster**: This template requires an existing Kubernetes cluster.
 
-**Container Image**: This template uses the [envbuilder image](https://github.com/coder/envbuilder) to build a Devcontainer from a `devcontainer.json`.
-
-**(Optional) Cache Registry**: Envbuilder can utilize a Docker registry as a cache to speed up workspace builds. The [envbuilder Terraform provider](https://github.com/coder/terraform-provider-envbuilder) will check the contents of the cache to determine if a prebuilt image exists. In the case of some missing layers in the registry (partial cache miss), Envbuilder can still utilize some of the build cache from the registry.
+**Container Image**: The `workspace_image` parameter defaults to
+`registry.local.d20.fan/fancl20/coder-devcontainer-base`, built in-cluster by its
+[`ContainerImage` CR](../../../02-continuous/container-images.yaml) from
+[`images/coder-devcontainer-base/`](../../../../../../../images/coder-devcontainer-base/).
+It ships the Docker daemon (with `data-root` on the `/workspaces` volume), Node.js
+for `@devcontainers/cli` (installed at start by the
+[devcontainers-cli module](https://registry.coder.com/modules/devcontainers-cli)),
+and the coder CLI. Rebuilds follow the Debian base tag;
+bump the version in `update.py` for Dockerfile changes.
 
 ### Authentication
 
@@ -34,32 +43,28 @@ restart once the template is updated.
 
 ## Architecture
 
-Coder supports devcontainers with [envbuilder](https://github.com/coder/envbuilder), an open source project. Read more about this in [Coder's documentation](https://coder.com/docs/templates/dev-containers).
+The workspace pod runs the base image directly with `NET_ADMIN` and `SYS_ADMIN`
+capabilities, which the Docker daemon needs for the `docker0` bridge and overlay
+mounts. The agent startup script starts the daemon; its data-root lives on the
+`/workspaces` PVC so image layers persist across workspace restarts (the container
+root is overlayfs, which the overlay2 storage driver cannot layer on).
 
 This template provisions the following resources:
 
 - Kubernetes deployment (ephemeral)
 - Kubernetes persistent volume claim (persistent on `/workspaces`)
-- Envbuilder cached image (optional, persistent).
 
-This template will fetch a Git repo containing a `devcontainer.json` specified by the `repo` parameter, and builds it
-with [`envbuilder`](https://github.com/coder/envbuilder).
-The Git repository is cloned inside the `/workspaces` volume if not present.
-Any local changes to the Devcontainer files inside the volume will be applied when you restart the workspace.
-As you might suspect, any tools or files outside of `/workspaces` or not added as part of the Devcontainer specification are not persisted.
-Edit the `devcontainer.json` instead!
+The `repo` parameter is cloned into `/workspaces` by the
+[git-clone module](https://registry.coder.com/modules/git-clone); private repos
+authenticate with the workspace owner's Coder SSH key (`coder gitssh`). A
+`coder_devcontainer` resource then runs the
+repo's `devcontainer.json` and creates a sub-agent inside it; the dashboard manages
+its lifecycle (status, rebuild), so `devcontainer.json` changes no longer require
+recreating the workspace. Additional dev containers can be added from the dashboard.
+
+The main agent (terminals, VS Code, Claude Code) runs in the base image, not inside
+the dev container; if the dev container build fails the workspace stays usable in
+the base environment.
 
 > **Note**
 > This template is designed to be a starting point! Edit the Terraform to extend the template to support your use case.
-
-## Caching
-
-To speed up your builds, you can use a container registry as a cache.
-When creating the template, set the parameter `cache_repo`.
-
-See the [Envbuilder Terraform Provider Examples](https://github.com/coder/terraform-provider-envbuilder/blob/main/examples/resources/envbuilder_cached_image/envbuilder_cached_image_resource.tf/) for a more complete example of how the provider works.
-
-> [!NOTE]
-> We recommend using a registry cache with authentication enabled.
-> To allow Envbuilder to authenticate with the registry cache, specify the variable `cache_repo_dockerconfig_secret`
-> with the name of a Kubernetes secret in the same namespace as Coder. The secret must contain the key `.dockerconfigjson`.

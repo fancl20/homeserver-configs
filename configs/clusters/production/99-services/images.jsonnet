@@ -20,6 +20,10 @@ app.Image('coder')
 .Repository('ghcr.io/coder/coder')
 .Policy(app.DefaultPolicy.Semver())
 +
+app.Image('coder-devcontainer-base')
+.Repository('registry.local.d20.fan/fancl20/coder-devcontainer-base')
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
++
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')
 .Policy(app.DefaultPolicy.Semver('*-testing-'))

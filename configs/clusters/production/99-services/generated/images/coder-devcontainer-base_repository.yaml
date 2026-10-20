@@ -1,0 +1,12 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1",
+   "kind": "ImageRepository",
+   "metadata": {
+      "name": "coder-devcontainer-base",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "image": "registry.local.d20.fan/fancl20/coder-devcontainer-base",
+      "interval": "1h"
+   }
+}

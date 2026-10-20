@@ -32,6 +32,29 @@ spec:
 apiVersion: d20.fan/v1alpha1
 kind: ContainerImage
 metadata:
+  name: coder-devcontainer-base
+  namespace: continuous
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: configs
+    namespace: flux-system
+  context: images/coder-devcontainer-base
+  image: fancl20/coder-devcontainer-base
+  tag: '{{ version }}-{{ base }}'
+  update:
+    command: [python3, update.py, version]
+    versionFile: VERSION
+  baseRef:
+    name: debian
+    namespace: flux-system
+  schedule: 0 3 * * *
+  timeZone: Australia/Sydney
+  interval: 10m
+---
+apiVersion: d20.fan/v1alpha1
+kind: ContainerImage
+metadata:
   name: roon
   namespace: continuous
 spec:

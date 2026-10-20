@@ -1,0 +1,18 @@
+{
+   "apiVersion": "image.toolkit.fluxcd.io/v1",
+   "kind": "ImagePolicy",
+   "metadata": {
+      "name": "coder-devcontainer-base",
+      "namespace": "flux-system"
+   },
+   "spec": {
+      "imageRepositoryRef": {
+         "name": "coder-devcontainer-base"
+      },
+      "policy": {
+         "alphabetical": {
+            "order": "asc"
+         }
+      }
+   }
+}

@@ -46,7 +46,7 @@ Terraform is applied **in-cluster by [tofu-controller](https://github.com/flux-i
 
 ### Image updates → cluster
 
-Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`dae`, `roon`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. The `dae`/`roon` images are built nightly by their `ContainerImage` CRs.
+Image policies are declared in `images.jsonnet` and rendered by `generate.py` into Flux `ImageRepository`/`ImagePolicy` resources. Flux scans the registries, then `ImageUpdateAutomation/configs` (every 30m) writes the selected tags back into [`components/images/kustomization.yaml`](../../configs/clusters/components/images/kustomization.yaml) and commits to `main` as `fluxcdbot`. The next Flux sync applies the new tags and rolls out the workloads. Custom images (`coder-devcontainer-base`, `dae`, `roon`, and the builder itself) are built in-cluster by the `ContainerImage` controller (see below) and pushed to `registry.local.d20.fan`. The `coder-devcontainer-base`/`dae`/`roon` images are built nightly by their `ContainerImage` CRs.
 
 ## Directory Structure
 
@@ -196,6 +196,7 @@ The repository includes custom images built and maintained in the `images/` dire
 
 | Image | Description | Registry |
 |-------|-------------|----------|
+| coder-devcontainer-base | Coder workspace base (Docker daemon, Node, coder CLI) | `registry.local.d20.fan/fancl20/coder-devcontainer-base` |
 | dae | Network proxy tool | `registry.local.d20.fan/fancl20/dae` |
 | roon | Music server | `registry.local.d20.fan/fancl20/roon` |
 

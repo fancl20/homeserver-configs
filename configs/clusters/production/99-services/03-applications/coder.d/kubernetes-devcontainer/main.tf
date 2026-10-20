@@ -7,9 +7,6 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
-    envbuilder = {
-      source = "coder/envbuilder"
-    }
   }
 }
 
@@ -19,15 +16,11 @@ provider "coder" {
 provider "kubernetes" {
   config_path = local.use_kubeconfig == true ? "~/.kube/config" : null
 }
-provider "envbuilder" {}
 
 # Variables
 locals {
-  use_kubeconfig         = false
-  namespace              = "coder"
-  cache_repo             = "registry.default.svc/coder/cache"
-  insecure_cache_repo    = true
-  cache_repo_secret_name = "disabled"
+  use_kubeconfig = false
+  namespace      = "coder"
 }
 
 data "coder_provisioner" "me" {}
@@ -80,7 +73,7 @@ data "coder_parameter" "workspaces_volume_size" {
 }
 
 data "coder_parameter" "repo" {
-  description  = "Select a repository to automatically clone and start working with a devcontainer."
+  description  = "Select a repository to clone and run as a dev container."
   display_name = "Repository (auto)"
   mutable      = true
   name         = "repo"
@@ -88,79 +81,22 @@ data "coder_parameter" "repo" {
   type         = "string"
 }
 
-data "coder_parameter" "fallback_image" {
-  default      = "codercom/enterprise-base:ubuntu"
-  description  = "This image runs if the devcontainer fails to build."
-  display_name = "Fallback Image"
+data "coder_parameter" "workspace_image" {
+  default      = "registry.local.d20.fan/fancl20/coder-devcontainer-base:1-testing-20261005"
+  description  = "Base image that runs the workspace (Docker daemon + devcontainer CLI). Dev containers are built and run on top of it."
+  display_name = "Workspace Image"
   mutable      = true
-  name         = "fallback_image"
-  order        = 6
-}
-
-data "coder_parameter" "devcontainer_builder" {
-  description  = <<-EOT
-    Image that will build the devcontainer.
-    We highly recommend using a specific release as the `:latest` tag will change.
-    Find the latest version of Envbuilder here: https://github.com/coder/envbuilder/pkgs/container/envbuilder
-  EOT
-  display_name = "Devcontainer Builder"
-  mutable      = true
-  name         = "devcontainer_builder"
-  default      = "ghcr.io/coder/envbuilder:latest"
-  order        = 7
-}
-
-
-data "kubernetes_secret_v1" "cache_repo_dockerconfig_secret" {
-  count = local.cache_repo_secret_name == "disabled" ? 0 : 1
-  metadata {
-    name      = local.cache_repo_secret_name
-    namespace = local.namespace
-  }
+  name         = "workspace_image"
+  order        = 5
 }
 
 locals {
   # Computed locals
-  deployment_name            = "coder-${lower(data.coder_workspace.me.id)}"
-  devcontainer_builder_image = data.coder_parameter.devcontainer_builder.value
-  git_author_name            = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
-  git_author_email           = data.coder_workspace_owner.me.email
-  repo_url                   = data.coder_parameter.repo.value
-  # Extract the checkout directory name from the git URL
-  # Supports both SSH (git@github.com:user/repo.git) and HTTPS (https://github.com/user/repo.git) formats
-  checkout_dir = local.repo_url != "" ? "/workspaces/${regex("(:|/)([^/]+/)?([^/\\.]+)(\\.git)?$", local.repo_url)[2]}" : ""
-  # The envbuilder provider requires a key-value map of environment variables.
-  # Base environment variables used for envbuilder_cached_image (without ENVBUILDER_GIT_URL)
-  envbuilder_env_base = {
-    "CODER_AGENT_TOKEN" : coder_agent.main.token,
-    # The agent talks to Coder in-cluster instead of through the public gateway.
-    "CODER_AGENT_URL" : "http://coder.coder.svc",
-    # Used for when SSH is an available authentication mechanism for git providers
-    "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : base64encode(try(data.coder_workspace_owner.me.ssh_private_key, "")),
-    "ENVBUILDER_INIT_SCRIPT" : coder_agent.main.init_script,
-    "ENVBUILDER_FALLBACK_IMAGE" : data.coder_parameter.fallback_image.value,
-    "ENVBUILDER_DOCKER_CONFIG_BASE64" : base64encode(try(data.kubernetes_secret_v1.cache_repo_dockerconfig_secret[0].data[".dockerconfigjson"], "")),
-    "ENVBUILDER_PUSH_IMAGE" : local.cache_repo == "" ? "" : "true",
-    "ENVBUILDER_IGNORE_PATHS" : "/etc/secrets,/var/run"
-  }
-
-  # Complete environment variables for direct deployment (when cache is disabled)
-  # ENVBUILDER_GIT_URL must be set explicitly when cache is disabled.
-  # When cache is enabled, envbuilder_cached_image provider forbids overriding ENVBUILDER_GIT_URL in extra_env.
-  envbuilder_env_with_git = merge(local.envbuilder_env_base, {
-    "ENVBUILDER_GIT_URL" : local.repo_url
-  })
-}
-
-# Check for the presence of a prebuilt image in the cache repo
-# that we can use instead.
-resource "envbuilder_cached_image" "cached" {
-  count         = local.cache_repo == "" ? 0 : data.coder_workspace.me.start_count
-  builder_image = local.devcontainer_builder_image
-  git_url       = local.repo_url
-  cache_repo    = local.cache_repo
-  extra_env     = local.envbuilder_env_base
-  insecure      = local.insecure_cache_repo
+  deployment_name  = "coder-${lower(data.coder_workspace.me.id)}"
+  workspace_image  = data.coder_parameter.workspace_image.value
+  git_author_name  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
+  git_author_email = data.coder_workspace_owner.me.email
+  repo_url         = data.coder_parameter.repo.value
 }
 
 resource "kubernetes_persistent_volume_claim_v1" "workspaces" {
@@ -240,25 +176,21 @@ resource "kubernetes_deployment_v1" "main" {
 
         container {
           name              = "dev"
-          image             = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
+          image             = local.workspace_image
           image_pull_policy = "Always"
-          # Set the environment using cached_image.cached.0.env if the cache repo is enabled.
-          # Otherwise, use the local.envbuilder_env_with_git (includes ENVBUILDER_GIT_URL).
-          # You could alternatively write the environment variables to a ConfigMap or Secret
-          # and use that as `env_from`.
-          dynamic "env" {
-            for_each = nonsensitive(
-              local.cache_repo == "" ?
-              local.envbuilder_env_with_git :
-              merge(envbuilder_cached_image.cached.0.env_map, {
-                # Workaround for https://github.com/coder/terraform-provider-envbuilder/issues/83
-                "ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64" : local.envbuilder_env_base["ENVBUILDER_GIT_SSH_PRIVATE_KEY_BASE64"],
-              })
-            )
-            content {
-              name  = env.key
-              value = env.value
-            }
+          command           = ["/bin/sh", "-c", coder_agent.main.init_script]
+
+          env {
+            name  = "CODER_AGENT_TOKEN"
+            value = coder_agent.main.token
+          }
+          env {
+            name  = "CODER_AGENT_URL"
+            value = "http://coder.coder.svc"
+          }
+          env {
+            name  = "CODER_AGENT_DEVCONTAINERS_PROJECT_DISCOVERY_ENABLE"
+            value = "false"
           }
 
           env_from {
@@ -323,6 +255,8 @@ resource "kubernetes_deployment_v1" "main" {
             name       = "dev-net-tun"
           }
 
+          # SYS_ADMIN + NET_ADMIN let the in-workspace Docker daemon mount
+          # overlay filesystems and manage the docker0 bridge and iptables.
           security_context {
             capabilities {
               add = ["NET_ADMIN", "SYS_ADMIN"]
@@ -401,6 +335,10 @@ resource "coder_agent" "main" {
     ssh_helper      = false
   }
 
+  startup_script          = "service docker start"
+  startup_script_behavior = "blocking"
+  shutdown_script         = "service docker stop"
+
   env = {
     GIT_AUTHOR_NAME     = local.git_author_name
     GIT_AUTHOR_EMAIL    = local.git_author_email
@@ -454,11 +392,33 @@ resource "coder_agent" "main" {
   }
 }
 
+module "git-clone" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/modules/git-clone/coder"
+  agent_id = coder_agent.main.id
+  url      = local.repo_url
+  base_dir = "/workspaces"
+}
+
+# Installs @devcontainers/cli into the workspace at start; the Dev Containers
+# integration invokes `devcontainer` from PATH.
+module "devcontainers-cli" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/modules/devcontainers-cli/coder"
+  agent_id = coder_agent.main.id
+}
+
+resource "coder_devcontainer" "main" {
+  count            = local.repo_url != "" ? data.coder_workspace.me.start_count : 0
+  agent_id         = coder_agent.main.id
+  workspace_folder = module.git-clone[0].repo_dir
+}
+
 module "vscode-desktop" {
   count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/coder/vscode-desktop/coder"
   agent_id = coder_agent.main.id
-  folder   = local.checkout_dir
+  folder   = module.git-clone[0].repo_dir
   extensions = [
     "vscodevim.vim",
     "ms-python.python",
@@ -509,7 +469,7 @@ module "claude-code" {
   count               = data.coder_workspace.me.start_count
   source              = "registry.coder.com/coder/claude-code/coder"
   agent_id            = coder_agent.main.id
-  workdir             = local.checkout_dir
+  workdir             = module.git-clone[0].repo_dir
   install_claude_code = true
   managed_settings = {
     attribution = {
@@ -535,14 +495,10 @@ resource "coder_metadata" "container_info" {
   resource_id = coder_agent.main.id
   item {
     key   = "workspace image"
-    value = local.cache_repo == "" ? local.devcontainer_builder_image : envbuilder_cached_image.cached.0.image
+    value = local.workspace_image
   }
   item {
     key   = "git url"
     value = local.repo_url
-  }
-  item {
-    key   = "cache repo"
-    value = local.cache_repo == "" ? "not enabled" : local.cache_repo
   }
 }
