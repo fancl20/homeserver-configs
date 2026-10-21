@@ -462,7 +462,7 @@ module "devcontainers-cli" {
   agent_id = coder_agent.main.id
 }
 
-resource "coder_devcontainer" "main" {
+resource "coder_devcontainer" "repo" {
   count            = data.coder_workspace.me.start_count
   agent_id         = coder_agent.main.id
   workspace_folder = coalesce(module.git-clone[0].repo_dir, "/")
@@ -472,7 +472,7 @@ resource "coder_devcontainer" "main" {
 module "vscode-desktop" {
   count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/coder/vscode-desktop/coder"
-  agent_id = coder_devcontainer.main[0].subagent_id
+  agent_id = coder_devcontainer.repo[0].subagent_id
   folder   = module.git-clone[0].repo_dir
   extensions = [
     "vscodevim.vim",
@@ -495,7 +495,7 @@ module "vscode-desktop" {
 # workbench, keybindings) come from the local VS Code.
 resource "coder_script" "vscode_desktop_settings" {
   count        = data.coder_workspace.me.start_count
-  agent_id     = coder_devcontainer.main[0].subagent_id
+  agent_id     = coder_devcontainer.repo[0].subagent_id
   display_name = "VS Code Desktop Settings"
   icon         = "/icon/code.svg"
   run_on_start = true
