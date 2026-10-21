@@ -465,7 +465,7 @@ module "devcontainers-cli" {
 resource "coder_devcontainer" "main" {
   count            = data.coder_workspace.me.start_count
   agent_id         = coder_agent.main.id
-  workspace_folder = module.git-clone[0].repo_dir
+  workspace_folder = coalesce(module.git-clone[0].repo_dir, "/")
   config_path      = "/tmp/devcontainer.coder.json"
 }
 
