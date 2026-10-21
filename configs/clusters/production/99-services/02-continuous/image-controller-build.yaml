@@ -47,7 +47,7 @@ spec:
               sizeLimit: 8Gi
           initContainers:
           - name: prepare
-            image: docker.io/library/python:3.15.0-slim # {"$imagepolicy": "flux-system:python"}
+            image: docker.io/library/python:3.15.1-slim # {"$imagepolicy": "flux-system:python"}
             command:
             - python3
             - -c
