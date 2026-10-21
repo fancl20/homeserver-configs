@@ -412,7 +412,7 @@ module "git-clone" {
     #!/usr/bin/env bash
     set -euo pipefail
     repo="$PWD"
-    out="/tmp/devcontainer.coder.json"
+    out="/tmp/devcontainer.json"
 
     src=""
     for c in "$repo/.devcontainer/devcontainer.json" "$repo/.devcontainer.json" "$repo"/.devcontainer/*/devcontainer.json; do
@@ -466,7 +466,7 @@ resource "coder_devcontainer" "repo" {
   count            = data.coder_workspace.me.start_count
   agent_id         = coder_agent.main.id
   workspace_folder = coalesce(module.git-clone[0].repo_dir, "/")
-  config_path      = "/tmp/devcontainer.coder.json"
+  config_path      = "/tmp/devcontainer.json"
 }
 
 module "vscode-desktop" {
