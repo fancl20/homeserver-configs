@@ -22,7 +22,7 @@ app.Image('coder')
 +
 app.Image('coder-devcontainer-base')
 .Repository('registry.local.d20.fan/fancl20/coder-devcontainer-base')
-.Policy({ policy: { alphabetical: { order: 'desc' } } })
+.Policy({ policy: { alphabetical: { order: 'asc' } } })
 +
 app.Image('dae')
 .Repository('registry.local.d20.fan/fancl20/dae')

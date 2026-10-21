@@ -11,7 +11,7 @@
       },
       "policy": {
          "alphabetical": {
-            "order": "desc"
+            "order": "asc"
          }
       }
    }
