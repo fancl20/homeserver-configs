@@ -92,21 +92,20 @@ data "coder_parameter" "workspace_image" {
 
 # Latest built tag of the base image, resolved from the Flux ImagePolicy so
 # workspaces track the current Debian base snapshot without template edits.
-data "kubernetes_manifest" "workspace_image" {
-  object = {
-    apiVersion = "image.toolkit.fluxcd.io/v1"
-    kind       = "ImagePolicy"
-    metadata = {
-      name      = "coder-devcontainer-base"
-      namespace = "flux-system"
-    }
+data "kubernetes_resource" "workspace_image" {
+  api_version = "image.toolkit.fluxcd.io/v1"
+  kind        = "ImagePolicy"
+
+  metadata {
+    name      = "coder-devcontainer-base"
+    namespace = "flux-system"
   }
 }
 
 locals {
   # Computed locals
   deployment_name  = "coder-${lower(data.coder_workspace.me.id)}"
-  workspace_image  = data.coder_parameter.workspace_image.value != "" ? data.coder_parameter.workspace_image.value : "registry.local.d20.fan/fancl20/coder-devcontainer-base:${data.kubernetes_manifest.workspace_image.object.status.latestRef.tag}"
+  workspace_image  = data.coder_parameter.workspace_image.value != "" ? data.coder_parameter.workspace_image.value : "registry.local.d20.fan/fancl20/coder-devcontainer-base:${data.kubernetes_resource.workspace_image.object.status.latestRef.tag}"
   git_author_name  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email = data.coder_workspace_owner.me.email
   repo_url         = data.coder_parameter.repo.value
