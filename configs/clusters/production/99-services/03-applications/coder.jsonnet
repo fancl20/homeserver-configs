@@ -215,6 +215,10 @@ app.Base('coder', 'coder', create_namespace={
   apiGroups: ['image.toolkit.fluxcd.io'],
   resources: ['imagepolicies'],
   verbs: ['get', 'list', 'watch'],
+}, {
+  apiGroups: ['apiextensions.k8s.io'],
+  resources: ['customresourcedefinitions'],
+  verbs: ['get', 'list'],
 }])
 .PersistentVolumeClaim('coder-db', {
   accessModes: ['ReadWriteOnce'],
