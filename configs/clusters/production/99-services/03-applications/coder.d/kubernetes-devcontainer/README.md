@@ -27,8 +27,11 @@ containers are built and run on top of it.
 It ships the Docker daemon (with `data-root` on the `/workspaces` volume), Node.js
 for `@devcontainers/cli` (installed at start by the
 [devcontainers-cli module](https://registry.coder.com/modules/devcontainers-cli)),
-and the coder CLI. Rebuilds follow the Debian base tag;
-bump the version in `update.py` for Dockerfile changes.
+and the coder CLI. The template resolves the current tag at provision time from
+the Flux `ImagePolicy` (`coder-devcontainer-base` in `flux-system`), so each
+workspace starts on the latest build; leave the `workspace_image` parameter
+empty to follow it, or set a specific tag to pin. Bump the version in
+`update.py` for a deliberate generation bump.
 
 ### Authentication
 

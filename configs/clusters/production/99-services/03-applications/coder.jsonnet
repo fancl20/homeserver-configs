@@ -197,7 +197,7 @@ app.Base('coder', 'coder', create_namespace={
 // Permissions for the workspace provisioner: the embedded provisioner runs
 // Terraform in-cluster as this pod's service account and creates workspace
 // pods, PVCs, and deployments in this namespace.
-.Role(name='coder-workspace-perms', rules=[{
+.Role(name='coder-workspace', rules=[{
   apiGroups: [''],
   resources: ['pods', 'persistentvolumeclaims'],
   verbs: ['create', 'delete', 'deletecollection', 'get', 'list', 'patch', 'update', 'watch'],
@@ -210,6 +210,11 @@ app.Base('coder', 'coder', create_namespace={
   apiGroups: [''],
   resources: ['secrets'],
   verbs: ['create', 'update'],
+}])
+.ClusterRole(rules=[{
+  apiGroups: ['image.toolkit.fluxcd.io'],
+  resources: ['imagepolicies'],
+  verbs: ['get', 'list', 'watch'],
 }])
 .PersistentVolumeClaim('coder-db', {
   accessModes: ['ReadWriteOnce'],

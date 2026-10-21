@@ -82,18 +82,31 @@ data "coder_parameter" "repo" {
 }
 
 data "coder_parameter" "workspace_image" {
-  default      = "registry.local.d20.fan/fancl20/coder-devcontainer-base:1-testing-20261005"
-  description  = "Base image that runs the workspace (Docker daemon + devcontainer CLI). Dev containers are built and run on top of it."
+  default      = ""
+  description  = "Base image that runs the workspace (Docker daemon + devcontainer CLI). Dev containers are built and run on top of it. Empty follows the latest built image."
   display_name = "Workspace Image"
   mutable      = true
   name         = "workspace_image"
   order        = 5
 }
 
+# Latest built tag of the base image, resolved from the Flux ImagePolicy so
+# workspaces track the current Debian base snapshot without template edits.
+data "kubernetes_manifest" "workspace_image" {
+  object = {
+    apiVersion = "image.toolkit.fluxcd.io/v1"
+    kind       = "ImagePolicy"
+    metadata = {
+      name      = "coder-devcontainer-base"
+      namespace = "flux-system"
+    }
+  }
+}
+
 locals {
   # Computed locals
   deployment_name  = "coder-${lower(data.coder_workspace.me.id)}"
-  workspace_image  = data.coder_parameter.workspace_image.value
+  workspace_image  = data.coder_parameter.workspace_image.value != "" ? data.coder_parameter.workspace_image.value : "registry.local.d20.fan/fancl20/coder-devcontainer-base:${data.kubernetes_manifest.workspace_image.object.status.latestRef.tag}"
   git_author_name  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email = data.coder_workspace_owner.me.email
   repo_url         = data.coder_parameter.repo.value
