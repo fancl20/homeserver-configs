@@ -267,11 +267,10 @@ resource "kubernetes_deployment_v1" "main" {
             name       = "dev-net-tun"
           }
 
-          # SYS_ADMIN + NET_ADMIN let the in-workspace Docker daemon mount
-          # overlay filesystems and manage the docker0 bridge and iptables.
+          # SYS_ADMIN + NET_ADMIN + SYS_RESOURCE for docker in docker
           security_context {
             capabilities {
-              add = ["NET_ADMIN", "SYS_ADMIN"]
+              add = ["NET_ADMIN", "SYS_ADMIN", "SYS_RESOURCE"]
             }
           }
         }

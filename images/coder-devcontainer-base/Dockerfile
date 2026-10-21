@@ -9,7 +9,7 @@ RUN sed -i -e 's/^URIs:/# URIs:/' -e 's/^# http:/URIs: http:/' /etc/apt/sources.
 # docker.io runs the daemon (DinD), nodejs/npm host @devcontainers/cli, and
 # the coder CLI is the workspace agent (it self-updates to the server version).
 RUN apt-get install -y --no-install-recommends \
-      docker-cli docker.io nodejs npm git curl ca-certificates openssh-client \
+      docker-cli docker.io docker-buildx nodejs npm git curl ca-certificates openssh-client \
       fish sudo less procps iproute2 && \
     curl -fsSL https://coder.com/install.sh | sh && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
