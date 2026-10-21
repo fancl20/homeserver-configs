@@ -231,6 +231,10 @@ resource "kubernetes_deployment_v1" "main" {
             value = "glm-5.3-flash[1m]"
           }
           env {
+            name  = "ANTHROPIC_ENABLE_TOOL_SEARCH"
+            value = "0"
+          }
+          env {
             name  = "CLAUDE_CODE_EFFORT_LEVEL"
             value = "max"
           }
