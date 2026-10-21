@@ -436,6 +436,15 @@ module "git-clone" {
     }
   }
   runArgs = ["--network=host"]
+  # the vscode-desktop module registers its own app on the sub-agent; hide the
+  # integration's built-in one so the dashboard shows a single VS Code button
+  customizations = {
+    coder = {
+      displayApps = {
+        vscode = false
+      }
+    }
+  }
 })}' -s '
       def toAbs($d): if (type == "string") and (startswith("/") | not) then "\($d)/\(.)" else . end;
       .[0] as $repo |
@@ -469,13 +478,19 @@ resource "coder_devcontainer" "repo" {
   config_path      = "/tmp/devcontainer.json"
 }
 
+locals {
+  vscode_agent_ids = data.coder_workspace.me.start_count > 0 ? {
+    main         = coder_agent.main.id
+    devcontainer = coder_devcontainer.repo[0].subagent_id
+  } : {}
+}
+
 module "vscode-desktop" {
-  count    = data.coder_workspace.me.start_count
+  for_each = local.vscode_agent_ids
   source   = "registry.coder.com/coder/vscode-desktop/coder"
-  agent_id = coder_devcontainer.repo[0].subagent_id
+  agent_id = each.value
   folder   = module.git-clone[0].repo_dir
   extensions = [
-    "vscodevim.vim",
     "ms-python.python",
     "ms-python.autopep8",
     "ms-toolsai.jupyter",
@@ -494,9 +509,9 @@ module "vscode-desktop" {
 # written to the vscode-server directory instead. UI-scoped settings (theme,
 # workbench, keybindings) come from the local VS Code.
 resource "coder_script" "vscode_desktop_settings" {
-  count        = data.coder_workspace.me.start_count
-  agent_id     = coder_devcontainer.repo[0].subagent_id
-  display_name = "VS Code Desktop Settings"
+  for_each     = local.vscode_agent_ids
+  agent_id     = each.value
+  display_name = "VS Code Desktop Settings${each.key == "devcontainer" ? " (Dev Container)" : ""}"
   icon         = "/icon/code.svg"
   run_on_start = true
   script = <<-EOT

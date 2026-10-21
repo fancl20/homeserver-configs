@@ -78,19 +78,21 @@ CLI at up/exec time, so secrets never land on disk. Repos carry only their
 toolchain (features, Dockerfile); a repo's own `features`, `runArgs`, or
 `remoteEnv` entries extend the base, with the repo winning per key.
 
-The main agent (terminals) runs in the base image, not inside the dev
-container; if the dev container build fails the workspace stays usable in the
-base environment through its web terminal.
+The main agent (terminals, VS Code on the base environment) runs in the base
+image, not inside the dev container; if the dev container build fails the
+workspace stays usable in the base environment through its web terminal.
 
-VS Code and Claude Code are attached to the dev container sub-agent only
-(`coder_devcontainer.repo.subagent_id`), where the repo toolchain lives. VS Code
-extensions and Machine settings come from the template, installed on every
-sub-agent start: rebuilds start from an empty `~/.vscode-server`, and
-`customizations.vscode` in the repo's `devcontainer.json` is not applied over
-the coder-remote connection. Claude Code runs there with the repo toolchain and
-the `remoteEnv`-forwarded `ANTHROPIC_*`/`CLAUDE_CODE_*` environment. Attaching
-resources to the sub-agent makes the dev container terraform-managed, so
-template changes update it in place.
+VS Code is attached to both agents (`vscode_agent_ids`): the main agent and the
+dev container sub-agent (`coder_devcontainer.repo.subagent_id`), where the repo
+toolchain lives. Extensions and Machine settings come from the template,
+installed on every agent start: rebuilds start from an empty `~/.vscode-server`,
+and `customizations.vscode` in the repo's `devcontainer.json` is not applied
+over the coder-remote connection. The base config hides the integration's
+built-in sub-agent VS Code app (`customizations.coder.displayApps.vscode:
+false`) so each side shows one button. Claude Code runs in the dev container
+with the repo toolchain and the `remoteEnv`-forwarded `ANTHROPIC_*`/
+`CLAUDE_CODE_*` environment. Attaching resources to the sub-agent makes the dev
+container terraform-managed, so template changes update it in place.
 
 > **Note**
 > This template is designed to be a starting point! Edit the Terraform to extend the template to support your use case.
