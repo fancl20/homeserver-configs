@@ -524,7 +524,7 @@ resource "coder_script" "vscode_desktop_settings" {
 module "claude-code" {
   count               = data.coder_workspace.me.start_count
   source              = "registry.coder.com/coder/claude-code/coder"
-  agent_id            = coder_agent.main.id
+  agent_id            = coder_devcontainer.repo[0].subagent_id
   workdir             = module.git-clone[0].repo_dir
   install_claude_code = true
   managed_settings = {
@@ -533,17 +533,6 @@ module "claude-code" {
       pr     = ""
     }
   }
-  mcp = jsonencode({
-    mcpServers = {
-      "zread" = {
-        type = "http"
-        url  = "https://api.z.ai/api/mcp/zread/mcp"
-        headers = {
-          Authorization = "Bearer $${ANTHROPIC_AUTH_TOKEN}"
-        }
-      }
-    }
-  })
 }
 
 resource "coder_metadata" "container_info" {
