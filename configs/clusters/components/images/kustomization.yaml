@@ -10,7 +10,7 @@ images:
 - name: ghcr.io/coder/coder # {"$imagepolicy": "flux-system:coder:name"}
   newTag: 'v2.38.1' # {"$imagepolicy": "flux-system:coder:tag"}
 - name: registry.local.d20.fan/fancl20/coder-devcontainer-base # {"$imagepolicy": "flux-system:coder-devcontainer-base:name"}
-  newTag: '1-testing-20261005' # {"$imagepolicy": "flux-system:coder-devcontainer-base:tag"}
+  newTag: '1-testing-20261020' # {"$imagepolicy": "flux-system:coder-devcontainer-base:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
   newTag: '2.1.1-testing-20261020' # {"$imagepolicy": "flux-system:dae:tag"}
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
