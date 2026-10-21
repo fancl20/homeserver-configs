@@ -490,9 +490,9 @@ locals {
 }
 
 module "vscode-desktop" {
-  for_each = local.vscode_agent_ids
+  count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/coder/vscode-desktop/coder"
-  agent_id = each.value
+  agent_id = coder_devcontainer.repo[0].subagent_id
   folder   = module.git-clone[0].repo_dir
   extensions = [
     "ms-python.python",
@@ -507,6 +507,23 @@ module "vscode-desktop" {
     "Lencerf.beancount",
     "dongfg.vscode-beancount-formatter",
   ]
+}
+
+resource "coder_app" "vscode_base" {
+  count        = data.coder_workspace.me.start_count
+  agent_id     = coder_agent.main.id
+  display_name = "VS Code Desktop (Base)"
+  slug         = "vscode-base"
+  icon         = "/icon/code.svg"
+  external     = true
+  url = join("", [
+    "vscode://coder.coder-remote/open",
+    "?owner=", data.coder_workspace_owner.me.name,
+    "&workspace=", data.coder_workspace.me.name,
+    "&folder=", module.git-clone[0].repo_dir,
+    "&url=", data.coder_workspace.me.access_url,
+    "&token=$SESSION_TOKEN",
+  ])
 }
 
 # The vscode-desktop module takes no settings; remote (Machine) settings are
