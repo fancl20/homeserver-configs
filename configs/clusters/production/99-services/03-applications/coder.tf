@@ -1,5 +1,5 @@
 resource "random_password" "coder_db" {
-  length = 32
+  length  = 32
   special = false
 }
 
@@ -9,14 +9,14 @@ resource "kubernetes_secret_v1" "coder" {
     namespace = "coder"
   }
   data = {
-    POSTGRES_USER = "coder"
+    POSTGRES_USER     = "coder"
     POSTGRES_PASSWORD = random_password.coder_db.result
-    url = "postgres://coder:${random_password.coder_db.result}@127.0.0.1:5432/coder?sslmode=disable"
+    url               = "postgres://coder:${random_password.coder_db.result}@127.0.0.1:5432/coder?sslmode=disable"
   }
 }
 
 data "google_dns_managed_zone" "default" {
-  name        = "default"
+  name = "default"
 }
 
 data "kubernetes_resource" "gateway" {

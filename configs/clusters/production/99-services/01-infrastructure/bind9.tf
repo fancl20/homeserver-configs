@@ -24,6 +24,6 @@ resource "kubernetes_secret_v1" "external_dns" {
   }
   data = {
     EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG = "hmac-sha256"
-    EXTERNAL_DNS_RFC2136_TSIG_SECRET = random_bytes.bind9_secret.base64
+    EXTERNAL_DNS_RFC2136_TSIG_SECRET     = random_bytes.bind9_secret.base64
   }
 }
