@@ -21,6 +21,7 @@ RUN sed -i 's|^cgroupfs_mount() {$|&\n\t[ -e /sys/fs/cgroup/cgroup.controllers ]
 
 # The workspace container root is overlayfs, which the overlay2 storage driver
 # cannot layer on; /workspaces is the PVC mount, so data-root there both works
-# and persists build cache across workspace restarts.
+# and persists build cache across workspace restarts. mtu matches the pod's
+# flannel-vxlan eth0 so nested bridge segments can cross it.
 RUN mkdir -p /etc/docker && \
-    echo '{"data-root": "/workspaces/.docker"}' > /etc/docker/daemon.json
+    echo '{"data-root": "/workspaces/.docker", "mtu": 1450}' > /etc/docker/daemon.json
