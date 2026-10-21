@@ -61,7 +61,7 @@ data "coder_parameter" "workspaces_volume_size" {
   name         = "workspaces_volume_size"
   display_name = "Workspaces volume size"
   description  = "Size of the `/workspaces` volume (GiB)."
-  default      = "10"
+  default      = "32"
   type         = "number"
   icon         = "/emojis/1f4be.png"
   mutable      = false
@@ -402,11 +402,56 @@ resource "coder_agent" "main" {
 }
 
 module "git-clone" {
-  count    = data.coder_workspace.me.start_count
-  source   = "registry.coder.com/modules/git-clone/coder"
-  agent_id = coder_agent.main.id
-  url      = local.repo_url
-  base_dir = "/workspaces"
+  count      = data.coder_workspace.me.start_count
+  source     = "registry.coder.com/modules/git-clone/coder"
+  agent_id   = coder_agent.main.id
+  url        = local.repo_url
+  base_dir   = "/workspaces"
+  extra_args = ["--recurse-submodules"]
+  post_clone_script = <<-EOT
+    #!/usr/bin/env bash
+    set -euo pipefail
+    repo="$PWD"
+    out="/tmp/devcontainer.coder.json"
+
+    src=""
+    for c in "$repo/.devcontainer/devcontainer.json" "$repo/.devcontainer.json" "$repo"/.devcontainer/*/devcontainer.json; do
+      if [ -f "$c" ]; then
+        src="$c"
+        break
+      fi
+    done
+    if [ -z "$src" ]; then
+      echo "no devcontainer.json under $repo; skipping merge"
+      exit 0
+    fi
+    srcdir="$(dirname "$src")"
+
+    jq --arg srcdir "$srcdir" --argjson base '${jsonencode({
+  features = {
+    "ghcr.io/devcontainers/features/common-utils:2" = {
+      installZsh      = false
+      installOhMyZsh  = false
+      upgradePackages = false
+    }
+  }
+  runArgs = ["--network=host"]
+})}' -s '
+      def toAbs($d): if (type == "string") and (startswith("/") | not) then "\($d)/\(.)" else . end;
+      .[0] as $repo |
+      ($base + {remoteEnv: (env | with_entries(select(.key | test("^ANTHROPIC_|^CLAUDE_CODE_|^API_TIMEOUT_MS|^GIT_(AUTHOR|COMMITTER)_")) | .value = "$${localEnv:\(.key)}"))}) as $base |
+      ($base * $repo)
+      | .runArgs = ($base.runArgs + ($repo.runArgs // []))
+      | if .build then
+          .build |= ((if .dockerfile then .dockerfile |= toAbs($srcdir) else . end)
+                   | (if .context then .context |= toAbs($srcdir) else . end))
+        else . end
+      | if .dockerFile then .dockerFile |= toAbs($srcdir) else . end
+      | if .dockerComposeFile then .dockerComposeFile |= (if type == "string" then [.] else . end | map(toAbs($srcdir))) else . end
+    ' "$src" > "$out"
+
+    echo "merged $src into $out"
+  EOT
 }
 
 # Installs @devcontainers/cli into the workspace at start; the Dev Containers
@@ -418,15 +463,16 @@ module "devcontainers-cli" {
 }
 
 resource "coder_devcontainer" "main" {
-  count            = local.repo_url != "" ? data.coder_workspace.me.start_count : 0
+  count            = data.coder_workspace.me.start_count
   agent_id         = coder_agent.main.id
   workspace_folder = module.git-clone[0].repo_dir
+  config_path      = "/tmp/devcontainer.coder.json"
 }
 
 module "vscode-desktop" {
   count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/coder/vscode-desktop/coder"
-  agent_id = coder_agent.main.id
+  agent_id = coder_devcontainer.main[0].subagent_id
   folder   = module.git-clone[0].repo_dir
   extensions = [
     "vscodevim.vim",
@@ -448,7 +494,8 @@ module "vscode-desktop" {
 # written to the vscode-server directory instead. UI-scoped settings (theme,
 # workbench, keybindings) come from the local VS Code.
 resource "coder_script" "vscode_desktop_settings" {
-  agent_id     = coder_agent.main.id
+  count        = data.coder_workspace.me.start_count
+  agent_id     = coder_devcontainer.main[0].subagent_id
   display_name = "VS Code Desktop Settings"
   icon         = "/icon/code.svg"
   run_on_start = true
