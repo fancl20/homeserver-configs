@@ -131,7 +131,8 @@ resource "kubernetes_persistent_volume_claim_v1" "workspaces" {
   }
   wait_until_bound = false
   spec {
-    access_modes = ["ReadWriteOnce"]
+    storage_class_name = "rook-rbd"
+    access_modes       = ["ReadWriteOnce"]
     resources {
       requests = {
         storage = "${data.coder_parameter.workspaces_volume_size.value}Gi"

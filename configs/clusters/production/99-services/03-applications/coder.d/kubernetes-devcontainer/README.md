@@ -50,7 +50,10 @@ The workspace pod runs the base image directly with `NET_ADMIN` and `SYS_ADMIN`
 capabilities, which the Docker daemon needs for the `docker0` bridge and overlay
 mounts. The agent startup script starts the daemon; its data-root lives on the
 `/workspaces` PVC so image layers persist across workspace restarts (the container
-root is overlayfs, which the overlay2 storage driver cannot layer on).
+root is overlayfs, which the overlay2 storage driver cannot layer on). The PVC is
+`rook-rbd`: block-backed ext4 lets overlay2 work natively — a CephFS-backed PVC
+would silently fall back to the vfs driver, where every container create is a
+full layer copy over the network.
 
 This template provisions the following resources:
 
