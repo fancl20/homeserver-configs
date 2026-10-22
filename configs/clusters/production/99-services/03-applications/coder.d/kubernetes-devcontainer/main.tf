@@ -464,6 +464,8 @@ module "git-clone" {
       | if .dockerComposeFile then .dockerComposeFile |= (if type == "string" then [.] else . end | map(toAbs($srcdir))) else . end
     ' "$src" > "$out"
 
+    chown -R 1000:1000 "$repo"
+
     echo "merged $src into $out"
   EOT
 }
@@ -513,7 +515,7 @@ module "vscode-desktop" {
 resource "coder_app" "vscode_base" {
   count        = data.coder_workspace.me.start_count
   agent_id     = coder_agent.main.id
-  display_name = "VS Code Desktop (Base)"
+  display_name = "VS Code Desktop"
   slug         = "vscode-base"
   icon         = "/icon/code.svg"
   external     = true

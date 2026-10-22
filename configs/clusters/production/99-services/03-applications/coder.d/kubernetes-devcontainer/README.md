@@ -79,7 +79,11 @@ no nested docker bridge in the path), and `remoteEnv` entries forwarding
 from the agent environment via `${localEnv:...}` — resolved by the devcontainer
 CLI at up/exec time, so secrets never land on disk. Repos carry only their
 toolchain (features, Dockerfile); a repo's own `features`, `runArgs`, or
-`remoteEnv` entries extend the base, with the repo winning per key.
+`remoteEnv` entries extend the base, with the repo winning per key. The agent
+runs as root (registry modules broadly assume it), so the post-clone hook also
+chowns the checkout to uid 1000 — repo devcontainer images must create and
+switch to the uid-1000 `coder` user (`useradd --uid 1000 …` then `USER coder`),
+or git inside the devcontainer rejects the repo with "dubious ownership".
 
 The main agent (terminals, VS Code on the base environment) runs in the base
 image, not inside the dev container; if the dev container build fails the
