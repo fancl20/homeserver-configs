@@ -16,7 +16,7 @@ images:
 - name: docker.io/library/debian # {"$imagepolicy": "flux-system:debian:name"}
   newTag: 'testing-20261020' # {"$imagepolicy": "flux-system:debian:tag"}
 - name: registry.k8s.io/external-dns/external-dns # {"$imagepolicy": "flux-system:external-dns:name"}
-  newTag: 'v0.23.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
+  newTag: 'v0.24.0' # {"$imagepolicy": "flux-system:external-dns:tag"}
 - name: registry.local.d20.fan/fancl20/image-controller # {"$imagepolicy": "flux-system:image-controller:name"}
   newTag: '0.1.0-testing-20261005' # {"$imagepolicy": "flux-system:image-controller:tag"}
 - name: lscr.io/linuxserver/jellyfin # {"$imagepolicy": "flux-system:jellyfin:name"}
