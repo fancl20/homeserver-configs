@@ -8,7 +8,7 @@ images:
 - name: lscr.io/linuxserver/calibre-web # {"$imagepolicy": "flux-system:calibre:name"}
   newTag: '0.6.27-ls407' # {"$imagepolicy": "flux-system:calibre:tag"}
 - name: ghcr.io/coder/coder # {"$imagepolicy": "flux-system:coder:name"}
-  newTag: 'v2.38.3' # {"$imagepolicy": "flux-system:coder:tag"}
+  newTag: 'v2.38.4' # {"$imagepolicy": "flux-system:coder:tag"}
 - name: registry.local.d20.fan/fancl20/coder-devcontainer-base # {"$imagepolicy": "flux-system:coder-devcontainer-base:name"}
   newTag: '1-testing-20261027' # {"$imagepolicy": "flux-system:coder-devcontainer-base:tag"}
 - name: registry.local.d20.fan/fancl20/dae # {"$imagepolicy": "flux-system:dae:name"}
