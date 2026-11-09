@@ -442,7 +442,7 @@ module "git-clone" {
   }
   runArgs = ["--network=host"]
   mounts = [
-    "source=/var/run/secrets/kubernetes.io/serviceaccount,target=/var/run/secrets/kubernetes.io/serviceaccount,type=bind,readonly"
+    "source=/run/secrets/kubernetes.io/serviceaccount,target=/run/secrets/kubernetes.io/serviceaccount,type=bind,readonly"
   ]
   # the vscode-desktop module registers its own app on the sub-agent; hide the
   # integration's built-in one so the dashboard shows a single VS Code button
