@@ -30,16 +30,6 @@ spec:
         - cp
         - /bin/terraform
         - /tfbin/terraform
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 65532
-          seccompProfile:
-            type: RuntimeDefault
         volumeMounts:
         - name: tfbin
           mountPath: /tfbin
