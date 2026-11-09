@@ -441,6 +441,9 @@ module "git-clone" {
     }
   }
   runArgs = ["--network=host"]
+  mounts = [
+    "source=/var/run/secrets/kubernetes.io/serviceaccount,target=/var/run/secrets/kubernetes.io/serviceaccount,type=bind,readonly"
+  ]
   # the vscode-desktop module registers its own app on the sub-agent; hide the
   # integration's built-in one so the dashboard shows a single VS Code button
   customizations = {
@@ -456,6 +459,7 @@ module "git-clone" {
       ($base + {remoteEnv: (env | with_entries(select(.key | test("^ANTHROPIC_|^CLAUDE_CODE_|^API_TIMEOUT_MS|^GIT_(AUTHOR|COMMITTER)_")) | .value = "$${localEnv:\(.key)}"))}) as $base |
       ($base * $repo)
       | .runArgs = ($base.runArgs + ($repo.runArgs // []))
+      | .mounts = ($base.mounts + ($repo.mounts // []))
       | if .build then
           .build |= ((if .dockerfile then .dockerfile |= toAbs($srcdir) else . end)
                    | (if .context then .context |= toAbs($srcdir) else . end))
