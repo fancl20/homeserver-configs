@@ -18,6 +18,35 @@ spec:
       env:
       - name: VAULT_ADDR
         value:  http://vault.vault.svc:8200/
+      - name: PATH
+        value: /tfbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       envFrom:
       - secretRef:
           name: tf-runner
+      initContainers:
+      - name: terraform
+        image: docker.io/hashicorp/terraform:1.17.1 # {"$imagepolicy": "flux-system:terraform"}
+        command:
+        - cp
+        - /bin/terraform
+        - /tfbin/terraform
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - name: tfbin
+          mountPath: /tfbin
+      volumeMounts:
+      - name: tfbin
+        mountPath: /tfbin
+      volumes:
+      - name: tfbin
+        emptyDir:
+          sizeLimit: 256Mi

@@ -26,3 +26,24 @@ spec:
   policy:
     semver:
       range: '*-rc'
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: terraform
+  namespace: flux-system
+spec:
+  image: docker.io/hashicorp/terraform
+  interval: 1h
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: terraform
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: terraform
+  policy:
+    semver:
+      range: '1.x'
