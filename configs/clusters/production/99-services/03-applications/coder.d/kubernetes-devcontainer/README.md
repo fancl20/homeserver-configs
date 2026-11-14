@@ -51,7 +51,8 @@ the base environment as the fallback when a container build fails.
 - Repo devcontainer images must create and switch to a uid-1000 `coder` user
   (`useradd --uid 1000 …` then `USER coder`), or git inside the dev container
   rejects the checkout with "dubious ownership".
-- On start, `docker system prune --filter until=168h` bounds the image store;
-  tagged images survive, so unchanged repos start without a rebuild.
+- On start, stopped containers (stale devcontainers from prior starts) are
+  pruned, build cache older than a week is reclaimed, and tagged images
+  survive, so unchanged repos start without a rebuild.
 - Workspace pods run with read-only, cluster-wide Kubernetes access (the
   built-in `view` role via the `coder-workspace` service account).

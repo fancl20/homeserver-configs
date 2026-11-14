@@ -358,7 +358,12 @@ resource "coder_agent" "main" {
     service docker start
     i=0
     until docker info >/dev/null 2>&1 || [ "$i" -ge 30 ]; do i=$((i+1)); sleep 1; done
-    docker system prune --force --filter until=168h
+    # Stale devcontainers from prior starts shadow running ones in the agent's
+    # container matching (same local_folder label), so always remove stopped
+    # containers; keep a week of build cache.
+    docker container prune --force
+    docker builder prune --force --filter until=168h
+    docker image prune --force
   EOT
   startup_script_behavior = "blocking"
   shutdown_script         = "service docker stop"
