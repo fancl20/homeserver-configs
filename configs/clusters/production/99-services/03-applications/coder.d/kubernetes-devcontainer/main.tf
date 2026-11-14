@@ -73,6 +73,7 @@ data "coder_parameter" "workspaces_volume_size" {
 }
 
 data "coder_parameter" "repo" {
+  default      = jsonencode([])
   description  = "Repository URLs to clone and run as dev containers. Each entry becomes a subagent named after the repo."
   display_name = "Repositories"
   mutable      = true

@@ -16,11 +16,11 @@ inside.
 
 ## Parameters
 
-- **Repositories** (required, mutable): repository URLs, one per project. Each
-  becomes a dev container named after the repo basename (basenames must be
-  unique). Add or remove projects by editing this parameter; newly added repos
-  are cloned at the next start. Private repos authenticate with the workspace
-  owner's Coder SSH key (`coder gitssh`).
+- **Repositories** (mutable, defaults to empty — no dev containers): repository
+  URLs, one per project. Each becomes a dev container named after the repo
+  basename (basenames must be unique). Add or remove projects by editing this
+  parameter; newly added repos are cloned at the next start. Private repos
+  authenticate with the workspace owner's Coder SSH key (`coder gitssh`).
 - **CPU / Memory**: pod resource limits.
 - **Workspaces volume size**: size of the persistent `/workspaces` volume —
   checkouts and Docker images live here and survive restarts.
