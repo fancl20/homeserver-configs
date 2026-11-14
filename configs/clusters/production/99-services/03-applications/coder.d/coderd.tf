@@ -3,6 +3,9 @@ terraform {
     coderd = {
       source = "coder/coderd"
     }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+    }
   }
 }
 

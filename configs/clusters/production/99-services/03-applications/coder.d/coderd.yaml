@@ -22,6 +22,25 @@ spec:
           secretKeyRef:
             name: coder-init-token
             key: token
+      - name: PATH
+        value: /tfbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      initContainers:
+      - name: terraform
+        image: docker.io/hashicorp/terraform:1.17.2 # {"$imagepolicy": "flux-system:terraform"}
+        command:
+        - cp
+        - /bin/terraform
+        - /tfbin/terraform
+        volumeMounts:
+        - name: tfbin
+          mountPath: /tfbin
+      volumeMounts:
+      - name: tfbin
+        mountPath: /tfbin
+      volumes:
+      - name: tfbin
+        emptyDir:
+          sizeLimit: 256Mi
 ---
 apiVersion: v1
 kind: ServiceAccount
