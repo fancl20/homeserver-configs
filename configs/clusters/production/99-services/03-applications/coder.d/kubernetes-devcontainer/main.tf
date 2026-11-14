@@ -73,13 +73,12 @@ data "coder_parameter" "workspaces_volume_size" {
 }
 
 data "coder_parameter" "repo" {
-  default      = jsonencode([])
-  description  = "Repository URLs to clone and run as dev containers. Each entry becomes a subagent named after the repo."
-  display_name = "Repositories"
+  description  = "Repository URL to clone and run as a dev container."
+  display_name = "Repository"
   mutable      = true
   name         = "repo"
   order        = 4
-  type         = "list(string)"
+  type         = "string"
 }
 
 data "coder_parameter" "workspace_image" {
@@ -110,10 +109,8 @@ locals {
   git_author_name  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email = data.coder_workspace_owner.me.email
 
-  repo_urls = [for url in jsondecode(data.coder_parameter.repo.value) : trimsuffix(trimspace(url), "/")]
-  repo_map  = { for url in local.repo_urls : trimsuffix(basename(url), ".git") => url }
-
-  active_repo_map = data.coder_workspace.me.start_count > 0 ? local.repo_map : {}
+  repo_url  = trimsuffix(trimspace(data.coder_parameter.repo.value), "/")
+  repo_name = lower(replace(trimsuffix(basename(local.repo_url), ".git"), "_", "-"))
 }
 
 resource "kubernetes_persistent_volume_claim_v1" "workspaces" {
@@ -422,17 +419,17 @@ resource "coder_agent" "main" {
 }
 
 module "git-clone" {
-  for_each   = local.active_repo_map
+  count      = data.coder_workspace.me.start_count
   source     = "registry.coder.com/modules/git-clone/coder"
   agent_id   = coder_agent.main.id
-  url        = each.value
+  url        = local.repo_url
   base_dir   = "/workspaces"
   extra_args = ["--recurse-submodules"]
   post_clone_script = <<-EOT
     #!/usr/bin/env bash
     set -euo pipefail
     repo="$PWD"
-    out="/tmp/devcontainers/${each.key}/devcontainer.json"
+    out="/tmp/devcontainer.json"
 
     src=""
     for c in "$repo/.devcontainer/devcontainer.json" "$repo/.devcontainer.json" "$repo"/.devcontainer/*/devcontainer.json; do
@@ -456,7 +453,7 @@ module "git-clone" {
       upgradePackages = false
     }
   }
-  runArgs = ["--network=host", "--name=${each.key}"]
+  runArgs = ["--network=host"]
   containerEnv = {
     EDITOR = "vi"
   }
@@ -501,25 +498,25 @@ module "devcontainers-cli" {
   agent_id = coder_agent.main.id
 }
 
-resource "coder_devcontainer" "repo" {
-  for_each         = local.active_repo_map
+resource "coder_devcontainer" "dev" {
+  count            = data.coder_workspace.me.start_count
   agent_id         = coder_agent.main.id
-  workspace_folder = module.git-clone[each.key].repo_dir
-  config_path      = "/tmp/devcontainers/${each.key}/devcontainer.json"
+  workspace_folder = coalesce(module.git-clone[0].repo_dir, "/")
+  config_path      = "/tmp/devcontainer.json"
 }
 
 locals {
-  vscode_agent_ids = data.coder_workspace.me.start_count > 0 ? merge(
-    { main = coder_agent.main.id },
-    { for name, devcontainer in coder_devcontainer.repo : name => devcontainer.subagent_id },
-  ) : {}
+  vscode_agent_ids = data.coder_workspace.me.start_count > 0 ? {
+    main = coder_agent.main.id
+    dev  = coder_devcontainer.dev[0].subagent_id
+  } : {}
 }
 
 module "vscode-desktop" {
-  for_each = local.active_repo_map
+  count    = data.coder_workspace.me.start_count
   source   = "registry.coder.com/coder/vscode-desktop/coder"
-  agent_id = coder_devcontainer.repo[each.key].subagent_id
-  folder   = module.git-clone[each.key].repo_dir
+  agent_id = coder_devcontainer.dev[0].subagent_id
+  folder   = module.git-clone[0].repo_dir
   extensions = [
     "ms-python.python",
     "ms-python.autopep8",
@@ -535,13 +532,31 @@ module "vscode-desktop" {
   ]
 }
 
+resource "coder_app" "vscode_dev" {
+  count        = data.coder_workspace.me.start_count
+  agent_id     = coder_agent.main.id
+  display_name = "VS Code (Dev Container)"
+  slug         = "vscode-dev"
+  icon         = "/icon/code.svg"
+  external     = true
+  url = join("", [
+    "vscode://coder.coder-remote/open",
+    "?owner=", data.coder_workspace_owner.me.name,
+    "&workspace=", data.coder_workspace.me.name,
+    "&agent=dev",
+    "&folder=", module.git-clone[0].repo_dir,
+    "&url=", data.coder_workspace.me.access_url,
+    "&token=$SESSION_TOKEN",
+  ])
+}
+
 # The vscode-desktop module takes no settings; remote (Machine) settings are
 # written to the vscode-server directory instead. UI-scoped settings (theme,
 # workbench, keybindings) come from the local VS Code.
 resource "coder_script" "vscode_desktop_settings" {
   for_each     = local.vscode_agent_ids
   agent_id     = each.value
-  display_name = each.key == "main" ? "VS Code Desktop Settings" : "VS Code Desktop Settings (${each.key})"
+  display_name = each.key == "dev" ? "VS Code Desktop Settings (Dev Container)" : "VS Code Desktop Settings"
   icon         = "/icon/code.svg"
   run_on_start = true
   script = <<-EOT
@@ -567,10 +582,10 @@ resource "coder_script" "vscode_desktop_settings" {
 }
 
 module "claude-code" {
-  for_each            = local.active_repo_map
+  count               = data.coder_workspace.me.start_count
   source              = "registry.coder.com/coder/claude-code/coder"
-  agent_id            = coder_devcontainer.repo[each.key].subagent_id
-  workdir             = module.git-clone[each.key].repo_dir
+  agent_id            = coder_devcontainer.dev[0].subagent_id
+  workdir             = module.git-clone[0].repo_dir
   install_claude_code = true
   managed_settings = {
     attribution = {
@@ -588,7 +603,7 @@ resource "coder_metadata" "container_info" {
     value = local.workspace_image
   }
   item {
-    key   = "git urls"
-    value = join(", ", local.repo_urls)
+    key   = "git url"
+    value = local.repo_url
   }
 }
