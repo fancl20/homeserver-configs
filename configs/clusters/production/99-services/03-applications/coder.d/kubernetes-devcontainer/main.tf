@@ -565,6 +565,7 @@ resource "coder_script" "vscode_desktop_settings" {
     dir="$HOME/.vscode-server/data/Machine"
     mkdir -p "$dir"
     printf '%s' '${jsonencode({
+  "security.workspace.trust.enabled" : false,
   "editor.formatOnSave" : true,
   "editor.tabSize" : 2,
   "editor.guides.bracketPairs" : true,
@@ -582,8 +583,11 @@ resource "coder_script" "vscode_desktop_settings" {
 }
 
 module "claude-code" {
-  count               = data.coder_workspace.me.start_count
-  source              = "registry.coder.com/coder/claude-code/coder"
+  count  = data.coder_workspace.me.start_count
+  source = "registry.coder.com/coder/claude-code/coder"
+  # The module only pre-accepts the trust dialog for workdir when it sees an
+  # auth input, so pass the base URL the pod env already injects.
+  anthropic_base_url  = "https://api.z.ai/api/anthropic"
   agent_id            = coder_devcontainer.dev[0].subagent_id
   workdir             = module.git-clone[0].repo_dir
   install_claude_code = true

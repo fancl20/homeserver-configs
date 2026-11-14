@@ -40,11 +40,13 @@ The dashboard manages the container's lifecycle: status and rebuild on
 `devcontainer.json` changes, no workspace recreate needed.
 
 VS Code (extensions come from the template — `customizations.vscode` in
-`devcontainer.json` is not applied over the coder-remote connection) and
-Claude Code run inside the dev container. The main agent's **VS Code (Dev
-Container)** button deep-links into the `dev` sub-agent, skipping the Coder
-extension's agent picker, and its web terminal is the fallback on the base
-environment when a container build fails.
+`devcontainer.json` is not applied over the coder-remote connection) and Claude
+Code run inside the dev container, and both trust the cloned folder without
+prompting: workspace trust is disabled in the Machine settings and the
+claude-code module pre-accepts its trust dialog for the repo dir. The main
+agent's **VS Code (Dev Container)** button deep-links into the `dev` sub-agent,
+skipping the Coder extension's agent picker, and its web terminal is the
+fallback on the base environment when a container build fails.
 
 ## Notes
 
