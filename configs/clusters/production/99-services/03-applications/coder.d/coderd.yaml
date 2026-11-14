@@ -24,6 +24,10 @@ spec:
             key: token
       - name: PATH
         value: /tfbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      # TEMPORARY diagnostic: the runner resolves /tfbin/terraform but init
+      # still hits registry.opentofu.org; trace shows which binary and URLs.
+      - name: TF_LOG
+        value: trace
       initContainers:
       - name: terraform
         image: docker.io/hashicorp/terraform:1.17.2 # {"$imagepolicy": "flux-system:terraform"}
