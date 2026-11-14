@@ -24,17 +24,19 @@ spec:
             key: token
       - name: PATH
         value: /tfbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      # TEMPORARY diagnostic: the runner resolves /tfbin/terraform but init
-      # still hits registry.opentofu.org; trace shows which binary and URLs.
-      - name: TF_LOG
-        value: trace
       initContainers:
       - name: terraform
         image: docker.io/hashicorp/terraform:1.17.2 # {"$imagepolicy": "flux-system:terraform"}
+        # TEMPORARY diagnostic: tfexec rejects a TF_LOG env var, so wrap the
+        # binary to inject it at exec time; the version banner lands in the
+        # captured init output and names the binary that actually runs.
         command:
-        - cp
-        - /bin/terraform
-        - /tfbin/terraform
+        - sh
+        - -c
+        - |
+          cp /bin/terraform /tfbin/terraform.real
+          printf '#!/bin/sh\n/tfbin/terraform.real version >&2\nexec env TF_LOG=trace /tfbin/terraform.real "$@"\n' > /tfbin/terraform
+          chmod +x /tfbin/terraform
         volumeMounts:
         - name: tfbin
           mountPath: /tfbin
