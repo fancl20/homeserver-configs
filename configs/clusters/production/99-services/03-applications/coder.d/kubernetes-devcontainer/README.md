@@ -7,102 +7,51 @@ verified: true
 tags: [container, kubernetes, devcontainer]
 ---
 
-# Remote Development on Kubernetes Pods (with Dev Containers)
+# Kubernetes Dev Containers
 
-Provision workspaces on Kubernetes that run `devcontainer.json` environments with
-Coder's [Dev Containers integration](https://coder.com/docs/admin/integrations/devcontainers):
-the `@devcontainers/cli` and a Docker daemon run inside the workspace, and dev
-containers are built and run on top of it.
+A workspace is a privileged pod running a Docker daemon. Each repository in the
+`repo` parameter is cloned into `/workspaces` and its `devcontainer.json`
+environment is built and run as its own sub-agent, with VS Code and Claude Code
+inside.
 
-## Prerequisites
+## Parameters
 
-### Infrastructure
+- **Repositories** (required, mutable): repository URLs, one per project. Each
+  becomes a dev container named after the repo basename (basenames must be
+  unique). Add or remove projects by editing this parameter; newly added repos
+  are cloned at the next start. Private repos authenticate with the workspace
+  owner's Coder SSH key (`coder gitssh`).
+- **CPU / Memory**: pod resource limits.
+- **Workspaces volume size**: size of the persistent `/workspaces` volume —
+  checkouts and Docker images live here and survive restarts.
+- **Workspace Image**: empty follows the latest base image built in-cluster
+  ([`images/coder-devcontainer-base/`](../../../../../../../images/coder-devcontainer-base/));
+  set a tag to pin.
 
-**Cluster**: This template requires an existing Kubernetes cluster.
+## Dev containers
 
-**Container Image**: The `workspace_image` parameter defaults to
-`registry.local.d20.fan/fancl20/coder-devcontainer-base`, built in-cluster by its
-[`ContainerImage` CR](../../../02-continuous/container-images.yaml) from
-[`images/coder-devcontainer-base/`](../../../../../../../images/coder-devcontainer-base/).
-It ships the Docker daemon (with `data-root` on the `/workspaces` volume), Node.js
-for `@devcontainers/cli` (installed at start by the
-[devcontainers-cli module](https://registry.coder.com/modules/devcontainers-cli)),
-and the coder CLI. The template resolves the current tag at provision time from
-the Flux `ImagePolicy` (`coder-devcontainer-base` in `flux-system`), so each
-workspace starts on the latest build; leave the `workspace_image` parameter
-empty to follow it, or set a specific tag to pin. Bump the version in
-`update.py` for a deliberate generation bump.
+Each repo's `devcontainer.json` (strict JSON, no comments) is merged with a
+shared base that adds the common-utils feature, host networking (the container
+shares the pod network and cluster DNS), and forwards `ANTHROPIC_*`,
+`CLAUDE_CODE_*`, and git identity from the workspace environment — secrets
+never land on disk. A repo's own `features`, `runArgs`, and `remoteEnv` extend
+the base, with the repo winning per key.
 
-### Authentication
+The dashboard manages each container's lifecycle: status and rebuild on
+`devcontainer.json` changes, no workspace recreate needed. Ad-hoc dev
+containers can be started from the dashboard as well.
 
-This template authenticates using a `~/.kube/config`, if present on the server, or via built-in authentication if the Coder provisioner is running on Kubernetes with an authorized ServiceAccount. To use another [authentication method](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#authentication), edit the template.
+VS Code (extensions come from the template — `customizations.vscode` in
+`devcontainer.json` is not applied over the coder-remote connection) and Claude
+Code run inside each dev container. The parent agent keeps a web terminal on
+the base environment as the fallback when a container build fails.
 
-## Kubernetes Access
+## Notes
 
-Workspace pods run as the `coder-workspace` ServiceAccount in the `coder` namespace
-(defined in [`../coderd.yaml`](../coderd.yaml)), bound to the built-in `view`
-ClusterRole for cluster-wide read-only access. Existing workspaces pick this up after a
-restart once the template is updated.
-
-## Architecture
-
-The workspace pod runs the base image directly with `NET_ADMIN` and `SYS_ADMIN`
-capabilities, which the Docker daemon needs for the `docker0` bridge and overlay
-mounts. The agent startup script starts the daemon; its data-root lives on the
-`/workspaces` PVC so image layers persist across workspace restarts (the container
-root is overlayfs, which the overlay2 storage driver cannot layer on). The PVC is
-`rook-rbd`: block-backed ext4 lets overlay2 work natively — a CephFS-backed PVC
-would silently fall back to the vfs driver, where every container create is a
-full layer copy over the network.
-
-This template provisions the following resources:
-
-- Kubernetes deployment (ephemeral)
-- Kubernetes persistent volume claim (persistent on `/workspaces`)
-
-The required `repo` parameter (no default) is cloned into `/workspaces` by the
-[git-clone module](https://registry.coder.com/modules/git-clone); private repos
-authenticate with the workspace owner's Coder SSH key (`coder gitssh`). A
-`coder_devcontainer` resource then runs the
-repo's `devcontainer.json` and creates a sub-agent inside it; the dashboard manages
-its lifecycle (status, rebuild), so `devcontainer.json` changes no longer require
-recreating the workspace. Additional dev containers can be added from the dashboard.
-
-The dev container config is generated by the git-clone module's
-`post_clone_script` (jq), which runs after the clone and again on every
-restart: it merges the repo's `devcontainer.json` — which must be strict
-JSON, no comments — with a shared base, and `coder_devcontainer.config_path`
-points at the merged file (`/tmp/devcontainer.json`, outside the repo). The base adds the common-utils feature, host networking
-(`--network=host`: the container shares the pod network and cluster DNS, with
-no nested docker bridge in the path), and `remoteEnv` entries forwarding
-`ANTHROPIC_*`, `CLAUDE_CODE_*`, `API_TIMEOUT_MS`, and git identity variables
-from the agent environment via `${localEnv:...}` — resolved by the devcontainer
-CLI at up/exec time, so secrets never land on disk. Repos carry only their
-toolchain (features, Dockerfile); a repo's own `features`, `runArgs`, or
-`remoteEnv` entries extend the base, with the repo winning per key. The agent
-runs as root (registry modules broadly assume it), so the post-clone hook also
-chowns the checkout to uid 1000 — repo devcontainer images must create and
-switch to the uid-1000 `coder` user (`useradd --uid 1000 …` then `USER coder`),
-or git inside the devcontainer rejects the repo with "dubious ownership".
-
-The main agent (terminals, VS Code on the base environment) runs in the base
-image, not inside the dev container; if the dev container build fails the
-workspace stays usable in the base environment through its web terminal.
-
-VS Code runs on both agents. The dev container sub-agent
-(`coder_devcontainer.repo.subagent_id`) gets the vscode-desktop module, which
-installs extensions on every start: rebuilds start from an empty
-`~/.vscode-server`, and `customizations.vscode` in the repo's
-`devcontainer.json` is not applied over the coder-remote connection. The main
-agent gets a plain VS Code button under its own app slug (app slugs are unique
-per template and the module's is fixed to `vscode`) without extension install —
-the base image has no repo toolchain. Machine settings are written on both
-agents. The base config hides the integration's built-in sub-agent VS Code app
-(`customizations.coder.displayApps.vscode: false`) so each side shows one
-button. Claude Code runs in the dev container with the repo toolchain and the
-`remoteEnv`-forwarded `ANTHROPIC_*`/`CLAUDE_CODE_*` environment. Attaching
-resources to the sub-agent makes the dev container terraform-managed, so
-template changes update it in place.
-
-> **Note**
-> This template is designed to be a starting point! Edit the Terraform to extend the template to support your use case.
+- Repo devcontainer images must create and switch to a uid-1000 `coder` user
+  (`useradd --uid 1000 …` then `USER coder`), or git inside the dev container
+  rejects the checkout with "dubious ownership".
+- On start, `docker system prune --filter until=168h` bounds the image store;
+  tagged images survive, so unchanged repos start without a rebuild.
+- Workspace pods run with read-only, cluster-wide Kubernetes access (the
+  built-in `view` role via the `coder-workspace` service account).
