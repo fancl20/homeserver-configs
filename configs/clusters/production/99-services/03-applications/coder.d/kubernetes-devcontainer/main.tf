@@ -427,7 +427,7 @@ module "git-clone" {
     #!/usr/bin/env bash
     set -euo pipefail
     repo="$PWD"
-    out="/tmp/devcontainer-${each.key}.json"
+    out="/tmp/devcontainers/${each.key}/devcontainer.json"
 
     src=""
     for c in "$repo/.devcontainer/devcontainer.json" "$repo/.devcontainer.json" "$repo"/.devcontainer/*/devcontainer.json; do
@@ -441,6 +441,7 @@ module "git-clone" {
       exit 0
     fi
     srcdir="$(dirname "$src")"
+    mkdir -p "$(dirname "$out")"
 
     jq --arg srcdir "$srcdir" --argjson base '${jsonencode({
   features = {
@@ -499,7 +500,7 @@ resource "coder_devcontainer" "repo" {
   for_each         = local.active_repo_map
   agent_id         = coder_agent.main.id
   workspace_folder = module.git-clone[each.key].repo_dir
-  config_path      = "/tmp/devcontainer-${each.key}.json"
+  config_path      = "/tmp/devcontainers/${each.key}/devcontainer.json"
 }
 
 locals {
