@@ -9,6 +9,7 @@ app.Base('dae').Deployment()
 
     sysctl -w net.ipv4.conf.net1.forwarding=1
     sysctl -w net.ipv6.conf.net1.forwarding=1
+    sysctl -w net.ipv4.conf.all.send_redirects=0
     sysctl -w net.ipv4.conf.net1.send_redirects=0
 
     ip route replace 10.96.0.0/12 via 10.244.0.1 dev eth0 onlink # serviceCIDR
