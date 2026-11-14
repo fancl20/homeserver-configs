@@ -451,6 +451,9 @@ module "git-clone" {
     }
   }
   runArgs = ["--network=host"]
+  containerEnv = {
+    EDITOR = "vi"
+  }
   mounts = [
     "source=/run/secrets/kubernetes.io/serviceaccount,target=/run/secrets/kubernetes.io/serviceaccount,type=bind,readonly"
   ]
