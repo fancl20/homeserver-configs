@@ -456,7 +456,7 @@ module "git-clone" {
       upgradePackages = false
     }
   }
-  runArgs = ["--network=host"]
+  runArgs = ["--network=host", "--name=${each.key}"]
   containerEnv = {
     EDITOR = "vi"
   }
@@ -464,15 +464,12 @@ module "git-clone" {
     "source=/run/secrets/kubernetes.io/serviceaccount,target=/run/secrets/kubernetes.io/serviceaccount,type=bind,readonly"
   ]
   # the vscode-desktop module registers its own app on the sub-agent; hide the
-  # integration's built-in one so the dashboard shows a single VS Code button.
-  # `name`: coderd names sub-agents after the terraform resource label (the
-  # for_each key is dropped upstream), so name them per repo here instead.
+  # integration's built-in one so the dashboard shows a single VS Code button
   customizations = {
     coder = {
       displayApps = {
         vscode = false
       }
-      name = each.key
     }
   }
 })}' -s '
