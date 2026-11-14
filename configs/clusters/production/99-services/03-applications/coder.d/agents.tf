@@ -17,8 +17,8 @@ resource "coderd_ai_provider" "zai" {
 
 resource "coderd_agents_model" "glm" {
   ai_provider_id = coderd_ai_provider.zai.id
-  model          = "glm-5.3[1m]"
-  display_name   = "GLM 5.3 (1M)"
+  model          = "glm-5.3"
+  display_name   = "GLM 5.3"
   context_limit  = 1048576
 
   model_config = jsonencode({
@@ -28,8 +28,8 @@ resource "coderd_agents_model" "glm" {
 
 resource "coderd_agents_model" "glm_flash" {
   ai_provider_id = coderd_ai_provider.zai.id
-  model          = "glm-5.3-flash[1m]"
-  display_name   = "GLM 5.3 Flash (1M)"
+  model          = "glm-5.3-flash"
+  display_name   = "GLM 5.3 Flash"
   context_limit  = 1048576
 }
 
