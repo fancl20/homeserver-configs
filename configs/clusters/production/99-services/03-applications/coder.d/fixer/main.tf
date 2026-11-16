@@ -26,11 +26,22 @@ data "coder_provisioner" "me" {}
 data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
 
+data "coder_parameter" "repo" {
+  default      = ""
+  description  = "Repository URL to clone at start. Empty skips the clone; the chat clones the repo it needs itself."
+  display_name = "Repository"
+  mutable      = true
+  name         = "repo"
+  order        = 1
+  type         = "string"
+}
+
 locals {
   deployment_name  = "coder-${lower(data.coder_workspace.me.id)}"
   workspace_image  = "docker.io/library/buildpack-deps:testing-scm"
   git_author_name  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
   git_author_email = data.coder_workspace_owner.me.email
+  repo_url         = trimsuffix(trimspace(data.coder_parameter.repo.value), "/")
 }
 
 resource "kubernetes_deployment_v1" "main" {
@@ -142,4 +153,12 @@ resource "coder_agent" "main" {
     GIT_COMMITTER_NAME  = local.git_author_name
     GIT_COMMITTER_EMAIL = local.git_author_email
   }
+}
+
+module "git-clone" {
+  count    = data.coder_workspace.me.start_count
+  source   = "registry.coder.com/modules/git-clone/coder"
+  agent_id = coder_agent.main.id
+  url      = local.repo_url
+  base_dir = "/root"
 }

@@ -13,6 +13,9 @@ that fix this repo when the devcontainer workspaces are broken. The agent loop
 workspace only executes shell commands and file edits over the workspace
 connection.
 
+- Optional `repo` parameter: when set, the [git-clone module](https://registry.coder.com/modules/git-clone)
+  clones it into `/root` at start (start-blocking). The default is empty, so
+  nothing is cloned and the chat clones the repo it needs itself.
 - Runs the public `buildpack-deps:bookworm-scm` image (git, curl, openssh) —
   no dependency on the local registry, the in-cluster image build, or any
   ImagePolicy. The coder CLI and kubectl are downloaded at start.
