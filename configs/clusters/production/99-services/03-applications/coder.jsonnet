@@ -175,6 +175,106 @@ app.Base('coder', 'coder', create_namespace={
     { name: 'coder-init-token', mountPath: '/var/run/coder-init-token', readOnly: true },
   ],
 }, {
+  name: 'postgres-upgrade',
+  image: images.postgres,
+  // pg_upgrade the coder-db PVC in place when the image policy moves the
+  // postgres image past the cluster's major: the image entrypoint refuses
+  // to start over old-major data (docker_error_old_databases), so this must
+  // run first. Old binaries come from PGDG; --link keeps the source nearly
+  // free as docker.old-pre<major>. Failed attempts are redone on restart;
+  // the source is never modified.
+  command: [
+    '/bin/bash',
+    '-euo',
+    'pipefail',
+    '-c',
+    |||
+      set -euo pipefail
+
+      root=/var/lib/postgresql
+      tgt_major=$(ls /usr/lib/postgresql)
+      case $tgt_major in *[!0-9]*)
+        echo "ERROR: expected a single major in /usr/lib/postgresql, got: $tgt_major" >&2
+        exit 1
+      ;; esac
+      tgt=$root/$tgt_major/docker
+
+      # Clusters other than the target's: the pre-18 default directory and
+      # one docker/ dir per major, the same scan docker_error_old_databases
+      # in the image entrypoint uses.
+      declare -a clusters=()
+      for d in "$root/data" "$root"/*/docker; do
+        [ "$d" != "$tgt" ] && [ -s "$d/PG_VERSION" ] && clusters+=("$d")
+      done
+
+      # Steady state: data already at this image's major.
+      if [ -s "$tgt/PG_VERSION" ] && [ "${#clusters[@]}" -eq 0 ]; then
+        exit 0
+      fi
+      # A failed attempt left an initialized target next to the source:
+      # discard it, pg_upgrade needs a fresh one.
+      [ ! -s "$tgt/PG_VERSION" ] || rm -rf "$tgt"
+
+      if [ "${#clusters[@]}" -eq 0 ]; then
+        # Empty volume: the postgres container's initdb handles it.
+        exit 0
+      fi
+      [ "${#clusters[@]}" -eq 1 ] || {
+        echo "ERROR: expected one cluster to upgrade, found: ${clusters[*]}" >&2
+        exit 1
+      }
+      src=${clusters[0]}
+      src_major=$(cat "$src/PG_VERSION")
+      [ "$src_major" -lt "$tgt_major" ] || {
+        echo "ERROR: $src is major $src_major, not older than image major $tgt_major; refusing" >&2
+        exit 1
+      }
+      if [ ! -s "$src/global/pg_control" ] && [ -s "$src/global/pg_control.old" ]; then
+        # Undo the source disabling a previous pg_upgrade did before
+        # linking, so a failed attempt can be retried (its data files are
+        # never modified).
+        mv "$src/global/pg_control.old" "$src/global/pg_control"
+      fi
+
+      old_bin=/usr/lib/postgresql/$src_major/bin
+      new_bin=/usr/lib/postgresql/$tgt_major/bin
+      if [ ! -x "$old_bin/pg_upgrade" ]; then
+        # The image ships only its own major; PGDG carries the older ones.
+        apt-get update -qq
+        DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends postgresql-$src_major > /dev/null
+      fi
+
+      mkdir -p "$tgt" /run/postgresql
+      chown postgres:postgres "$tgt" /run/postgresql
+      chmod 700 "$tgt"
+      pw=$(mktemp)
+      printf '%s\n' "${POSTGRES_PASSWORD:?}" > "$pw"
+      chown postgres:postgres "$pw"
+      gosu postgres "$new_bin/initdb" -D "$tgt" --username="${POSTGRES_USER:-postgres}" --pwfile="$pw" > /dev/null
+      rm -f "$pw"
+      auth=$(gosu postgres "$new_bin/postgres" -D "$tgt" -C password_encryption)
+      # Same host auth line the image entrypoint appends to a fresh initdb.
+      printf '\nhost all all all %s\n' "$auth" >> "$tgt/pg_hba.conf"
+      chown postgres:postgres "$tgt/pg_hba.conf"
+
+      cd /tmp
+      gosu postgres "$new_bin/pg_upgrade" --link -b "$old_bin" -B "$new_bin" \
+        -d "$src" -D "$tgt" -U "${POSTGRES_USER:-postgres}"
+
+      mv "$src" "$src.old-pre$tgt_major"
+      echo "postgres: upgraded $src_major to $tgt_major"
+    |||,
+  ],
+  envFrom: [
+    { secretRef: { name: 'coder-db' } },
+  ],
+  resources: {
+    requests: { memory: '256Mi' },
+  },
+  volumeMounts: [
+    { name: 'coder-db', mountPath: '/var/lib/postgresql' },
+  ],
+}, {
   name: 'postgres',
   image: images.postgres,
   restartPolicy: 'Always',

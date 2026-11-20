@@ -159,6 +159,35 @@
                   ]
                },
                {
+                  "command": [
+                     "/bin/bash",
+                     "-euo",
+                     "pipefail",
+                     "-c",
+                     "set -euo pipefail\n\nroot=/var/lib/postgresql\ntgt_major=$(ls /usr/lib/postgresql)\ncase $tgt_major in *[!0-9]*)\n  echo \"ERROR: expected a single major in /usr/lib/postgresql, got: $tgt_major\" >&2\n  exit 1\n;; esac\ntgt=$root/$tgt_major/docker\n\n# Clusters other than the target's: the pre-18 default directory and\n# one docker/ dir per major, the same scan docker_error_old_databases\n# in the image entrypoint uses.\ndeclare -a clusters=()\nfor d in \"$root/data\" \"$root\"/*/docker; do\n  [ \"$d\" != \"$tgt\" ] && [ -s \"$d/PG_VERSION\" ] && clusters+=(\"$d\")\ndone\n\n# Steady state: data already at this image's major.\nif [ -s \"$tgt/PG_VERSION\" ] && [ \"${#clusters[@]}\" -eq 0 ]; then\n  exit 0\nfi\n# A failed attempt left an initialized target next to the source:\n# discard it, pg_upgrade needs a fresh one.\n[ ! -s \"$tgt/PG_VERSION\" ] || rm -rf \"$tgt\"\n\nif [ \"${#clusters[@]}\" -eq 0 ]; then\n  # Empty volume: the postgres container's initdb handles it.\n  exit 0\nfi\n[ \"${#clusters[@]}\" -eq 1 ] || {\n  echo \"ERROR: expected one cluster to upgrade, found: ${clusters[*]}\" >&2\n  exit 1\n}\nsrc=${clusters[0]}\nsrc_major=$(cat \"$src/PG_VERSION\")\n[ \"$src_major\" -lt \"$tgt_major\" ] || {\n  echo \"ERROR: $src is major $src_major, not older than image major $tgt_major; refusing\" >&2\n  exit 1\n}\nif [ ! -s \"$src/global/pg_control\" ] && [ -s \"$src/global/pg_control.old\" ]; then\n  # Undo the source disabling a previous pg_upgrade did before\n  # linking, so a failed attempt can be retried (its data files are\n  # never modified).\n  mv \"$src/global/pg_control.old\" \"$src/global/pg_control\"\nfi\n\nold_bin=/usr/lib/postgresql/$src_major/bin\nnew_bin=/usr/lib/postgresql/$tgt_major/bin\nif [ ! -x \"$old_bin/pg_upgrade\" ]; then\n  # The image ships only its own major; PGDG carries the older ones.\n  apt-get update -qq\n  DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends postgresql-$src_major > /dev/null\nfi\n\nmkdir -p \"$tgt\" /run/postgresql\nchown postgres:postgres \"$tgt\" /run/postgresql\nchmod 700 \"$tgt\"\npw=$(mktemp)\nprintf '%s\\n' \"${POSTGRES_PASSWORD:?}\" > \"$pw\"\nchown postgres:postgres \"$pw\"\ngosu postgres \"$new_bin/initdb\" -D \"$tgt\" --username=\"${POSTGRES_USER:-postgres}\" --pwfile=\"$pw\" > /dev/null\nrm -f \"$pw\"\nauth=$(gosu postgres \"$new_bin/postgres\" -D \"$tgt\" -C password_encryption)\n# Same host auth line the image entrypoint appends to a fresh initdb.\nprintf '\\nhost all all all %s\\n' \"$auth\" >> \"$tgt/pg_hba.conf\"\nchown postgres:postgres \"$tgt/pg_hba.conf\"\n\ncd /tmp\ngosu postgres \"$new_bin/pg_upgrade\" --link -b \"$old_bin\" -B \"$new_bin\" \\\n  -d \"$src\" -D \"$tgt\" -U \"${POSTGRES_USER:-postgres}\"\n\nmv \"$src\" \"$src.old-pre$tgt_major\"\necho \"postgres: upgraded $src_major to $tgt_major\"\n"
+                  ],
+                  "envFrom": [
+                     {
+                        "secretRef": {
+                           "name": "coder-db"
+                        }
+                     }
+                  ],
+                  "image": "docker.io/library/postgres",
+                  "name": "postgres-upgrade",
+                  "resources": {
+                     "requests": {
+                        "memory": "256Mi"
+                     }
+                  },
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/var/lib/postgresql",
+                        "name": "coder-db"
+                     }
+                  ]
+               },
+               {
                   "envFrom": [
                      {
                         "secretRef": {
