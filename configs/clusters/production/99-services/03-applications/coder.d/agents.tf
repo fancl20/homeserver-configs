@@ -17,8 +17,8 @@ resource "coderd_ai_provider" "zai" {
 
 resource "coderd_agents_model" "glm" {
   ai_provider_id = coderd_ai_provider.zai.id
-  model          = "glm-5.3"
-  display_name   = "GLM 5.3"
+  model          = "glm-5.4"
+  display_name   = "GLM 5.4"
   context_limit  = 1048576
 
   model_config = jsonencode({
