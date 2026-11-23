@@ -506,7 +506,7 @@ resource "coder_devcontainer" "dev" {
 }
 
 locals {
-  vscode_agent_ids = data.coder_workspace.me.start_count > 0 ? {
+  agent_ids = data.coder_workspace.me.start_count > 0 ? {
     main = coder_agent.main.id
     dev  = coder_devcontainer.dev[0].subagent_id
   } : {}
@@ -554,7 +554,7 @@ resource "coder_app" "vscode_dev" {
 # written to the vscode-server directory instead. UI-scoped settings (theme,
 # workbench, keybindings) come from the local VS Code.
 resource "coder_script" "vscode_desktop_settings" {
-  for_each     = local.vscode_agent_ids
+  for_each     = local.agent_ids
   agent_id     = each.value
   display_name = each.key == "dev" ? "VS Code Desktop Settings (Dev Container)" : "VS Code Desktop Settings"
   icon         = "/icon/code.svg"
@@ -565,12 +565,12 @@ resource "coder_script" "vscode_desktop_settings" {
     dir="$HOME/.vscode-server/data/Machine"
     mkdir -p "$dir"
     printf '%s' '${jsonencode({
-  "security.workspace.trust.enabled" : false,
   "editor.formatOnSave" : true,
   "editor.tabSize" : 2,
   "editor.guides.bracketPairs" : true,
   "files.trimTrailingWhitespace" : true,
   "terminal.integrated.defaultProfile.linux" : "fish",
+  "terminal.integrated.allowInUntrustedWorkspace" : true,
   "remote.autoForwardPortsSource" : "hybrid",
   "[python]" : {
     "editor.formatOnType" : true,

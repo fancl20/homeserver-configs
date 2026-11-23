@@ -41,12 +41,16 @@ The dashboard manages the container's lifecycle: status and rebuild on
 
 VS Code (extensions come from the template — `customizations.vscode` in
 `devcontainer.json` is not applied over the coder-remote connection) and Claude
-Code run inside the dev container, and both trust the cloned folder without
-prompting: workspace trust is disabled in the Machine settings and the
-claude-code module pre-accepts its trust dialog for the repo dir. The main
-agent's **VS Code (Dev Container)** button deep-links into the `dev` sub-agent,
-skipping the Coder extension's agent picker, and its web terminal is the
-fallback on the base environment when a container build fails.
+Code run inside the dev container and open the cloned folder without a prompt:
+the Machine settings allow terminals in the untrusted workspace (workspace
+trust is evaluated by the local VS Code window and its enable setting is
+application-scoped, so it cannot be turned off from the remote side — setting
+`security.workspace.trust.enabled: false` in the local VS Code user settings is
+what also clears Restricted Mode), and the claude-code module pre-accepts its
+trust dialog for the repo dir. The main agent's **VS Code (Dev Container)**
+button deep-links into the `dev` sub-agent, skipping the Coder extension's
+agent picker, and its web terminal is the fallback on the base environment
+when a container build fails.
 
 ## Notes
 
